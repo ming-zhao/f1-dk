@@ -1,0 +1,25 @@
+# Race-week notes shown in the dashboard's info box.
+# Update every race week (see skill/data-process.md § ③④ for sources).
+# Rebuild the dashboard afterwards: python3 dashboard/build_data.py
+
+race: Belgian Grand Prix 2026
+
+pit_strategy:
+  - "Pirelli brought C2/C3/C4 (hard end of range): 2 hard, 3 medium, 8 soft sets per driver"
+  - "Two-stop is expected to be competitive (Pirelli preview); rising track temps push degradation up"
+  - "Genuine 1-stop vs 2-stop decision — watch for undercut chaos around laps 12-18"
+  - "Spa = longest lap on calendar, high-speed tyre loading; safety car probability high"
+
+penalties:
+  - "Norris: 10-place grid penalty (4th battery) — qualified P3, starts ~P13. PRIME differential play"
+  - "Hadjar: 30-place (new PU components) — starts near back"
+  - "Alonso: 20-place (energy store + control electronics) — starts back"
+  - "Stroll: 10-place (new MGU-K) — qualified P22, starts ~P20"
+
+weather:
+  - "Rain possible (typical Spa); intermediates/wets available"
+  - "Rain = chaos = DNFs + big differential swings; favors consistent midfielders"
+
+lineup_angles:
+  - "Norris (fast car, midfield start) is the classic DK differential play"
+  - "Drivers promoted by penalties (Russell, Leclerc, Piastri) gain finish odds but lose differential upside"

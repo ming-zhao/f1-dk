@@ -1,0 +1,90 @@
+# DraftKings F1 Classic scoring rules
+# Source: https://www.draftkings.com/help/rules/27
+# Last verified: 2026-07-18
+
+salary_cap: 50000
+roster:
+  captain: 1          # 1.5x points, costs more salary
+  drivers: 4          # regular driver slots
+  constructors: 1
+  # Cannot select 2 drivers and a constructor from the same team
+captain_multiplier: 1.5
+
+driver:
+  # Points by finishing position (1st..22nd)
+  finishing_position:
+    1: 40
+    2: 37
+    3: 35
+    4: 32
+    5: 30
+    6: 27
+    7: 25
+    8: 23
+    9: 22
+    10: 20
+    11: 17
+    12: 15
+    13: 13
+    14: 12
+    15: 10
+    16: 7
+    17: 5
+    18: 4
+    19: 3
+    20: 2
+    21: 1
+    22: 0
+
+  # Place Differential = (Starting Position) - (Finishing Position)
+  # Positive when driver gains places, negative when they lose places.
+  place_differential_per_position: 1
+
+  fastest_lap: 3               # fastest lap of entire race
+  laps_led_per_lap: 0.25       # per lap led
+  defeated_teammate: 5         # finished ahead of teammate
+  classified_finish: 1         # 90%+ of race completed (by laps)
+
+constructor:
+  # Constructor earns points for EACH driver's finishing position.
+  # e.g., 1st + 3rd = 40 + 35 = 75 pts
+  finishing_position:
+    1: 40
+    2: 37
+    3: 35
+    4: 32
+    5: 30
+    6: 27
+    7: 25
+    8: 23
+    9: 22
+    10: 20
+    11: 17
+    12: 15
+    13: 13
+    14: 12
+    15: 10
+    16: 7
+    17: 5
+    18: 4
+    19: 3
+    20: 2
+    21: 1
+    22: 0
+
+  fastest_lap: 3               # if either driver sets fastest lap
+  laps_led_per_lap: 0.25       # per lap led by either driver
+  both_cars_classified: 2      # both cars finish (classified)
+  both_cars_in_points: 5       # both cars finish 10th or better
+  both_cars_on_podium: 3       # both cars finish 1st-2nd-3rd
+
+# Scoring notes:
+# - Classified finish = 90%+ of race completed (laps completed / total laps)
+# - Starting position = grid position (after penalties), published 2h before formation lap
+# - Finishing position = standing order at end of race, after time penalties
+# - Disqualifications announced AFTER race do NOT change finishing position, laps led, or fastest lap
+# - Constructor "both team cars" stats require both cars to START and FINISH
+# - If a driver withdraws (no replacement), teammate still eligible for "defeated teammate"
+#   but constructor NOT eligible for "both cars" bonuses
+# - If driver withdraws and IS replaced, replacement counts for beat-teammate;
+#   constructor IS eligible for "both cars" bonuses

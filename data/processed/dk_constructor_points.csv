@@ -1,0 +1,800 @@
+year,round,race_name,constructor_id,pts_finish,pts_fastest_lap,pts_both_classified,pts_both_in_points,pts_both_podium,dk_points_total
+2023,1,Bahrain Grand Prix,alfa,30,3,2,0,0,35
+2023,1,Bahrain Grand Prix,alphatauri,29,0,2,0,0,31
+2023,1,Bahrain Grand Prix,alpine,26,0,0,0,0,26
+2023,1,Bahrain Grand Prix,aston_martin,62,0,2,5,0,69
+2023,1,Bahrain Grand Prix,ferrari,35,0,0,0,0,35
+2023,1,Bahrain Grand Prix,haas,23,0,2,0,0,25
+2023,1,Bahrain Grand Prix,mclaren,7,0,0,0,0,7
+2023,1,Bahrain Grand Prix,mercedes,55,0,2,5,0,62
+2023,1,Bahrain Grand Prix,red_bull,77,0,2,5,3,87
+2023,1,Bahrain Grand Prix,williams,35,0,2,0,0,37
+2023,2,Saudi Arabian Grand Prix,alfa,17,0,2,0,0,19
+2023,2,Saudi Arabian Grand Prix,alphatauri,29,0,2,0,0,31
+2023,2,Saudi Arabian Grand Prix,alpine,45,0,2,5,0,52
+2023,2,Saudi Arabian Grand Prix,aston_martin,37,0,0,0,0,37
+2023,2,Saudi Arabian Grand Prix,ferrari,52,0,2,5,0,59
+2023,2,Saudi Arabian Grand Prix,haas,35,0,2,0,0,37
+2023,2,Saudi Arabian Grand Prix,mclaren,15,0,2,0,0,17
+2023,2,Saudi Arabian Grand Prix,mercedes,62,0,2,5,0,69
+2023,2,Saudi Arabian Grand Prix,red_bull,77,3,2,5,3,90
+2023,2,Saudi Arabian Grand Prix,williams,10,0,0,0,0,10
+2023,3,Australian Grand Prix,alfa,39,0,2,0,0,41
+2023,3,Australian Grand Prix,alphatauri,30,0,2,0,0,32
+2023,3,Australian Grand Prix,alpine,25,0,2,0,0,27
+2023,3,Australian Grand Prix,aston_martin,67,0,2,5,0,74
+2023,3,Australian Grand Prix,ferrari,17,0,0,0,0,17
+2023,3,Australian Grand Prix,haas,30,0,0,0,0,30
+2023,3,Australian Grand Prix,mclaren,50,0,2,5,0,57
+2023,3,Australian Grand Prix,mercedes,41,0,0,0,0,41
+2023,3,Australian Grand Prix,red_bull,70,3,2,5,0,80
+2023,3,Australian Grand Prix,williams,10,0,0,0,0,10
+2023,4,Azerbaijan Grand Prix,alfa,7,0,0,0,0,7
+2023,4,Azerbaijan Grand Prix,alphatauri,22,0,0,0,0,22
+2023,4,Azerbaijan Grand Prix,alpine,22,0,2,0,0,24
+2023,4,Azerbaijan Grand Prix,aston_martin,57,0,2,5,0,64
+2023,4,Azerbaijan Grand Prix,ferrari,65,0,2,5,0,72
+2023,4,Azerbaijan Grand Prix,haas,18,0,2,0,0,20
+2023,4,Azerbaijan Grand Prix,mclaren,39,0,2,0,0,41
+2023,4,Azerbaijan Grand Prix,mercedes,50,3,2,5,0,60
+2023,4,Azerbaijan Grand Prix,red_bull,77,0,2,5,3,87
+2023,4,Azerbaijan Grand Prix,williams,22,0,2,0,0,24
+2023,5,Miami Grand Prix,alfa,20,0,2,0,0,22
+2023,5,Miami Grand Prix,alphatauri,21,0,2,0,0,23
+2023,5,Miami Grand Prix,alpine,45,0,2,5,0,52
+2023,5,Miami Grand Prix,aston_martin,50,0,2,0,0,52
+2023,5,Miami Grand Prix,ferrari,55,0,2,5,0,62
+2023,5,Miami Grand Prix,haas,30,0,2,0,0,32
+2023,5,Miami Grand Prix,mclaren,8,0,2,0,0,10
+2023,5,Miami Grand Prix,mercedes,59,0,2,5,0,66
+2023,5,Miami Grand Prix,red_bull,77,3,2,5,3,90
+2023,5,Miami Grand Prix,williams,14,0,2,0,0,16
+2023,6,Monaco Grand Prix,alfa,30,0,2,0,0,32
+2023,6,Monaco Grand Prix,alphatauri,25,0,2,0,0,27
+2023,6,Monaco Grand Prix,alpine,60,0,2,5,0,67
+2023,6,Monaco Grand Prix,aston_martin,39,0,0,0,0,39
+2023,6,Monaco Grand Prix,ferrari,50,0,2,5,0,57
+2023,6,Monaco Grand Prix,haas,8,0,0,0,0,8
+2023,6,Monaco Grand Prix,mclaren,42,0,2,5,0,49
+2023,6,Monaco Grand Prix,mercedes,62,3,2,5,0,72
+2023,6,Monaco Grand Prix,red_bull,47,0,2,0,0,49
+2023,6,Monaco Grand Prix,williams,16,0,2,0,0,18
+2023,7,Spanish Grand Prix,alfa,25,0,2,0,0,27
+2023,7,Spanish Grand Prix,alphatauri,27,0,2,0,0,29
+2023,7,Spanish Grand Prix,alpine,43,0,2,5,0,50
+2023,7,Spanish Grand Prix,aston_martin,52,0,2,5,0,59
+2023,7,Spanish Grand Prix,ferrari,47,0,2,0,0,49
+2023,7,Spanish Grand Prix,haas,14,0,2,0,0,16
+2023,7,Spanish Grand Prix,mclaren,18,0,2,0,0,20
+2023,7,Spanish Grand Prix,mercedes,72,0,2,5,3,82
+2023,7,Spanish Grand Prix,red_bull,72,3,2,5,0,82
+2023,7,Spanish Grand Prix,williams,9,0,2,0,0,11
+2023,8,Canadian Grand Prix,alfa,27,0,2,0,0,29
+2023,8,Canadian Grand Prix,alphatauri,16,0,2,0,0,18
+2023,8,Canadian Grand Prix,alpine,38,0,2,0,0,40
+2023,8,Canadian Grand Prix,aston_martin,59,0,2,5,0,66
+2023,8,Canadian Grand Prix,ferrari,62,0,2,5,0,69
+2023,8,Canadian Grand Prix,haas,15,0,2,0,0,17
+2023,8,Canadian Grand Prix,mclaren,30,0,2,0,0,32
+2023,8,Canadian Grand Prix,mercedes,38,0,0,0,0,38
+2023,8,Canadian Grand Prix,red_bull,67,3,2,5,0,77
+2023,8,Canadian Grand Prix,williams,27,0,0,0,0,27
+2023,9,Austrian Grand Prix,alfa,25,0,2,0,0,27
+2023,9,Austrian Grand Prix,alphatauri,8,0,2,0,0,10
+2023,9,Austrian Grand Prix,alpine,32,0,2,0,0,34
+2023,9,Austrian Grand Prix,aston_martin,52,0,2,5,0,59
+2023,9,Austrian Grand Prix,ferrari,64,0,2,5,0,71
+2023,9,Austrian Grand Prix,haas,6,0,0,0,0,6
+2023,9,Austrian Grand Prix,mclaren,39,0,2,0,0,41
+2023,9,Austrian Grand Prix,mercedes,48,0,2,5,0,55
+2023,9,Austrian Grand Prix,red_bull,75,3,2,5,3,88
+2023,9,Austrian Grand Prix,williams,30,0,2,0,0,32
+2023,10,British Grand Prix,alfa,25,0,2,0,0,27
+2023,10,British Grand Prix,alphatauri,12,0,2,0,0,14
+2023,10,British Grand Prix,alpine,6,0,0,0,0,6
+2023,10,British Grand Prix,aston_martin,37,0,2,0,0,39
+2023,10,British Grand Prix,ferrari,42,0,2,5,0,49
+2023,10,British Grand Prix,haas,16,0,0,0,0,16
+2023,10,British Grand Prix,mclaren,69,0,2,5,0,76
+2023,10,British Grand Prix,mercedes,65,0,2,5,0,72
+2023,10,British Grand Prix,red_bull,67,3,2,5,0,77
+2023,10,British Grand Prix,williams,40,0,2,0,0,42
+2023,11,Hungarian Grand Prix,alfa,22,0,2,0,0,24
+2023,11,Hungarian Grand Prix,alphatauri,23,0,2,0,0,25
+2023,11,Hungarian Grand Prix,alpine,5,0,0,0,0,5
+2023,11,Hungarian Grand Prix,aston_martin,42,0,2,5,0,49
+2023,11,Hungarian Grand Prix,ferrari,48,0,2,5,0,55
+2023,11,Hungarian Grand Prix,haas,17,0,2,0,0,19
+2023,11,Hungarian Grand Prix,mclaren,67,0,2,5,0,74
+2023,11,Hungarian Grand Prix,mercedes,59,0,2,5,0,66
+2023,11,Hungarian Grand Prix,red_bull,75,3,2,5,3,88
+2023,11,Hungarian Grand Prix,williams,21,0,2,0,0,23
+2023,12,Belgian Grand Prix,alfa,28,0,2,0,0,30
+2023,12,Belgian Grand Prix,alphatauri,27,0,2,0,0,29
+2023,12,Belgian Grand Prix,alpine,40,0,2,0,0,42
+2023,12,Belgian Grand Prix,aston_martin,52,0,2,5,0,59
+2023,12,Belgian Grand Prix,ferrari,38,0,0,0,0,38
+2023,12,Belgian Grand Prix,haas,14,0,2,0,0,16
+2023,12,Belgian Grand Prix,mclaren,27,0,0,0,0,27
+2023,12,Belgian Grand Prix,mercedes,59,3,2,5,0,69
+2023,12,Belgian Grand Prix,red_bull,77,0,2,5,3,87
+2023,12,Belgian Grand Prix,williams,17,0,2,0,0,19
+2023,13,Dutch Grand Prix,alfa,16,0,0,0,0,16
+2023,13,Dutch Grand Prix,alphatauri,23,0,2,0,0,25
+2023,13,Dutch Grand Prix,alpine,55,0,2,5,0,62
+2023,13,Dutch Grand Prix,aston_martin,54,3,2,0,0,59
+2023,13,Dutch Grand Prix,ferrari,33,0,0,0,0,33
+2023,13,Dutch Grand Prix,haas,22,0,2,0,0,24
+2023,13,Dutch Grand Prix,mclaren,47,0,2,5,0,54
+2023,13,Dutch Grand Prix,mercedes,32,0,2,0,0,34
+2023,13,Dutch Grand Prix,red_bull,72,0,2,5,0,79
+2023,13,Dutch Grand Prix,williams,25,0,0,0,0,25
+2023,14,Italian Grand Prix,alfa,32,0,2,0,0,34
+2023,14,Italian Grand Prix,alphatauri,19,0,0,0,0,19
+2023,14,Italian Grand Prix,alpine,13,0,0,0,0,13
+2023,14,Italian Grand Prix,aston_martin,29,0,2,0,0,31
+2023,14,Italian Grand Prix,ferrari,67,0,2,5,0,74
+2023,14,Italian Grand Prix,haas,9,0,2,0,0,11
+2023,14,Italian Grand Prix,mclaren,38,3,2,0,0,43
+2023,14,Italian Grand Prix,mercedes,57,0,2,5,0,64
+2023,14,Italian Grand Prix,red_bull,77,0,2,5,3,87
+2023,14,Italian Grand Prix,williams,38,0,2,0,0,40
+2023,15,Singapore Grand Prix,alfa,20,0,0,0,0,20
+2023,15,Singapore Grand Prix,alphatauri,25,0,0,0,0,25
+2023,15,Singapore Grand Prix,alpine,31,0,0,0,0,31
+2023,15,Singapore Grand Prix,aston_martin,12,0,0,0,0,12
+2023,15,Singapore Grand Prix,ferrari,72,0,2,5,0,79
+2023,15,Singapore Grand Prix,haas,33,0,2,0,0,35
+2023,15,Singapore Grand Prix,mclaren,62,0,2,5,0,69
+2023,15,Singapore Grand Prix,mercedes,42,3,2,0,0,47
+2023,15,Singapore Grand Prix,red_bull,53,0,2,5,0,60
+2023,15,Singapore Grand Prix,williams,29,0,2,0,0,31
+2023,16,Japanese Grand Prix,alfa,15,0,0,0,0,15
+2023,16,Japanese Grand Prix,alphatauri,32,0,2,0,0,34
+2023,16,Japanese Grand Prix,alpine,42,0,2,5,0,49
+2023,16,Japanese Grand Prix,aston_martin,27,0,0,0,0,27
+2023,16,Japanese Grand Prix,ferrari,59,0,2,5,0,66
+2023,16,Japanese Grand Prix,haas,22,0,2,0,0,24
+2023,16,Japanese Grand Prix,mclaren,72,0,2,5,3,82
+2023,16,Japanese Grand Prix,mercedes,55,0,2,5,0,62
+2023,16,Japanese Grand Prix,red_bull,43,3,0,0,0,46
+2023,16,Japanese Grand Prix,williams,12,0,0,0,0,12
+2023,17,Qatar Grand Prix,alfa,45,0,2,5,0,52
+2023,17,Qatar Grand Prix,alphatauri,15,0,2,0,0,17
+2023,17,Qatar Grand Prix,alpine,40,0,2,0,0,42
+2023,17,Qatar Grand Prix,aston_martin,44,0,2,0,0,46
+2023,17,Qatar Grand Prix,ferrari,32,0,0,0,0,32
+2023,17,Qatar Grand Prix,haas,19,0,2,0,0,21
+2023,17,Qatar Grand Prix,mclaren,72,0,2,5,3,82
+2023,17,Qatar Grand Prix,mercedes,35,0,0,0,0,35
+2023,17,Qatar Grand Prix,red_bull,60,3,2,5,0,70
+2023,17,Qatar Grand Prix,williams,17,0,0,0,0,17
+2023,18,United States Grand Prix,alfa,28,0,2,0,0,30
+2023,18,United States Grand Prix,alphatauri,33,3,2,0,0,38
+2023,18,United States Grand Prix,alpine,31,0,0,0,0,31
+2023,18,United States Grand Prix,aston_martin,32,0,0,0,0,32
+2023,18,United States Grand Prix,ferrari,37,0,2,0,0,39
+2023,18,United States Grand Prix,haas,29,0,2,0,0,31
+2023,18,United States Grand Prix,mclaren,42,0,0,0,0,42
+2023,18,United States Grand Prix,mercedes,33,0,2,0,0,35
+2023,18,United States Grand Prix,red_bull,72,0,2,5,0,79
+2023,18,United States Grand Prix,williams,42,0,2,5,0,49
+2023,19,Mexico City Grand Prix,alfa,22,0,2,0,0,24
+2023,19,Mexico City Grand Prix,alphatauri,40,0,2,0,0,42
+2023,19,Mexico City Grand Prix,alpine,37,0,2,0,0,39
+2023,19,Mexico City Grand Prix,aston_martin,9,0,0,0,0,9
+2023,19,Mexico City Grand Prix,ferrari,67,0,2,5,0,74
+2023,19,Mexico City Grand Prix,haas,16,0,0,0,0,16
+2023,19,Mexico City Grand Prix,mclaren,53,0,2,5,0,60
+2023,19,Mexico City Grand Prix,mercedes,64,3,2,5,0,74
+2023,19,Mexico City Grand Prix,red_bull,42,0,0,0,0,42
+2023,19,Mexico City Grand Prix,williams,29,0,2,0,0,31
+2023,20,São Paulo Grand Prix,alfa,12,0,0,0,0,12
+2023,20,São Paulo Grand Prix,alphatauri,35,0,2,0,0,37
+2023,20,São Paulo Grand Prix,alpine,45,0,2,5,0,52
+2023,20,São Paulo Grand Prix,aston_martin,65,0,2,5,0,72
+2023,20,São Paulo Grand Prix,ferrari,29,0,0,0,0,29
+2023,20,São Paulo Grand Prix,haas,19,0,0,0,0,19
+2023,20,São Paulo Grand Prix,mclaren,49,3,2,0,0,54
+2023,20,São Paulo Grand Prix,mercedes,33,0,0,0,0,33
+2023,20,São Paulo Grand Prix,red_bull,72,0,2,5,0,79
+2023,20,São Paulo Grand Prix,williams,20,0,0,0,0,20
+2023,21,Las Vegas Grand Prix,alfa,15,0,2,0,0,17
+2023,21,Las Vegas Grand Prix,alphatauri,16,0,2,0,0,18
+2023,21,Las Vegas Grand Prix,alpine,49,0,2,0,0,51
+2023,21,Las Vegas Grand Prix,aston_martin,52,0,2,5,0,59
+2023,21,Las Vegas Grand Prix,ferrari,64,0,2,5,0,71
+2023,21,Las Vegas Grand Prix,haas,16,0,2,0,0,18
+2023,21,Las Vegas Grand Prix,mclaren,22,3,0,0,0,25
+2023,21,Las Vegas Grand Prix,mercedes,48,0,2,5,0,55
+2023,21,Las Vegas Grand Prix,red_bull,75,0,2,5,3,85
+2023,21,Las Vegas Grand Prix,williams,22,0,2,0,0,24
+2023,22,Abu Dhabi Grand Prix,alfa,8,0,2,0,0,10
+2023,22,Abu Dhabi Grand Prix,alphatauri,40,0,2,0,0,42
+2023,22,Abu Dhabi Grand Prix,alpine,28,0,2,0,0,30
+2023,22,Abu Dhabi Grand Prix,aston_martin,45,0,2,5,0,52
+2023,22,Abu Dhabi Grand Prix,ferrari,41,0,2,0,0,43
+2023,22,Abu Dhabi Grand Prix,haas,12,0,2,0,0,14
+2023,22,Abu Dhabi Grand Prix,mclaren,57,0,2,5,0,64
+2023,22,Abu Dhabi Grand Prix,mercedes,57,0,2,5,0,64
+2023,22,Abu Dhabi Grand Prix,red_bull,72,3,2,5,0,82
+2023,22,Abu Dhabi Grand Prix,williams,19,0,2,0,0,21
+2024,1,Bahrain Grand Prix,alpine,9,0,2,0,0,11
+2024,1,Bahrain Grand Prix,aston_martin,42,0,2,5,0,49
+2024,1,Bahrain Grand Prix,ferrari,67,0,2,5,0,74
+2024,1,Bahrain Grand Prix,haas,22,0,2,0,0,24
+2024,1,Bahrain Grand Prix,mclaren,50,0,2,5,0,57
+2024,1,Bahrain Grand Prix,mercedes,55,0,2,5,0,62
+2024,1,Bahrain Grand Prix,rb,25,0,2,0,0,27
+2024,1,Bahrain Grand Prix,red_bull,77,3,2,5,3,90
+2024,1,Bahrain Grand Prix,sauber,20,0,2,0,0,22
+2024,1,Bahrain Grand Prix,williams,12,0,2,0,0,14
+2024,2,Saudi Arabian Grand Prix,alpine,15,0,0,0,0,15
+2024,2,Saudi Arabian Grand Prix,aston_martin,33,0,0,0,0,33
+2024,2,Saudi Arabian Grand Prix,ferrari,60,3,2,5,0,70
+2024,2,Saudi Arabian Grand Prix,haas,35,0,2,0,0,37
+2024,2,Saudi Arabian Grand Prix,mclaren,55,0,2,5,0,62
+2024,2,Saudi Arabian Grand Prix,mercedes,49,0,2,5,0,56
+2024,2,Saudi Arabian Grand Prix,rb,17,0,2,0,0,19
+2024,2,Saudi Arabian Grand Prix,red_bull,77,0,2,5,3,87
+2024,2,Saudi Arabian Grand Prix,sauber,9,0,2,0,0,11
+2024,2,Saudi Arabian Grand Prix,williams,29,0,2,0,0,31
+2024,3,Australian Grand Prix,alpine,20,0,2,0,0,22
+2024,3,Australian Grand Prix,aston_martin,50,0,2,5,0,57
+2024,3,Australian Grand Prix,ferrari,77,3,2,5,3,90
+2024,3,Australian Grand Prix,haas,42,0,2,5,0,49
+2024,3,Australian Grand Prix,mclaren,67,0,2,5,0,74
+2024,3,Australian Grand Prix,mercedes,9,0,0,0,0,9
+2024,3,Australian Grand Prix,rb,40,0,2,0,0,42
+2024,3,Australian Grand Prix,red_bull,33,0,0,0,0,33
+2024,3,Australian Grand Prix,sauber,22,0,2,0,0,24
+2024,3,Australian Grand Prix,williams,17,0,0,0,0,17
+2024,4,Japanese Grand Prix,alpine,17,0,2,0,0,19
+2024,4,Japanese Grand Prix,aston_martin,42,0,2,0,0,44
+2024,4,Japanese Grand Prix,ferrari,67,0,2,5,0,74
+2024,4,Japanese Grand Prix,haas,30,0,2,0,0,32
+2024,4,Japanese Grand Prix,mclaren,53,0,2,5,0,60
+2024,4,Japanese Grand Prix,mercedes,47,0,2,5,0,54
+2024,4,Japanese Grand Prix,rb,23,0,0,0,0,23
+2024,4,Japanese Grand Prix,red_bull,77,3,2,5,3,90
+2024,4,Japanese Grand Prix,sauber,16,0,0,0,0,16
+2024,4,Japanese Grand Prix,williams,7,0,0,0,0,7
+2024,5,Chinese Grand Prix,alpine,30,0,2,0,0,32
+2024,5,Chinese Grand Prix,aston_martin,35,3,2,0,0,40
+2024,5,Chinese Grand Prix,ferrari,62,0,2,5,0,69
+2024,5,Chinese Grand Prix,haas,27,0,2,0,0,29
+2024,5,Chinese Grand Prix,mclaren,60,0,2,5,0,67
+2024,5,Chinese Grand Prix,mercedes,49,0,2,5,0,56
+2024,5,Chinese Grand Prix,rb,7,0,0,0,0,7
+2024,5,Chinese Grand Prix,red_bull,75,0,2,5,3,85
+2024,5,Chinese Grand Prix,sauber,14,0,0,0,0,14
+2024,5,Chinese Grand Prix,williams,20,0,2,0,0,22
+2024,6,Miami Grand Prix,alpine,35,0,2,0,0,37
+2024,6,Miami Grand Prix,aston_martin,27,0,2,0,0,29
+2024,6,Miami Grand Prix,ferrari,65,0,2,5,0,72
+2024,6,Miami Grand Prix,haas,20,0,2,0,0,22
+2024,6,Miami Grand Prix,mclaren,53,3,2,0,0,58
+2024,6,Miami Grand Prix,mercedes,50,0,2,5,0,57
+2024,6,Miami Grand Prix,rb,35,0,2,0,0,37
+2024,6,Miami Grand Prix,red_bull,69,0,2,5,0,76
+2024,6,Miami Grand Prix,sauber,19,0,2,0,0,21
+2024,6,Miami Grand Prix,williams,6,0,0,0,0,6
+2024,7,Emilia Romagna Grand Prix,alpine,19,0,2,0,0,21
+2024,7,Emilia Romagna Grand Prix,aston_martin,25,0,2,0,0,27
+2024,7,Emilia Romagna Grand Prix,ferrari,65,0,2,5,0,72
+2024,7,Emilia Romagna Grand Prix,haas,32,0,2,0,0,34
+2024,7,Emilia Romagna Grand Prix,mclaren,69,0,2,5,0,76
+2024,7,Emilia Romagna Grand Prix,mercedes,52,3,2,5,0,62
+2024,7,Emilia Romagna Grand Prix,rb,33,0,2,0,0,35
+2024,7,Emilia Romagna Grand Prix,red_bull,63,0,2,5,0,70
+2024,7,Emilia Romagna Grand Prix,sauber,14,0,2,0,0,16
+2024,7,Emilia Romagna Grand Prix,williams,7,0,0,0,0,7
+2024,8,Monaco Grand Prix,alpine,25,0,0,0,0,25
+2024,8,Monaco Grand Prix,aston_martin,29,0,2,0,0,31
+2024,8,Monaco Grand Prix,ferrari,75,0,2,5,3,85
+2024,8,Monaco Grand Prix,haas,5,0,0,0,0,5
+2024,8,Monaco Grand Prix,mclaren,69,0,2,5,0,76
+2024,8,Monaco Grand Prix,mercedes,55,3,2,5,0,65
+2024,8,Monaco Grand Prix,rb,38,0,2,0,0,40
+2024,8,Monaco Grand Prix,red_bull,31,0,0,0,0,31
+2024,8,Monaco Grand Prix,sauber,20,0,2,0,0,22
+2024,8,Monaco Grand Prix,williams,32,0,2,0,0,34
+2024,9,Canadian Grand Prix,alpine,42,0,2,5,0,49
+2024,9,Canadian Grand Prix,aston_martin,52,0,2,5,0,59
+2024,9,Canadian Grand Prix,ferrari,10,0,0,0,0,10
+2024,9,Canadian Grand Prix,haas,32,0,2,0,0,34
+2024,9,Canadian Grand Prix,mclaren,67,0,2,5,0,74
+2024,9,Canadian Grand Prix,mercedes,67,3,2,5,0,77
+2024,9,Canadian Grand Prix,rb,35,0,2,0,0,37
+2024,9,Canadian Grand Prix,red_bull,44,0,0,0,0,44
+2024,9,Canadian Grand Prix,sauber,23,0,2,0,0,25
+2024,9,Canadian Grand Prix,williams,7,0,0,0,0,7
+2024,10,Spanish Grand Prix,alpine,42,0,2,5,0,49
+2024,10,Spanish Grand Prix,aston_martin,27,0,2,0,0,29
+2024,10,Spanish Grand Prix,ferrari,57,0,2,5,0,64
+2024,10,Spanish Grand Prix,haas,22,0,2,0,0,24
+2024,10,Spanish Grand Prix,mclaren,62,3,2,5,0,72
+2024,10,Spanish Grand Prix,mercedes,67,0,2,5,0,74
+2024,10,Spanish Grand Prix,rb,13,0,2,0,0,15
+2024,10,Spanish Grand Prix,red_bull,63,0,2,5,0,70
+2024,10,Spanish Grand Prix,sauber,20,0,2,0,0,22
+2024,10,Spanish Grand Prix,williams,6,0,2,0,0,8
+2024,11,Austrian Grand Prix,alpine,35,0,2,0,0,37
+2024,11,Austrian Grand Prix,aston_martin,17,3,2,0,0,22
+2024,11,Austrian Grand Prix,ferrari,52,0,2,0,0,54
+2024,11,Austrian Grand Prix,haas,50,0,2,5,0,57
+2024,11,Austrian Grand Prix,mclaren,39,0,2,0,0,41
+2024,11,Austrian Grand Prix,mercedes,72,0,2,5,0,79
+2024,11,Austrian Grand Prix,rb,34,0,2,0,0,36
+2024,11,Austrian Grand Prix,red_bull,55,0,2,5,0,62
+2024,11,Austrian Grand Prix,sauber,12,0,2,0,0,14
+2024,11,Austrian Grand Prix,williams,13,0,2,0,0,15
+2024,12,British Grand Prix,alpine,9,0,0,0,0,9
+2024,12,British Grand Prix,aston_martin,48,0,2,5,0,55
+2024,12,British Grand Prix,ferrari,42,3,2,0,0,47
+2024,12,British Grand Prix,haas,42,0,2,0,0,44
+2024,12,British Grand Prix,mclaren,67,0,2,5,0,74
+2024,12,British Grand Prix,mercedes,43,0,0,0,0,43
+2024,12,British Grand Prix,rb,33,0,2,0,0,35
+2024,12,British Grand Prix,red_bull,42,0,2,0,0,44
+2024,12,British Grand Prix,sauber,14,0,2,0,0,16
+2024,12,British Grand Prix,williams,39,0,2,0,0,41
+2024,13,Hungarian Grand Prix,alpine,6,0,0,0,0,6
+2024,13,Hungarian Grand Prix,aston_martin,37,0,2,0,0,39
+2024,13,Hungarian Grand Prix,ferrari,59,0,2,5,0,66
+2024,13,Hungarian Grand Prix,haas,23,0,2,0,0,25
+2024,13,Hungarian Grand Prix,mclaren,77,0,2,5,3,87
+2024,13,Hungarian Grand Prix,mercedes,58,3,2,5,0,68
+2024,13,Hungarian Grand Prix,rb,37,0,2,0,0,39
+2024,13,Hungarian Grand Prix,red_bull,55,0,2,5,0,62
+2024,13,Hungarian Grand Prix,sauber,10,0,2,0,0,12
+2024,13,Hungarian Grand Prix,williams,17,0,2,0,0,19
+2024,14,Belgian Grand Prix,alpine,35,0,2,0,0,37
+2024,14,Belgian Grand Prix,aston_martin,40,0,2,0,0,42
+2024,14,Belgian Grand Prix,ferrari,62,0,2,5,0,69
+2024,14,Belgian Grand Prix,haas,16,0,2,0,0,18
+2024,14,Belgian Grand Prix,mclaren,67,0,2,5,0,74
+2024,14,Belgian Grand Prix,mercedes,42,0,2,0,0,44
+2024,14,Belgian Grand Prix,rb,27,0,2,0,0,29
+2024,14,Belgian Grand Prix,red_bull,57,3,2,5,0,67
+2024,14,Belgian Grand Prix,sauber,13,0,0,0,0,13
+2024,14,Belgian Grand Prix,williams,20,0,2,0,0,22
+2024,15,Dutch Grand Prix,alpine,32,0,2,0,0,34
+2024,15,Dutch Grand Prix,aston_martin,33,0,2,0,0,35
+2024,15,Dutch Grand Prix,ferrari,65,0,2,5,0,72
+2024,15,Dutch Grand Prix,haas,21,0,2,0,0,23
+2024,15,Dutch Grand Prix,mclaren,72,3,2,5,0,82
+2024,15,Dutch Grand Prix,mercedes,48,0,2,5,0,55
+2024,15,Dutch Grand Prix,rb,20,0,2,0,0,22
+2024,15,Dutch Grand Prix,red_bull,64,0,2,5,0,71
+2024,15,Dutch Grand Prix,sauber,5,0,2,0,0,7
+2024,15,Dutch Grand Prix,williams,19,0,2,0,0,21
+2024,16,Italian Grand Prix,alpine,22,0,2,0,0,24
+2024,16,Italian Grand Prix,aston_martin,20,0,2,0,0,22
+2024,16,Italian Grand Prix,ferrari,72,0,2,5,0,79
+2024,16,Italian Grand Prix,haas,25,0,2,0,0,27
+2024,16,Italian Grand Prix,mclaren,72,3,2,5,3,85
+2024,16,Italian Grand Prix,mercedes,55,0,2,5,0,62
+2024,16,Italian Grand Prix,rb,15,0,0,0,0,15
+2024,16,Italian Grand Prix,red_bull,50,0,2,5,0,57
+2024,16,Italian Grand Prix,sauber,11,0,2,0,0,13
+2024,16,Italian Grand Prix,williams,37,0,2,0,0,39
+2024,17,Azerbaijan Grand Prix,alpine,25,0,2,0,0,27
+2024,17,Azerbaijan Grand Prix,aston_martin,30,0,0,0,0,30
+2024,17,Azerbaijan Grand Prix,ferrari,41,0,2,0,0,43
+2024,17,Azerbaijan Grand Prix,haas,37,0,2,0,0,39
+2024,17,Azerbaijan Grand Prix,mclaren,72,3,2,5,0,82
+2024,17,Azerbaijan Grand Prix,mercedes,57,0,2,5,0,64
+2024,17,Azerbaijan Grand Prix,rb,15,0,0,0,0,15
+2024,17,Azerbaijan Grand Prix,red_bull,35,0,2,0,0,37
+2024,17,Azerbaijan Grand Prix,sauber,19,0,2,0,0,21
+2024,17,Azerbaijan Grand Prix,williams,48,0,2,5,0,55
+2024,18,Singapore Grand Prix,alpine,18,0,2,0,0,20
+2024,18,Singapore Grand Prix,aston_martin,35,0,2,0,0,37
+2024,18,Singapore Grand Prix,ferrari,55,0,2,5,0,62
+2024,18,Singapore Grand Prix,haas,25,0,2,0,0,27
+2024,18,Singapore Grand Prix,mclaren,75,0,2,5,3,85
+2024,18,Singapore Grand Prix,mercedes,59,0,2,5,0,66
+2024,18,Singapore Grand Prix,rb,19,3,2,0,0,24
+2024,18,Singapore Grand Prix,red_bull,57,0,2,5,0,64
+2024,18,Singapore Grand Prix,sauber,17,0,2,0,0,19
+2024,18,Singapore Grand Prix,williams,19,0,0,0,0,19
+2024,19,United States Grand Prix,alpine,19,3,2,0,0,24
+2024,19,United States Grand Prix,aston_martin,23,0,2,0,0,25
+2024,19,United States Grand Prix,ferrari,77,0,2,5,3,87
+2024,19,United States Grand Prix,haas,40,0,2,0,0,42
+2024,19,United States Grand Prix,mclaren,62,0,2,5,0,69
+2024,19,United States Grand Prix,mercedes,29,0,0,0,0,29
+2024,19,United States Grand Prix,rb,34,0,2,0,0,36
+2024,19,United States Grand Prix,red_bull,60,0,2,5,0,67
+2024,19,United States Grand Prix,sauber,8,0,2,0,0,10
+2024,19,United States Grand Prix,williams,27,0,2,0,0,29
+2024,20,Mexico City Grand Prix,alpine,33,0,2,0,0,35
+2024,20,Mexico City Grand Prix,aston_martin,21,0,0,0,0,21
+2024,20,Mexico City Grand Prix,ferrari,75,3,2,5,3,88
+2024,20,Mexico City Grand Prix,haas,47,0,2,5,0,54
+2024,20,Mexico City Grand Prix,mclaren,60,0,2,5,0,67
+2024,20,Mexico City Grand Prix,mercedes,62,0,2,5,0,69
+2024,20,Mexico City Grand Prix,rb,9,0,0,0,0,9
+2024,20,Mexico City Grand Prix,red_bull,32,0,2,0,0,34
+2024,20,Mexico City Grand Prix,sauber,22,0,2,0,0,24
+2024,20,Mexico City Grand Prix,williams,18,0,0,0,0,18
+2024,21,São Paulo Grand Prix,alpine,72,0,2,5,3,82
+2024,21,São Paulo Grand Prix,aston_martin,15,0,0,0,0,15
+2024,21,São Paulo Grand Prix,ferrari,37,0,0,0,0,37
+2024,21,São Paulo Grand Prix,haas,17,0,0,0,0,17
+2024,21,São Paulo Grand Prix,mclaren,50,0,2,5,0,57
+2024,21,São Paulo Grand Prix,mercedes,52,0,2,5,0,59
+2024,21,São Paulo Grand Prix,rb,47,0,2,5,0,54
+2024,21,São Paulo Grand Prix,red_bull,57,3,2,0,0,62
+2024,21,São Paulo Grand Prix,sauber,23,0,2,0,0,25
+2024,21,São Paulo Grand Prix,williams,9,0,0,0,0,9
+2024,22,Las Vegas Grand Prix,alpine,7,0,0,0,0,7
+2024,22,Las Vegas Grand Prix,aston_martin,27,0,2,0,0,29
+2024,22,Las Vegas Grand Prix,ferrari,67,0,2,5,0,74
+2024,22,Las Vegas Grand Prix,haas,38,0,2,0,0,40
+2024,22,Las Vegas Grand Prix,mclaren,52,3,2,5,0,62
+2024,22,Las Vegas Grand Prix,mercedes,77,0,2,5,3,87
+2024,22,Las Vegas Grand Prix,rb,29,0,2,0,0,31
+2024,22,Las Vegas Grand Prix,red_bull,50,0,2,5,0,57
+2024,22,Las Vegas Grand Prix,sauber,17,0,2,0,0,19
+2024,22,Las Vegas Grand Prix,williams,15,0,0,0,0,15
+2024,23,Qatar Grand Prix,alpine,32,0,0,0,0,32
+2024,23,Qatar Grand Prix,aston_martin,29,0,0,0,0,29
+2024,23,Qatar Grand Prix,ferrari,64,0,2,5,0,71
+2024,23,Qatar Grand Prix,haas,29,0,0,0,0,29
+2024,23,Qatar Grand Prix,mclaren,55,3,2,5,0,65
+2024,23,Qatar Grand Prix,mercedes,47,0,2,0,0,49
+2024,23,Qatar Grand Prix,rb,25,0,2,0,0,27
+2024,23,Qatar Grand Prix,red_bull,45,0,0,0,0,45
+2024,23,Qatar Grand Prix,sauber,40,0,2,0,0,42
+2024,23,Qatar Grand Prix,williams,13,0,0,0,0,13
+2024,24,Abu Dhabi Grand Prix,alpine,35,0,2,0,0,37
+2024,24,Abu Dhabi Grand Prix,aston_martin,34,0,2,0,0,36
+2024,24,Abu Dhabi Grand Prix,ferrari,72,0,2,5,3,82
+2024,24,Abu Dhabi Grand Prix,haas,30,3,2,0,0,35
+2024,24,Abu Dhabi Grand Prix,mclaren,60,0,2,5,0,67
+2024,24,Abu Dhabi Grand Prix,mercedes,62,0,2,5,0,69
+2024,24,Abu Dhabi Grand Prix,rb,20,0,2,0,0,22
+2024,24,Abu Dhabi Grand Prix,red_bull,29,0,0,0,0,29
+2024,24,Abu Dhabi Grand Prix,sauber,17,0,0,0,0,17
+2024,24,Abu Dhabi Grand Prix,williams,20,0,0,0,0,20
+2025,1,Australian Grand Prix,alpine,20,0,0,0,0,20
+2025,1,Australian Grand Prix,aston_martin,32,0,0,0,0,32
+2025,1,Australian Grand Prix,ferrari,43,0,2,5,0,50
+2025,1,Australian Grand Prix,haas,25,0,2,0,0,27
+2025,1,Australian Grand Prix,mclaren,62,3,2,5,0,72
+2025,1,Australian Grand Prix,mercedes,67,0,2,5,0,74
+2025,1,Australian Grand Prix,rb,17,0,0,0,0,17
+2025,1,Australian Grand Prix,red_bull,47,0,0,0,0,47
+2025,1,Australian Grand Prix,sauber,32,0,0,0,0,32
+2025,1,Australian Grand Prix,williams,34,0,0,0,0,34
+2025,2,Chinese Grand Prix,alpine,15,0,0,0,0,15
+2025,2,Chinese Grand Prix,aston_martin,27,0,0,0,0,27
+2025,2,Chinese Grand Prix,ferrari,7,0,0,0,0,7
+2025,2,Chinese Grand Prix,haas,53,0,2,5,0,60
+2025,2,Chinese Grand Prix,mclaren,77,3,2,5,3,90
+2025,2,Chinese Grand Prix,mercedes,62,0,2,5,0,69
+2025,2,Chinese Grand Prix,rb,24,0,2,0,0,26
+2025,2,Chinese Grand Prix,red_bull,47,0,2,0,0,49
+2025,2,Chinese Grand Prix,sauber,22,0,2,0,0,24
+2025,2,Chinese Grand Prix,williams,45,0,2,5,0,52
+2025,3,Japanese Grand Prix,alpine,23,0,2,0,0,25
+2025,3,Japanese Grand Prix,aston_martin,19,0,2,0,0,21
+2025,3,Japanese Grand Prix,ferrari,57,0,2,5,0,64
+2025,3,Japanese Grand Prix,haas,24,0,2,0,0,26
+2025,3,Japanese Grand Prix,mclaren,72,0,2,5,3,82
+2025,3,Japanese Grand Prix,mercedes,57,3,2,5,0,67
+2025,3,Japanese Grand Prix,rb,28,0,2,0,0,30
+2025,3,Japanese Grand Prix,red_bull,55,0,2,0,0,57
+2025,3,Japanese Grand Prix,sauber,10,0,2,0,0,12
+2025,3,Japanese Grand Prix,williams,34,0,2,0,0,36
+2025,4,Bahrain Grand Prix,alpine,37,0,2,0,0,39
+2025,4,Bahrain Grand Prix,aston_martin,15,0,2,0,0,17
+2025,4,Bahrain Grand Prix,ferrari,62,0,2,5,0,69
+2025,4,Bahrain Grand Prix,haas,43,0,2,5,0,50
+2025,4,Bahrain Grand Prix,mclaren,75,3,2,5,3,88
+2025,4,Bahrain Grand Prix,mercedes,54,0,2,0,0,56
+2025,4,Bahrain Grand Prix,rb,20,0,2,0,0,22
+2025,4,Bahrain Grand Prix,red_bull,49,0,2,5,0,56
+2025,4,Bahrain Grand Prix,sauber,6,0,0,0,0,6
+2025,4,Bahrain Grand Prix,williams,18,0,0,0,0,18
+2025,5,Saudi Arabian Grand Prix,alpine,7,0,0,0,0,7
+2025,5,Saudi Arabian Grand Prix,aston_martin,24,0,2,0,0,26
+2025,5,Saudi Arabian Grand Prix,ferrari,60,0,2,5,0,67
+2025,5,Saudi Arabian Grand Prix,haas,25,0,2,0,0,27
+2025,5,Saudi Arabian Grand Prix,mclaren,72,3,2,5,0,82
+2025,5,Saudi Arabian Grand Prix,mercedes,57,0,2,5,0,64
+2025,5,Saudi Arabian Grand Prix,rb,35,0,2,0,0,37
+2025,5,Saudi Arabian Grand Prix,red_bull,40,0,0,0,0,40
+2025,5,Saudi Arabian Grand Prix,sauber,14,0,2,0,0,16
+2025,5,Saudi Arabian Grand Prix,williams,45,0,2,5,0,52
+2025,6,Miami Grand Prix,alpine,15,0,0,0,0,15
+2025,6,Miami Grand Prix,aston_martin,17,0,2,0,0,19
+2025,6,Miami Grand Prix,ferrari,48,0,2,5,0,55
+2025,6,Miami Grand Prix,haas,18,0,0,0,0,18
+2025,6,Miami Grand Prix,mclaren,77,3,2,5,3,90
+2025,6,Miami Grand Prix,mercedes,62,0,2,5,0,69
+2025,6,Miami Grand Prix,rb,22,0,0,0,0,22
+2025,6,Miami Grand Prix,red_bull,52,0,2,5,0,59
+2025,6,Miami Grand Prix,sauber,16,0,0,0,0,16
+2025,6,Miami Grand Prix,williams,52,0,2,5,0,59
+2025,7,Emilia Romagna Grand Prix,alpine,20,0,2,0,0,22
+2025,7,Emilia Romagna Grand Prix,aston_martin,27,0,2,0,0,29
+2025,7,Emilia Romagna Grand Prix,ferrari,59,0,2,5,0,66
+2025,7,Emilia Romagna Grand Prix,haas,7,0,0,0,0,7
+2025,7,Emilia Romagna Grand Prix,mclaren,72,0,2,5,3,82
+2025,7,Emilia Romagna Grand Prix,mercedes,28,0,0,0,0,28
+2025,7,Emilia Romagna Grand Prix,rb,34,0,2,0,0,36
+2025,7,Emilia Romagna Grand Prix,red_bull,60,3,2,5,0,70
+2025,7,Emilia Romagna Grand Prix,sauber,19,0,2,0,0,21
+2025,7,Emilia Romagna Grand Prix,williams,53,0,2,5,0,60
+2025,8,Monaco Grand Prix,alpine,15,0,0,0,0,15
+2025,8,Monaco Grand Prix,aston_martin,13,0,0,0,0,13
+2025,8,Monaco Grand Prix,ferrari,67,0,2,5,0,74
+2025,8,Monaco Grand Prix,haas,40,0,2,0,0,42
+2025,8,Monaco Grand Prix,mclaren,75,3,2,5,3,88
+2025,8,Monaco Grand Prix,mercedes,21,0,2,0,0,23
+2025,8,Monaco Grand Prix,rb,50,0,2,5,0,57
+2025,8,Monaco Grand Prix,red_bull,37,0,2,0,0,39
+2025,8,Monaco Grand Prix,sauber,19,0,2,0,0,21
+2025,8,Monaco Grand Prix,williams,42,0,2,5,0,49
+2025,9,Spanish Grand Prix,alpine,33,0,2,0,0,35
+2025,9,Spanish Grand Prix,aston_martin,22,0,0,0,0,22
+2025,9,Spanish Grand Prix,ferrari,62,0,2,5,0,69
+2025,9,Spanish Grand Prix,haas,12,0,2,0,0,14
+2025,9,Spanish Grand Prix,mclaren,77,3,2,5,3,90
+2025,9,Spanish Grand Prix,mercedes,36,0,0,0,0,36
+2025,9,Spanish Grand Prix,rb,42,0,2,0,0,44
+2025,9,Spanish Grand Prix,red_bull,33,0,2,0,0,35
+2025,9,Spanish Grand Prix,sauber,45,0,2,0,0,47
+2025,9,Spanish Grand Prix,williams,15,0,0,0,0,15
+2025,10,Canadian Grand Prix,alpine,23,0,2,0,0,25
+2025,10,Canadian Grand Prix,aston_martin,30,0,2,0,0,32
+2025,10,Canadian Grand Prix,ferrari,57,0,2,5,0,64
+2025,10,Canadian Grand Prix,haas,39,0,2,0,0,41
+2025,10,Canadian Grand Prix,mclaren,36,0,2,0,0,38
+2025,10,Canadian Grand Prix,mercedes,75,3,2,5,3,88
+2025,10,Canadian Grand Prix,rb,10,0,0,0,0,10
+2025,10,Canadian Grand Prix,red_bull,52,0,2,0,0,54
+2025,10,Canadian Grand Prix,sauber,35,0,2,0,0,37
+2025,10,Canadian Grand Prix,williams,22,0,0,0,0,22
+2025,11,Austrian Grand Prix,alpine,23,0,2,0,0,25
+2025,11,Austrian Grand Prix,aston_martin,37,0,2,0,0,39
+2025,11,Austrian Grand Prix,ferrari,67,0,2,5,0,74
+2025,11,Austrian Grand Prix,haas,37,0,2,0,0,39
+2025,11,Austrian Grand Prix,mclaren,77,3,2,5,3,90
+2025,11,Austrian Grand Prix,mercedes,33,0,0,0,0,33
+2025,11,Austrian Grand Prix,rb,42,0,2,0,0,44
+2025,11,Austrian Grand Prix,red_bull,11,0,0,0,0,11
+2025,11,Austrian Grand Prix,sauber,45,0,2,5,0,52
+2025,11,Austrian Grand Prix,williams,7,0,0,0,0,7
+2025,12,British Grand Prix,alpine,29,0,0,0,0,29
+2025,12,British Grand Prix,aston_martin,47,0,2,5,0,54
+2025,12,British Grand Prix,ferrari,44,0,2,0,0,46
+2025,12,British Grand Prix,haas,30,0,2,0,0,32
+2025,12,British Grand Prix,mclaren,77,3,2,5,3,90
+2025,12,British Grand Prix,mercedes,27,0,0,0,0,27
+2025,12,British Grand Prix,rb,8,0,0,0,0,8
+2025,12,British Grand Prix,red_bull,40,0,2,0,0,42
+2025,12,British Grand Prix,sauber,39,0,0,0,0,39
+2025,12,British Grand Prix,williams,38,0,2,0,0,40
+2025,13,Belgian Grand Prix,alpine,23,0,2,0,0,25
+2025,13,Belgian Grand Prix,aston_martin,17,0,2,0,0,19
+2025,13,Belgian Grand Prix,ferrari,60,0,2,5,0,67
+2025,13,Belgian Grand Prix,haas,27,0,2,0,0,29
+2025,13,Belgian Grand Prix,mclaren,77,0,2,5,3,87
+2025,13,Belgian Grand Prix,mercedes,37,3,2,0,0,42
+2025,13,Belgian Grand Prix,rb,25,0,2,0,0,27
+2025,13,Belgian Grand Prix,red_bull,45,0,2,0,0,47
+2025,13,Belgian Grand Prix,sauber,37,0,2,0,0,39
+2025,13,Belgian Grand Prix,williams,31,0,2,0,0,33
+2025,14,Hungarian Grand Prix,alpine,7,0,2,0,0,9
+2025,14,Hungarian Grand Prix,aston_martin,55,0,2,5,0,62
+2025,14,Hungarian Grand Prix,ferrari,47,0,2,0,0,49
+2025,14,Hungarian Grand Prix,haas,9,0,0,0,0,9
+2025,14,Hungarian Grand Prix,mclaren,77,0,2,5,3,87
+2025,14,Hungarian Grand Prix,mercedes,55,3,2,5,0,65
+2025,14,Hungarian Grand Prix,rb,40,0,2,0,0,42
+2025,14,Hungarian Grand Prix,red_bull,27,0,2,0,0,29
+2025,14,Hungarian Grand Prix,sauber,40,0,2,0,0,42
+2025,14,Hungarian Grand Prix,williams,22,0,2,0,0,24
+2025,15,Dutch Grand Prix,alpine,22,0,2,0,0,24
+2025,15,Dutch Grand Prix,aston_martin,48,0,2,5,0,55
+2025,15,Dutch Grand Prix,ferrari,5,0,0,0,0,5
+2025,15,Dutch Grand Prix,haas,47,0,2,5,0,54
+2025,15,Dutch Grand Prix,mclaren,44,3,0,0,0,47
+2025,15,Dutch Grand Prix,mercedes,39,0,2,0,0,41
+2025,15,Dutch Grand Prix,rb,50,0,2,0,0,52
+2025,15,Dutch Grand Prix,red_bull,59,0,2,5,0,66
+2025,15,Dutch Grand Prix,sauber,22,0,2,0,0,24
+2025,15,Dutch Grand Prix,williams,43,0,2,0,0,45
+2025,16,Italian Grand Prix,alpine,12,0,2,0,0,14
+2025,16,Italian Grand Prix,aston_martin,7,0,0,0,0,7
+2025,16,Italian Grand Prix,ferrari,59,0,2,5,0,66
+2025,16,Italian Grand Prix,haas,25,0,2,0,0,27
+2025,16,Italian Grand Prix,mclaren,72,3,2,5,3,85
+2025,16,Italian Grand Prix,mercedes,52,0,2,5,0,59
+2025,16,Italian Grand Prix,rb,32,0,2,0,0,34
+2025,16,Italian Grand Prix,red_bull,53,0,2,0,0,55
+2025,16,Italian Grand Prix,sauber,25,0,0,0,0,25
+2025,16,Italian Grand Prix,williams,42,0,2,0,0,44
+2025,17,Azerbaijan Grand Prix,alpine,7,0,2,0,0,9
+2025,17,Azerbaijan Grand Prix,aston_martin,15,0,2,0,0,17
+2025,17,Azerbaijan Grand Prix,ferrari,45,0,2,5,0,52
+2025,17,Azerbaijan Grand Prix,haas,27,0,2,0,0,29
+2025,17,Azerbaijan Grand Prix,mclaren,27,0,0,0,0,27
+2025,17,Azerbaijan Grand Prix,mercedes,69,0,2,5,0,76
+2025,17,Azerbaijan Grand Prix,rb,50,0,2,5,0,57
+2025,17,Azerbaijan Grand Prix,red_bull,67,3,2,5,0,77
+2025,17,Azerbaijan Grand Prix,sauber,24,0,2,0,0,26
+2025,17,Azerbaijan Grand Prix,williams,48,0,2,0,0,50
+2025,18,Singapore Grand Prix,alpine,10,0,2,0,0,12
+2025,18,Singapore Grand Prix,aston_martin,38,0,2,0,0,40
+2025,18,Singapore Grand Prix,ferrari,50,3,2,5,0,60
+2025,18,Singapore Grand Prix,haas,26,0,2,0,0,28
+2025,18,Singapore Grand Prix,mclaren,67,0,2,5,0,74
+2025,18,Singapore Grand Prix,mercedes,70,0,2,5,0,77
+2025,18,Singapore Grand Prix,rb,27,0,2,0,0,29
+2025,18,Singapore Grand Prix,red_bull,52,0,2,0,0,54
+2025,18,Singapore Grand Prix,sauber,7,0,2,0,0,9
+2025,18,Singapore Grand Prix,williams,32,0,2,0,0,34
+2025,19,United States Grand Prix,alpine,8,0,2,0,0,10
+2025,19,United States Grand Prix,aston_martin,35,0,2,0,0,37
+2025,19,United States Grand Prix,ferrari,67,0,2,5,0,74
+2025,19,United States Grand Prix,haas,32,0,2,0,0,34
+2025,19,United States Grand Prix,mclaren,67,0,2,5,0,74
+2025,19,United States Grand Prix,mercedes,40,3,2,0,0,45
+2025,19,United States Grand Prix,rb,24,0,2,0,0,26
+2025,19,United States Grand Prix,red_bull,65,0,2,5,0,72
+2025,19,United States Grand Prix,sauber,27,0,2,0,0,29
+2025,19,United States Grand Prix,williams,14,0,0,0,0,14
+2025,20,Mexico City Grand Prix,alpine,17,0,2,0,0,19
+2025,20,Mexico City Grand Prix,aston_martin,16,0,0,0,0,16
+2025,20,Mexico City Grand Prix,ferrari,60,0,2,5,0,67
+2025,20,Mexico City Grand Prix,haas,54,0,2,5,0,61
+2025,20,Mexico City Grand Prix,mclaren,70,0,2,5,0,77
+2025,20,Mexico City Grand Prix,mercedes,52,3,2,5,0,62
+2025,20,Mexico City Grand Prix,rb,15,0,0,0,0,15
+2025,20,Mexico City Grand Prix,red_bull,52,0,2,0,0,54
+2025,20,Mexico City Grand Prix,sauber,23,0,0,0,0,23
+2025,20,Mexico City Grand Prix,williams,20,0,2,0,0,22
+2025,21,São Paulo Grand Prix,alpine,30,0,2,0,0,32
+2025,21,São Paulo Grand Prix,aston_martin,19,0,2,0,0,21
+2025,21,São Paulo Grand Prix,ferrari,7,0,0,0,0,7
+2025,21,São Paulo Grand Prix,haas,42,0,2,0,0,44
+2025,21,São Paulo Grand Prix,mclaren,70,0,2,5,0,77
+2025,21,São Paulo Grand Prix,mercedes,69,0,2,5,0,76
+2025,21,São Paulo Grand Prix,rb,48,0,2,5,0,55
+2025,21,São Paulo Grand Prix,red_bull,40,0,2,0,0,42
+2025,21,São Paulo Grand Prix,sauber,24,0,0,0,0,24
+2025,21,São Paulo Grand Prix,williams,30,3,2,0,0,35
+2025,22,Las Vegas Grand Prix,alpine,23,0,2,0,0,25
+2025,22,Las Vegas Grand Prix,aston_martin,21,0,0,0,0,21
+2025,22,Las Vegas Grand Prix,ferrari,55,0,2,5,0,62
+2025,22,Las Vegas Grand Prix,haas,42,0,2,5,0,49
+2025,22,Las Vegas Grand Prix,mclaren,5,0,2,0,0,7
+2025,22,Las Vegas Grand Prix,mercedes,72,0,2,5,3,82
+2025,22,Las Vegas Grand Prix,rb,39,0,2,0,0,41
+2025,22,Las Vegas Grand Prix,red_bull,55,3,2,0,0,60
+2025,22,Las Vegas Grand Prix,sauber,30,0,0,0,0,30
+2025,22,Las Vegas Grand Prix,williams,37,0,0,0,0,37
+2025,23,Qatar Grand Prix,alpine,19,0,2,0,0,21
+2025,23,Qatar Grand Prix,aston_martin,30,0,2,0,0,32
+2025,23,Qatar Grand Prix,ferrari,38,0,2,0,0,40
+2025,23,Qatar Grand Prix,haas,13,0,0,0,0,13
+2025,23,Qatar Grand Prix,mclaren,69,3,2,5,0,79
+2025,23,Qatar Grand Prix,mercedes,57,0,2,5,0,64
+2025,23,Qatar Grand Prix,rb,26,0,2,0,0,28
+2025,23,Qatar Grand Prix,red_bull,60,0,2,5,0,67
+2025,23,Qatar Grand Prix,sauber,15,0,0,0,0,15
+2025,23,Qatar Grand Prix,williams,52,0,2,0,0,54
+2025,24,Abu Dhabi Grand Prix,alpine,5,0,2,0,0,7
+2025,24,Abu Dhabi Grand Prix,aston_martin,47,0,2,5,0,54
+2025,24,Abu Dhabi Grand Prix,ferrari,55,3,2,5,0,65
+2025,24,Abu Dhabi Grand Prix,haas,40,0,2,0,0,42
+2025,24,Abu Dhabi Grand Prix,mclaren,72,0,2,5,3,82
+2025,24,Abu Dhabi Grand Prix,mercedes,40,0,2,0,0,42
+2025,24,Abu Dhabi Grand Prix,rb,9,0,2,0,0,11
+2025,24,Abu Dhabi Grand Prix,red_bull,52,0,2,0,0,54
+2025,24,Abu Dhabi Grand Prix,sauber,39,0,2,0,0,41
+2025,24,Abu Dhabi Grand Prix,williams,20,0,2,0,0,22
+2026,1,Australian Grand Prix,alpine,32,0,2,0,0,34
+2026,1,Australian Grand Prix,aston_martin,9,0,0,0,0,9
+2026,1,Australian Grand Prix,audi,22,0,0,0,0,22
+2026,1,Australian Grand Prix,cadillac,10,0,0,0,0,10
+2026,1,Australian Grand Prix,ferrari,67,0,2,5,0,74
+2026,1,Australian Grand Prix,haas,42,0,2,0,0,44
+2026,1,Australian Grand Prix,mclaren,31,0,0,0,0,31
+2026,1,Australian Grand Prix,mercedes,77,0,2,5,3,87
+2026,1,Australian Grand Prix,rb,36,0,2,0,0,38
+2026,1,Australian Grand Prix,red_bull,29,3,0,0,0,32
+2026,1,Australian Grand Prix,williams,25,0,2,0,0,27
+2026,2,Chinese Grand Prix,alpine,47,0,2,5,0,54
+2026,2,Chinese Grand Prix,aston_martin,9,0,0,0,0,9
+2026,2,Chinese Grand Prix,audi,18,0,0,0,0,18
+2026,2,Chinese Grand Prix,cadillac,23,0,2,0,0,25
+2026,2,Chinese Grand Prix,ferrari,67,0,2,5,0,74
+2026,2,Chinese Grand Prix,haas,42,0,2,0,0,44
+2026,2,Chinese Grand Prix,mclaren,5,0,0,0,0,5
+2026,2,Chinese Grand Prix,mercedes,77,3,2,5,3,90
+2026,2,Chinese Grand Prix,rb,40,0,2,0,0,42
+2026,2,Chinese Grand Prix,red_bull,30,0,0,0,0,30
+2026,2,Chinese Grand Prix,williams,22,0,0,0,0,22
+2026,3,Japanese Grand Prix,alpine,32,0,2,0,0,34
+2026,3,Japanese Grand Prix,aston_martin,5,0,0,0,0,5
+2026,3,Japanese Grand Prix,audi,30,0,2,0,0,32
+2026,3,Japanese Grand Prix,cadillac,8,0,2,0,0,10
+2026,3,Japanese Grand Prix,ferrari,62,0,2,5,0,69
+2026,3,Japanese Grand Prix,haas,20,0,0,0,0,20
+2026,3,Japanese Grand Prix,mclaren,67,0,2,5,0,74
+2026,3,Japanese Grand Prix,mercedes,72,3,2,5,0,82
+2026,3,Japanese Grand Prix,rb,34,0,2,0,0,36
+2026,3,Japanese Grand Prix,red_bull,38,0,2,0,0,40
+2026,3,Japanese Grand Prix,williams,12,0,2,0,0,14
+2026,4,Miami Grand Prix,alpine,26,0,0,0,0,26
+2026,4,Miami Grand Prix,aston_martin,15,0,2,0,0,17
+2026,4,Miami Grand Prix,audi,18,0,0,0,0,18
+2026,4,Miami Grand Prix,cadillac,11,0,2,0,0,13
+2026,4,Miami Grand Prix,ferrari,50,0,2,5,0,57
+2026,4,Miami Grand Prix,haas,30,0,2,0,0,32
+2026,4,Miami Grand Prix,mclaren,72,3,2,5,3,85
+2026,4,Miami Grand Prix,mercedes,72,0,2,5,0,79
+2026,4,Miami Grand Prix,rb,14,0,0,0,0,14
+2026,4,Miami Grand Prix,red_bull,30,0,0,0,0,30
+2026,4,Miami Grand Prix,williams,42,0,2,5,0,49
+2026,5,Canadian Grand Prix,alpine,50,0,2,5,0,57
+2026,5,Canadian Grand Prix,aston_martin,12,0,0,0,0,12
+2026,5,Canadian Grand Prix,audi,28,0,2,0,0,30
+2026,5,Canadian Grand Prix,cadillac,12,0,0,0,0,12
+2026,5,Canadian Grand Prix,ferrari,69,0,2,5,0,76
+2026,5,Canadian Grand Prix,haas,32,0,2,0,0,34
+2026,5,Canadian Grand Prix,mclaren,21,0,0,0,0,21
+2026,5,Canadian Grand Prix,mercedes,43,3,0,0,0,46
+2026,5,Canadian Grand Prix,rb,25,0,0,0,0,25
+2026,5,Canadian Grand Prix,red_bull,65,0,2,5,0,72
+2026,5,Canadian Grand Prix,williams,23,0,0,0,0,23
+2026,6,Monaco Grand Prix,alpine,47,0,2,0,0,49
+2026,6,Monaco Grand Prix,aston_martin,24,0,0,0,0,24
+2026,6,Monaco Grand Prix,audi,30,0,2,0,0,32
+2026,6,Monaco Grand Prix,cadillac,11,0,0,0,0,11
+2026,6,Monaco Grand Prix,ferrari,42,0,0,0,0,42
+2026,6,Monaco Grand Prix,haas,24,0,0,0,0,24
+2026,6,Monaco Grand Prix,mclaren,33,0,0,0,0,33
+2026,6,Monaco Grand Prix,mercedes,55,3,2,0,0,60
+2026,6,Monaco Grand Prix,rb,52,0,2,5,0,59
+2026,6,Monaco Grand Prix,red_bull,32,0,0,0,0,32
+2026,6,Monaco Grand Prix,williams,30,0,0,0,0,30
+2026,7,Barcelona Grand Prix,alpine,45,0,2,5,0,52
+2026,7,Barcelona Grand Prix,aston_martin,3,0,0,0,0,3
+2026,7,Barcelona Grand Prix,audi,19,0,0,0,0,19
+2026,7,Barcelona Grand Prix,cadillac,13,0,0,0,0,13
+2026,7,Barcelona Grand Prix,ferrari,50,3,2,0,0,55
+2026,7,Barcelona Grand Prix,haas,18,0,2,0,0,20
+2026,7,Barcelona Grand Prix,mclaren,65,0,2,5,0,72
+2026,7,Barcelona Grand Prix,mercedes,44,0,2,0,0,46
+2026,7,Barcelona Grand Prix,rb,45,0,2,5,0,52
+2026,7,Barcelona Grand Prix,red_bull,59,0,2,5,0,66
+2026,7,Barcelona Grand Prix,williams,19,0,0,0,0,19
+2026,8,Austrian Grand Prix,alpine,23,0,2,0,0,25
+2026,8,Austrian Grand Prix,aston_martin,7,0,0,0,0,7
+2026,8,Austrian Grand Prix,audi,32,0,2,0,0,34
+2026,8,Austrian Grand Prix,cadillac,1,0,0,0,0,1
+2026,8,Austrian Grand Prix,ferrari,53,0,2,5,0,60
+2026,8,Austrian Grand Prix,haas,19,0,2,0,0,21
+2026,8,Austrian Grand Prix,mclaren,57,0,2,5,0,64
+2026,8,Austrian Grand Prix,mercedes,75,3,2,5,3,88
+2026,8,Austrian Grand Prix,rb,42,0,2,5,0,49
+2026,8,Austrian Grand Prix,red_bull,64,0,2,5,0,71
+2026,8,Austrian Grand Prix,williams,7,0,0,0,0,7
+2026,9,British Grand Prix,alpine,42,0,2,5,0,49
+2026,9,British Grand Prix,aston_martin,7,0,2,0,0,9
+2026,9,British Grand Prix,audi,23,0,0,0,0,23
+2026,9,British Grand Prix,cadillac,19,0,2,0,0,21
+2026,9,British Grand Prix,ferrari,75,0,2,5,3,85
+2026,9,British Grand Prix,haas,28,0,2,0,0,30
+2026,9,British Grand Prix,mclaren,49,0,2,0,0,51
+2026,9,British Grand Prix,mercedes,47,3,2,0,0,52
+2026,9,British Grand Prix,rb,52,0,2,5,0,59
+2026,9,British Grand Prix,red_bull,32,0,0,0,0,32
+2026,9,British Grand Prix,williams,6,0,0,0,0,6

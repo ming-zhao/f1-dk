@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F1 DFS Lineup Simulator</title>
+<script src="data.js"></script>
+<style>
+  .viz-root {
+    color-scheme: light;
+    --surface-1: #fcfcfb;
+    --page: #f9f9f7;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --grid-line: #e1e0d9;
+    --baseline: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --series-1: #2a78d6;   /* blue — primary accent */
+    --series-2: #008300;   /* green */
+    --series-4: #eda100;   /* yellow */
+    --series-6: #eb6834;   /* orange */
+    --good: #0ca30c;
+    --good-text: #006300;
+    --critical: #d03b3b;
+    --meter-track: #cde2fb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --surface-1: #1a1a19;
+      --page: #0d0d0d;
+      --text-primary: #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted: #898781;
+      --grid-line: #2c2c2a;
+      --baseline: #383835;
+      --border: rgba(255,255,255,0.10);
+      --series-1: #3987e5;
+      --series-2: #008300;
+      --series-4: #c98500;
+      --series-6: #d95926;
+      --good: #0ca30c;
+      --good-text: #0ca30c;
+      --critical: #d03b3b;
+      --meter-track: #184f95;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body.viz-root {
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 14px;
+    padding: 20px;
+  }
+  h1 { font-size: 20px; font-weight: 600; }
+  h2 { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+  .sub { color: var(--text-secondary); font-size: 13px; margin-top: 2px; }
+  .layout { display: grid; grid-template-columns: 1fr 380px; gap: 16px; margin-top: 16px; max-width: 1280px; }
+  @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  /* stat tiles */
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  .tile .label { font-size: 12px; color: var(--text-secondary); }
+  .tile .value { font-size: 22px; font-weight: 600; margin-top: 2px; }
+  .tile .value.over { color: var(--critical); }
+  /* salary meter */
+  .meter { height: 8px; border-radius: 4px; background: var(--meter-track); overflow: hidden; margin-top: 8px; }
+  .meter > div { height: 100%; background: var(--series-1); border-radius: 4px; transition: width .2s; }
+  .meter > div.over { background: var(--critical); }
+  /* tables */
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .04em; color: var(--text-muted); padding: 6px 8px;
+    border-bottom: 1px solid var(--baseline);
+  }
+  td { padding: 7px 8px; border-bottom: 1px solid var(--grid-line); }
+  tr.team-start td { border-top: 2px solid var(--baseline); }
+  td.team-cell {
+    vertical-align: middle; font-size: 12px; color: var(--text-secondary);
+    white-space: nowrap; border-bottom: 1px solid var(--grid-line);
+  }
+  tr.no-afford td:not(.team-cell) { opacity: .55; }
+  td.sal-over { color: var(--critical) !important; font-weight: 600; opacity: 1 !important; }
+  button:disabled { opacity: .35; cursor: not-allowed; }
+  button:disabled:hover { border-color: var(--border); color: var(--text-primary); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr:hover td { background: color-mix(in srgb, var(--series-1) 6%, transparent); }
+  .team-logo {
+    display: inline-block; width: 20px; height: 20px; margin-right: 7px;
+    vertical-align: -5px; object-fit: contain;
+    background: #fff; border-radius: 4px; padding: 1px;
+    border: 1px solid var(--border);
+  }
+  /* buttons */
+  button {
+    font: inherit; font-size: 12px; padding: 4px 10px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--surface-1);
+    color: var(--text-primary); cursor: pointer;
+  }
+  button:hover { border-color: var(--series-1); color: var(--series-1); }
+  button.primary {
+    background: var(--series-1); color: #fff; border-color: var(--series-1);
+    font-size: 14px; font-weight: 600; padding: 10px 18px; width: 100%;
+  }
+  button.primary:hover { filter: brightness(1.08); color: #fff; }
+  button.primary:disabled { opacity: .45; cursor: not-allowed; filter: none; }
+  button.ghost-x { border: none; background: none; color: var(--text-muted); font-size: 14px; padding: 2px 6px; }
+  button.ghost-x:hover { color: var(--critical); }
+  .slot-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: .05em; padding: 2px 6px;
+    border-radius: 4px; background: var(--series-1); color: #fff; margin-right: 8px;
+  }
+  .slot-tag.d { background: var(--baseline); color: var(--text-primary); }
+  .slot-tag.c { background: var(--series-6); }
+  .empty-slot { color: var(--text-muted); font-style: italic; }
+  .warn { color: var(--critical); font-size: 13px; margin: 8px 0; }
+  .lineup-row { display: flex; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--grid-line); }
+  .lineup-row .nm { flex: 1; }
+  .lineup-row .sal { color: var(--text-secondary); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  /* results */
+  #results { max-width: 1280px; margin-top: 16px; display: none; }
+  .hero { font-size: 48px; font-weight: 600; line-height: 1.1; }
+  .hero-row { display: flex; align-items: baseline; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+  .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+  @media (max-width: 980px) { .results-grid { grid-template-columns: 1fr; } }
+  .bar-cell { display: flex; align-items: center; gap: 8px; }
+  .bar-track { flex: 1; height: 14px; position: relative; }
+  .bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--series-1); border-radius: 0 4px 4px 0; }
+  .bar-fill.neg { background: var(--series-6); }
+  .pos-badge {
+    display: inline-block; min-width: 26px; text-align: center; font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .dnf { color: var(--critical); font-weight: 600; font-size: 11px; }
+  .delta-up { color: var(--good-text); }
+  .delta-dn { color: var(--critical); }
+  .sortable, .csortable { cursor: pointer; user-select: none; }
+  .sortable:hover, .csortable:hover { color: var(--text-primary); }
+</style>
+</head>
+<body class="viz-root">
+
+<h1 id="race-title">F1 DFS Lineup Simulator</h1>
+<div class="sub">Pick 1 Captain (1.5× points, 1.5× salary) + 4 Drivers + 1 Constructor under the $50,000 cap, then simulate a race outcome scored with real DraftKings rules.</div>
+
+<div class="layout">
+  <div class="card">
+    <h2>Driver pool — <span id="race-name"></span></h2>
+    <table id="pool">
+      <thead>
+        <tr>
+          <th>Team</th>
+          <th>Driver</th>
+          <th class="num sortable" data-k="salaryCpt">CPT $</th>
+          <th class="num sortable" data-k="salary">D $</th>
+          <th class="num sortable" data-k="avgDk">Avg DK pts</th>
+          <th class="num sortable" data-k="avgFinish">Avg finish</th>
+          <th class="num sortable" data-k="dnfRate">DNF %</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <h2 style="margin-top:18px">Constructors</h2>
+    <table id="cpool">
+      <thead>
+        <tr>
+          <th>Constructor</th>
+          <th class="num csortable" data-k="salary">Salary</th>
+          <th class="num csortable" data-k="avgDk">Avg DK pts</th>
+          <th class="num csortable" data-k="maxDk">Max DK pts</th>
+          <th class="num csortable" data-k="bothPtsRate">Both top-10 %</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div>
+    <div class="card">
+      <h2>Your lineup</h2>
+      <div class="tiles">
+        <div class="tile"><div class="label">Salary used</div><div class="value" id="sal-used">$0</div></div>
+        <div class="tile"><div class="label">Remaining</div><div class="value" id="sal-left">$50,000</div></div>
+        <div class="tile"><div class="label">Proj. avg pts</div><div class="value" id="proj-pts">–</div></div>
+      </div>
+      <div class="meter"><div id="sal-meter" style="width:0%"></div></div>
+      <div id="lineup-slots" style="margin-top:12px"></div>
+      <div id="lineup-warn"></div>
+      <button class="primary" id="sim-btn" style="margin-top:14px" disabled>Simulate race</button>
+      <div class="sub" style="margin-top:8px">Outcome is randomly generated from each driver's recent form (finish distribution, qualifying tendency, DNF rate). Run it multiple times — variance is the point.</div>
+    </div>
+  </div>
+</div>
+
+<div id="results">
+  <div class="card">
+    <div class="hero-row">
+      <div>
+        <div class="tile"><div class="label">Your DK score</div><div class="hero" id="total-score">0</div></div>
+      </div>
+      <div class="sub" id="sim-count"></div>
+      <div style="flex:1"></div>
+      <button id="resim-btn">Simulate again</button>
+    </div>
+    <div class="results-grid">
+      <div>
+        <h2>Score breakdown</h2>
+        <table id="breakdown">
+          <thead><tr>
+            <th>Pick</th><th class="num">Finish</th><th class="num">Diff</th>
+            <th>Bonuses</th><th class="num">×</th><th class="num">Total</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div>
+        <h2>Race classification</h2>
+        <table id="classification">
+          <thead><tr>
+            <th class="num">Pos</th><th>Driver</th><th class="num">Grid</th>
+            <th class="num">+/-</th><th class="num">DK pts</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const D = F1DATA;
+const CAP = D.salaryCap;
+const CPT_MULT = D.captainMultiplier;
+const SC_D = D.scoring.driver;
+const SC_C = D.scoring.constructor;
+const TOTAL_LAPS = D.totalLaps;
+
+const TEAM_NAMES = Object.fromEntries(
+  D.constructors.map(c => [c.id, c.shortName || c.name]));
+
+// ---------- state ----------
+const lineup = { cpt: null, drivers: [], constructor: null }; // codes / constructor id
+let simCount = 0;
+const sortState = {
+  pool: { key: "salaryCpt", asc: false },
+  cpool: { key: "salary", asc: false },
+};
+
+const byCode = Object.fromEntries(D.drivers.map(d => [d.code, d]));
+const byCid = Object.fromEntries(D.constructors.map(c => [c.id, c]));
+
+// ---------- lineup logic ----------
+function salaryUsed() {
+  let s = 0;
+  if (lineup.cpt) s += byCode[lineup.cpt].salaryCpt;
+  for (const c of lineup.drivers) s += byCode[c].salary;
+  if (lineup.constructor) s += byCid[lineup.constructor].salary;
+  return s;
+}
+function lineupErrors() {
+  const errs = [];
+  const used = salaryUsed();
+  if (used > CAP) errs.push(`Over the cap by $${(used - CAP).toLocaleString()}.`);
+  // DK rule: cannot roster 2 drivers AND the constructor from the same team
+  if (lineup.constructor) {
+    const all = [lineup.cpt, ...lineup.drivers].filter(Boolean);
+    const sameTeam = all.filter(c => byCode[c].team === lineup.constructor);
+    if (sameTeam.length >= 2) {
+      errs.push(`DK rule: can't take 2 drivers AND the constructor from the same team (${byCid[lineup.constructor].name}).`);
+    }
+  }
+  return errs;
+}
+function isComplete() {
+  return lineup.cpt && lineup.drivers.length === 4 && lineup.constructor;
+}
+function inLineup(code) {
+  return lineup.cpt === code || lineup.drivers.includes(code);
+}
+function addDriver(code, asCpt) {
+  if (inLineup(code)) return;
+  if (asCpt) { if (lineup.cpt) return; lineup.cpt = code; }
+  else { if (lineup.drivers.length >= 4) return; lineup.drivers.push(code); }
+  render();
+}
+function remove(code) {
+  if (lineup.cpt === code) lineup.cpt = null;
+  else if (code === lineup.constructor) lineup.constructor = null;
+  else lineup.drivers = lineup.drivers.filter(c => c !== code);
+  render();
+}
+
+// ---------- rendering ----------
+function fmt$(n) { return "$" + n.toLocaleString(); }
+function teamDot(team) {
+  return `<img class="team-logo" src="logos/${team}.png" alt="${TEAM_NAMES[team] || team}" title="${TEAM_NAMES[team] || team}">`;
+}
+
+function renderPool() {
+  // Group teammates: order teams by their best driver on the sorted stat,
+  // then sort the two drivers within each team by the same stat.
+  const { key: sortKey, asc: sortAsc } = sortState.pool;
+  const dir = sortAsc ? 1 : -1;
+  const teamBest = {}, teamCount = {};
+  for (const d of D.drivers) {
+    const v = d[sortKey];
+    if (!(d.team in teamBest) || (v - teamBest[d.team]) * dir < 0) teamBest[d.team] = v;
+    teamCount[d.team] = (teamCount[d.team] || 0) + 1;
+  }
+  const rows = [...D.drivers].sort((a, b) => {
+    if (a.team !== b.team) {
+      if (teamBest[a.team] !== teamBest[b.team])
+        return (teamBest[a.team] < teamBest[b.team] ? -1 : 1) * dir;
+      return a.team < b.team ? -1 : 1;
+    }
+    return (a[sortKey] < b[sortKey] ? -1 : 1) * dir;
+  });
+  const left = CAP - salaryUsed();
+  document.querySelector("#pool tbody").innerHTML = rows.map((d, i) => {
+    const picked = inLineup(d.code);
+    const cptOpen = !lineup.cpt, dOpen = lineup.drivers.length < 4;
+    const cptAfford = d.salaryCpt <= left, dAfford = d.salary <= left;
+    const cptDisabled = picked || !cptOpen || !cptAfford;
+    const dDisabled = picked || !dOpen || !dAfford;
+    // red = can't afford this driver in any slot that's still open
+    const unaffordable = !picked &&
+      (cptOpen || dOpen) &&
+      !(cptOpen && cptAfford) && !(dOpen && dAfford);
+    const newTeam = i === 0 || rows[i - 1].team !== d.team;
+    const teamSpan = newTeam ? teamCount[d.team] : 0;
+    const teamCell = newTeam
+      ? `<td class="team-cell" rowspan="${teamSpan}">${teamDot(d.team)}${TEAM_NAMES[d.team] || d.team}</td>`
+      : "";
+    const rowCls = [i > 0 && newTeam ? "team-start" : "", unaffordable ? "no-afford" : ""]
+      .filter(Boolean).join(" ");
+    return `<tr${rowCls ? ` class="${rowCls}"` : ""}>
+      ${teamCell}
+      <td>${d.name}</td>
+      <td class="num${!picked && cptOpen && !cptAfford ? " sal-over" : ""}">${fmt$(d.salaryCpt)}</td>
+      <td class="num${!picked && dOpen && !dAfford ? " sal-over" : ""}">${fmt$(d.salary)}</td>
+      <td class="num">${d.avgDk.toFixed(1)}</td>
+      <td class="num">${d.avgFinish.toFixed(1)}</td>
+      <td class="num">${(d.dnfRate * 100).toFixed(0)}%</td>
+      <td style="white-space:nowrap">
+        ${picked
+          ? `<button class="ghost-x" onclick="remove('${d.code}')">✕ remove</button>`
+          : `<button ${cptDisabled ? "disabled" : ""} onclick="addDriver('${d.code}',true)">CPT</button>
+             <button ${dDisabled ? "disabled" : ""} onclick="addDriver('${d.code}',false)">D</button>`}
+      </td>
+    </tr>`;
+  }).join("");
+
+  const { key: cSortKey, asc: cSortAsc } = sortState.cpool;
+  const crows = [...D.constructors].sort((a, b) =>
+    (a[cSortKey] < b[cSortKey] ? -1 : 1) * (cSortAsc ? 1 : -1));
+  document.querySelector("#cpool tbody").innerHTML = crows.map(c => {
+    const picked = lineup.constructor === c.id;
+    const cAfford = c.salary <= left;
+    const unaff = !picked && !lineup.constructor && !cAfford;
+    return `<tr${unaff ? ' class="no-afford"' : ""}>
+      <td>${teamDot(c.id)}${c.name}</td>
+      <td class="num${unaff ? " sal-over" : ""}">${fmt$(c.salary)}</td>
+      <td class="num">${c.avgDk.toFixed(1)}</td>
+      <td class="num">${c.maxDk.toFixed(0)}</td>
+      <td class="num">${(c.bothPtsRate * 100).toFixed(0)}%</td>
+      <td>${picked
+        ? `<button class="ghost-x" onclick="remove(lineup.constructor)">✕ remove</button>`
+        : `<button ${lineup.constructor || !cAfford ? "disabled" : ""} onclick="lineup.constructor='${c.id}';render()">CNSTR</button>`}</td>
+    </tr>`;
+  }).join("");
+}
+function remove(code) {
+  if (lineup.cpt === code) lineup.cpt = null;
+  lineup.drivers = lineup.drivers.filter(c => c !== code);
+  render();
+}
+
+function renderLineup() {
+  const slots = [];
+  slots.push(lineup.cpt
+    ? slotRow("CPT", byCode[lineup.cpt].name, byCode[lineup.cpt].salaryCpt, `remove(lineup.cpt)`)
+    : emptyRow("CPT", "pick a captain"));
+  for (let i = 0; i < 4; i++) {
+    const c = lineup.drivers[i];
+    slots.push(c
+      ? slotRow("D", byCode[c].name, byCode[c].salary, `remove('${c}')`, "d")
+      : emptyRow("D", "pick a driver", "d"));
+  }
+  slots.push(lineup.constructor
+    ? slotRow("CNSTR", byCid[lineup.constructor].name, byCid[lineup.constructor].salary, `remove(lineup.constructor)`, "c")
+    : emptyRow("CNSTR", "pick a constructor", "c"));
+  document.getElementById("lineup-slots").innerHTML = slots.join("");
+
+  const used = salaryUsed();
+  const left = CAP - used;
+  document.getElementById("sal-used").textContent = fmt$(used);
+  const leftEl = document.getElementById("sal-left");
+  leftEl.textContent = fmt$(left);
+  leftEl.className = "value" + (left < 0 ? " over" : "");
+  const meter = document.getElementById("sal-meter");
+  meter.style.width = Math.min(100, used / CAP * 100) + "%";
+  meter.className = used > CAP ? "over" : "";
+
+  // projected: sum of avg DK pts (captain 1.5x), constructor rough proxy = 2x team drivers' avg finish pts share
+  let proj = null;
+  if (lineup.cpt || lineup.drivers.length) {
+    proj = 0;
+    if (lineup.cpt) proj += byCode[lineup.cpt].avgDk * CPT_MULT;
+    for (const c of lineup.drivers) proj += byCode[c].avgDk;
+    if (lineup.constructor) {
+      const teamDrivers = D.drivers.filter(d => d.team === lineup.constructor);
+      proj += teamDrivers.reduce((s, d) => s + d.avgDk, 0) * 0.9; // rough constructor proxy
+    }
+  }
+  document.getElementById("proj-pts").textContent = proj === null ? "–" : proj.toFixed(0);
+
+  const errs = lineupErrors();
+  document.getElementById("lineup-warn").innerHTML =
+    errs.map(e => `<div class="warn">⚠ ${e}</div>`).join("");
+  document.getElementById("sim-btn").disabled = !(isComplete() && errs.length === 0);
+}
+function slotRow(tag, cls, name, sal, code) {
+  return `<div class="lineup-row">
+    <span class="slot-tag ${cls}">${tag}</span>
+    <span class="nm${name ? "" : " empty-slot"}">${name || "pick a " + tag.toLowerCase()}</span>
+    ${sal ? `<span class="sal">${fmt$(sal)}</span><button class="ghost-x" onclick="remove('${code}')">✕</button>` : ""}
+  </div>`;
+}
+
+function render() { renderPool(); renderLineup(); }
+
+// ---------- race simulation ----------
+function gauss() { // Box-Muller
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function simulateRace() {
+  // 1) qualifying: sample grid score per driver, rank -> grid 1..22
+  const field = D.drivers.map(d => ({
+    ...d,
+    gridScore: d.avgGrid + gauss() * d.stdGrid,
+  }));
+  field.sort((a, b) => a.gridScore - b.gridScore);
+  field.forEach((d, i) => d.grid = i + 1);
+
+  // 2) race: DNF rolls, then pace score correlated with grid + form
+  for (const d of field) {
+    d.dnf = Math.random() < d.dnfRate;
+    d.paceScore = 0.45 * d.grid + 0.55 * (d.avgFinish + gauss() * d.stdFinish);
+    d.lapsDone = d.dnf
+      ? Math.floor(Math.random() * TOTAL_LAPS * 0.88)
+      : TOTAL_LAPS;
+  }
+  const finishers = field.filter(d => !d.dnf).sort((a, b) => a.paceScore - b.paceScore);
+  const dnfs = field.filter(d => d.dnf).sort((a, b) => b.lapsDone - a.lapsDone);
+  const order = [...finishers, ...dnfs];
+  order.forEach((d, i) => d.finish = i + 1);
+
+  // 3) laps led: winner leads most, front-runners split the rest
+  const lead = { [order[0].code]: Math.round(TOTAL_LAPS * (0.45 + Math.random() * 0.35)) };
+  let rest = TOTAL_LAPS - lead[order[0].code];
+  for (const d of order.slice(1, 4)) {
+    const take = Math.min(rest, Math.round(Math.random() * rest * 0.7));
+    if (take > 0) lead[d.code] = take;
+    rest -= take;
+  }
+  if (rest > 0) lead[order[0].code] += rest;
+
+  // 4) fastest lap: weighted among top 10 classified
+  const flPool = order.filter(d => !d.dnf).slice(0, 10);
+  const flDriver = flPool[Math.floor(Math.random() * flPool.length)].code;
+
+  return { order, lead, flDriver };
+}
+
+// ---------- DK scoring ----------
+function scoreDriver(d, race) {
+  const finishPts = SC_D.finishing_position[d.finish] ?? 0;
+  const diffPts = (d.grid - d.finish) * SC_D.place_differential_per_position;
+  const detail = {};
+  if (race.flDriver === d.code) detail["Fastest lap"] = SC_D.fastest_lap;
+  const led = race.lead[d.code] || 0;
+  if (led > 0) detail[`Led ${led} laps`] = led * SC_D.laps_led_per_lap;
+  if (d.lapsDone >= TOTAL_LAPS * 0.9) detail["Classified"] = SC_D.classified_finish;
+  const mate = race.order.find(o => o.team === d.team && o.code !== d.code);
+  if (mate && d.finish < mate.finish) detail["Beat teammate"] = SC_D.defeated_teammate;
+  const bonus = Object.values(detail).reduce((s, v) => s + v, 0);
+  return {
+    finish: finishPts, diff: diffPts, bonus, bonusDetail: detail,
+    total: finishPts + diffPts + bonus,
+  };
+}
+function scoreConstructor(cid, race) {
+  const cars = race.order.filter(d => d.team === cid);
+  let finish = 0;
+  for (const car of cars) finish += SC_C.finishing_position[car.finish] ?? 0;
+  const detail = {};
+  if (cars.some(c => c.code === race.flDriver)) detail["Fastest lap"] = SC_C.fastest_lap;
+  const led = cars.reduce((s, c) => s + (race.lead[c.code] || 0), 0);
+  if (led > 0) detail[`Led ${led} laps`] = led * SC_C.laps_led_per_lap;
+  if (cars.length === 2 && cars.every(c => c.lapsDone >= TOTAL_LAPS * 0.9))
+    detail["Both classified"] = SC_C.both_cars_classified;
+  if (cars.length === 2 && cars.every(c => c.finish <= 10))
+    detail["Both in points"] = SC_C.both_cars_in_points;
+  if (cars.length === 2 && cars.every(c => c.finish <= 3))
+    detail["Both on podium"] = SC_C.both_cars_on_podium;
+  const bonus = Object.values(detail).reduce((s, v) => s + v, 0);
+  return { finish, diff: 0, bonus, bonusDetail: detail, total: finish + bonus };
+}
+
+// ---------- results rendering ----------
+function runSim() {
+  const race = simulateRace();
+  simCount++;
+
+  const picks = [];
+  const cptD = race.order.find(d => d.code === lineup.cpt);
+  const cptScore = scoreDriver(cptD, race);
+  picks.push({ label: "CPT", name: cptD.name, mult: CPT_MULT, s: cptScore, dnf: cptD.dnf, cls: "" });
+  for (const code of lineup.drivers) {
+    const dd = race.order.find(d => d.code === code);
+    picks.push({ label: "D", name: dd.name, mult: 1, s: scoreDriver(dd, race), dnf: dd.dnf, cls: "d" });
+  }
+  const cs = scoreConstructor(lineup.constructor, race);
+  picks.push({ label: "CNSTR", name: byCid[lineup.constructor].name, mult: 1, s: cs, dnf: false, cls: "c" });
+
+  const total = picks.reduce((s, p) => s + p.s.total * p.mult, 0);
+
+  document.getElementById("total-score").textContent = total.toFixed(1);
+  document.getElementById("sim-count").textContent =
+    `Simulation #${simCount} · ${D.raceName} · random outcome from driver form`;
+
+  document.querySelector("#breakdown tbody").innerHTML = picks.map(p => {
+    const bonusItems = Object.entries(p.s.bonusDetail || {})
+      .map(([k, v]) => `${k} +${v % 1 ? v.toFixed(2) : v}`)
+      .join("<br>") || "—";
+    return `<tr>
+      <td><span class="slot-tag ${p.cls}">${p.label}</span>${p.name}${p.dnf ? ' <span class="dnf">DNF</span>' : ""}</td>
+      <td class="num">${p.s.finish.toFixed(0)}</td>
+      <td class="num ${p.s.diff > 0 ? "delta-up" : p.s.diff < 0 ? "delta-dn" : ""}">${p.s.diff > 0 ? "+" : ""}${p.s.diff.toFixed(0)}</td>
+      <td style="font-size:12px;color:var(--text-secondary)">${bonusItems}</td>
+      <td class="num">${p.mult !== 1 ? "×" + p.mult : ""}</td>
+      <td class="num" style="font-weight:600">${(p.s.total * p.mult).toFixed(1)}</td>
+    </tr>`;
+  }).join("");
+
+  const inMyLineup = new Set([lineup.cpt, ...lineup.drivers]);
+  document.querySelector("#classification tbody").innerHTML = race.order.map(d => {
+    const sc = scoreDriver(d, race);
+    const delta = d.grid - d.finish;
+    const mine = inMyLineup.has(d.code);
+    return `<tr style="${mine ? "font-weight:600" : ""}">
+      <td class="num"><span class="pos-badge">${d.dnf ? '<span class="dnf">DNF</span>' : "P" + d.finish}</span></td>
+      <td>${teamDot(d.team)}${d.name}${mine ? " ★" : ""}</td>
+      <td class="num">${d.grid}</td>
+      <td class="num ${delta > 0 ? "delta-up" : delta < 0 ? "delta-dn" : ""}">${delta > 0 ? "+" + delta : delta}</td>
+      <td class="num">${sc.total.toFixed(1)}</td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("results").style.display = "block";
+  document.getElementById("results").scrollIntoView({ behavior: "smooth" });
+}
+
+// ---------- init ----------
+document.getElementById("race-name").textContent = D.raceName;
+document.getElementById("race-title").textContent = "F1 DFS Lineup Simulator — " + D.raceName;
+document.getElementById("sim-btn").onclick = runSim;
+document.getElementById("resim-btn").onclick = runSim;
+function bindSort(selector, stateKey) {
+  document.querySelectorAll(selector).forEach(th => {
+    th.onclick = () => {
+      const s = sortState[stateKey], k = th.dataset.k;
+      if (s.key === k) s.asc = !s.asc; else { s.key = k; s.asc = false; }
+      renderPool();
+    };
+  });
+}
+bindSort("th.sortable", "pool");
+bindSort("th.csortable", "cpool");
+render();
+</script>
+</body>
+</html>

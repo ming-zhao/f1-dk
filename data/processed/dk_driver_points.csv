@@ -1,0 +1,1597 @@
+year,round,race_name,driver_id,driver_code,constructor_id,grid,finish_position,pts_finish,pts_place_diff,pts_fastest_lap,pts_classified,pts_defeated_teammate,dk_points_total
+2023,1,Bahrain Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,0,1,5,46
+2023,1,Bahrain Grand Prix,perez,PER,red_bull,2,2,37,0,0,1,0,38
+2023,1,Bahrain Grand Prix,alonso,ALO,aston_martin,5,3,35,2,0,1,5,43
+2023,1,Bahrain Grand Prix,sainz,SAI,ferrari,4,4,32,0,0,1,5,38
+2023,1,Bahrain Grand Prix,hamilton,HAM,mercedes,7,5,30,2,0,1,5,38
+2023,1,Bahrain Grand Prix,stroll,STR,aston_martin,8,6,27,2,0,1,0,30
+2023,1,Bahrain Grand Prix,russell,RUS,mercedes,6,7,25,-1,0,1,0,25
+2023,1,Bahrain Grand Prix,bottas,BOT,alfa,12,8,23,4,0,1,5,33
+2023,1,Bahrain Grand Prix,gasly,GAS,alpine,20,9,22,11,0,1,5,39
+2023,1,Bahrain Grand Prix,albon,ALB,williams,15,10,20,5,0,1,5,31
+2023,1,Bahrain Grand Prix,tsunoda,TSU,alphatauri,14,11,17,3,0,1,5,26
+2023,1,Bahrain Grand Prix,sargeant,SAR,williams,16,12,15,4,0,1,0,20
+2023,1,Bahrain Grand Prix,kevin_magnussen,MAG,haas,17,13,13,4,0,1,5,23
+2023,1,Bahrain Grand Prix,de_vries,DEV,alphatauri,19,14,12,5,0,1,0,18
+2023,1,Bahrain Grand Prix,hulkenberg,HUL,haas,10,15,10,-5,0,1,0,6
+2023,1,Bahrain Grand Prix,zhou,ZHO,alfa,13,16,7,-3,3,1,0,8
+2023,1,Bahrain Grand Prix,norris,NOR,mclaren,11,17,5,-6,0,1,5,5
+2023,1,Bahrain Grand Prix,ocon,OCO,alpine,9,18,4,-9,0,0,0,-5
+2023,1,Bahrain Grand Prix,leclerc,LEC,ferrari,3,19,3,-16,0,0,0,-13
+2023,1,Bahrain Grand Prix,piastri,PIA,mclaren,18,20,2,-2,0,0,0,0
+2023,2,Saudi Arabian Grand Prix,perez,PER,red_bull,1,1,40,0,0,1,5,46
+2023,2,Saudi Arabian Grand Prix,max_verstappen,VER,red_bull,15,2,37,13,3,1,0,54
+2023,2,Saudi Arabian Grand Prix,alonso,ALO,aston_martin,2,3,35,-1,0,1,5,40
+2023,2,Saudi Arabian Grand Prix,russell,RUS,mercedes,3,4,32,-1,0,1,5,37
+2023,2,Saudi Arabian Grand Prix,hamilton,HAM,mercedes,7,5,30,2,0,1,0,33
+2023,2,Saudi Arabian Grand Prix,sainz,SAI,ferrari,4,6,27,-2,0,1,5,31
+2023,2,Saudi Arabian Grand Prix,leclerc,LEC,ferrari,12,7,25,5,0,1,0,31
+2023,2,Saudi Arabian Grand Prix,ocon,OCO,alpine,6,8,23,-2,0,1,5,27
+2023,2,Saudi Arabian Grand Prix,gasly,GAS,alpine,9,9,22,0,0,1,0,23
+2023,2,Saudi Arabian Grand Prix,kevin_magnussen,MAG,haas,13,10,20,3,0,1,5,29
+2023,2,Saudi Arabian Grand Prix,tsunoda,TSU,alphatauri,16,11,17,5,0,1,5,28
+2023,2,Saudi Arabian Grand Prix,hulkenberg,HUL,haas,10,12,15,-2,0,1,0,14
+2023,2,Saudi Arabian Grand Prix,zhou,ZHO,alfa,11,13,13,-2,0,1,5,17
+2023,2,Saudi Arabian Grand Prix,de_vries,DEV,alphatauri,18,14,12,4,0,1,0,17
+2023,2,Saudi Arabian Grand Prix,piastri,PIA,mclaren,8,15,10,-7,0,1,5,9
+2023,2,Saudi Arabian Grand Prix,sargeant,SAR,williams,20,16,7,4,0,1,5,17
+2023,2,Saudi Arabian Grand Prix,norris,NOR,mclaren,19,17,5,2,0,1,0,8
+2023,2,Saudi Arabian Grand Prix,bottas,BOT,alfa,14,18,4,-4,0,1,0,1
+2023,2,Saudi Arabian Grand Prix,albon,ALB,williams,17,19,3,-2,0,0,0,1
+2023,2,Saudi Arabian Grand Prix,stroll,STR,aston_martin,5,20,2,-15,0,0,0,-13
+2023,3,Australian Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,0,1,5,46
+2023,3,Australian Grand Prix,hamilton,HAM,mercedes,3,2,37,1,0,1,5,44
+2023,3,Australian Grand Prix,alonso,ALO,aston_martin,4,3,35,1,0,1,5,42
+2023,3,Australian Grand Prix,stroll,STR,aston_martin,6,4,32,2,0,1,0,35
+2023,3,Australian Grand Prix,perez,PER,red_bull,20,5,30,15,3,1,0,49
+2023,3,Australian Grand Prix,norris,NOR,mclaren,13,6,27,7,0,1,5,40
+2023,3,Australian Grand Prix,hulkenberg,HUL,haas,10,7,25,3,0,1,5,34
+2023,3,Australian Grand Prix,piastri,PIA,mclaren,16,8,23,8,0,1,0,32
+2023,3,Australian Grand Prix,zhou,ZHO,alfa,17,9,22,8,0,1,5,36
+2023,3,Australian Grand Prix,tsunoda,TSU,alphatauri,12,10,20,2,0,1,5,28
+2023,3,Australian Grand Prix,bottas,BOT,alfa,19,11,17,8,0,1,0,26
+2023,3,Australian Grand Prix,sainz,SAI,ferrari,5,12,15,-7,0,1,5,14
+2023,3,Australian Grand Prix,gasly,GAS,alpine,9,13,13,-4,0,1,5,15
+2023,3,Australian Grand Prix,ocon,OCO,alpine,11,14,12,-3,0,1,0,10
+2023,3,Australian Grand Prix,de_vries,DEV,alphatauri,15,15,10,0,0,1,0,11
+2023,3,Australian Grand Prix,sargeant,SAR,williams,18,16,7,2,0,1,5,15
+2023,3,Australian Grand Prix,kevin_magnussen,MAG,haas,14,17,5,-3,0,0,0,2
+2023,3,Australian Grand Prix,russell,RUS,mercedes,2,18,4,-16,0,0,0,-12
+2023,3,Australian Grand Prix,albon,ALB,williams,8,19,3,-11,0,0,0,-8
+2023,3,Australian Grand Prix,leclerc,LEC,ferrari,7,20,2,-13,0,0,0,-11
+2023,4,Azerbaijan Grand Prix,perez,PER,red_bull,3,1,40,2,0,1,5,48
+2023,4,Azerbaijan Grand Prix,max_verstappen,VER,red_bull,2,2,37,0,0,1,0,38
+2023,4,Azerbaijan Grand Prix,leclerc,LEC,ferrari,1,3,35,-2,0,1,5,39
+2023,4,Azerbaijan Grand Prix,alonso,ALO,aston_martin,6,4,32,2,0,1,5,40
+2023,4,Azerbaijan Grand Prix,sainz,SAI,ferrari,4,5,30,-1,0,1,0,30
+2023,4,Azerbaijan Grand Prix,hamilton,HAM,mercedes,5,6,27,-1,0,1,5,32
+2023,4,Azerbaijan Grand Prix,stroll,STR,aston_martin,9,7,25,2,0,1,0,28
+2023,4,Azerbaijan Grand Prix,russell,RUS,mercedes,11,8,23,3,3,1,0,30
+2023,4,Azerbaijan Grand Prix,norris,NOR,mclaren,7,9,22,-2,0,1,5,26
+2023,4,Azerbaijan Grand Prix,tsunoda,TSU,alphatauri,8,10,20,-2,0,1,5,24
+2023,4,Azerbaijan Grand Prix,piastri,PIA,mclaren,10,11,17,-1,0,1,0,17
+2023,4,Azerbaijan Grand Prix,albon,ALB,williams,12,12,15,0,0,1,5,21
+2023,4,Azerbaijan Grand Prix,kevin_magnussen,MAG,haas,16,13,13,3,0,1,5,22
+2023,4,Azerbaijan Grand Prix,gasly,GAS,alpine,17,14,12,3,0,1,5,21
+2023,4,Azerbaijan Grand Prix,ocon,OCO,alpine,19,15,10,4,0,1,0,15
+2023,4,Azerbaijan Grand Prix,sargeant,SAR,williams,14,16,7,-2,0,1,0,6
+2023,4,Azerbaijan Grand Prix,hulkenberg,HUL,haas,20,17,5,3,0,1,0,9
+2023,4,Azerbaijan Grand Prix,bottas,BOT,alfa,13,18,4,-5,0,1,5,5
+2023,4,Azerbaijan Grand Prix,zhou,ZHO,alfa,15,19,3,-4,0,0,0,-1
+2023,4,Azerbaijan Grand Prix,de_vries,DEV,alphatauri,18,20,2,-2,0,0,0,0
+2023,5,Miami Grand Prix,max_verstappen,VER,red_bull,9,1,40,8,3,1,5,57
+2023,5,Miami Grand Prix,perez,PER,red_bull,1,2,37,-1,0,1,0,37
+2023,5,Miami Grand Prix,alonso,ALO,aston_martin,2,3,35,-1,0,1,5,40
+2023,5,Miami Grand Prix,russell,RUS,mercedes,6,4,32,2,0,1,5,40
+2023,5,Miami Grand Prix,sainz,SAI,ferrari,3,5,30,-2,0,1,5,34
+2023,5,Miami Grand Prix,hamilton,HAM,mercedes,13,6,27,7,0,1,0,35
+2023,5,Miami Grand Prix,leclerc,LEC,ferrari,7,7,25,0,0,1,0,26
+2023,5,Miami Grand Prix,gasly,GAS,alpine,5,8,23,-3,0,1,5,26
+2023,5,Miami Grand Prix,ocon,OCO,alpine,8,9,22,-1,0,1,0,22
+2023,5,Miami Grand Prix,kevin_magnussen,MAG,haas,4,10,20,-6,0,1,5,20
+2023,5,Miami Grand Prix,tsunoda,TSU,alphatauri,17,11,17,6,0,1,5,29
+2023,5,Miami Grand Prix,stroll,STR,aston_martin,18,12,15,6,0,1,0,22
+2023,5,Miami Grand Prix,bottas,BOT,alfa,10,13,13,-3,0,1,5,16
+2023,5,Miami Grand Prix,albon,ALB,williams,11,14,12,-3,0,1,5,15
+2023,5,Miami Grand Prix,hulkenberg,HUL,haas,12,15,10,-3,0,1,0,8
+2023,5,Miami Grand Prix,zhou,ZHO,alfa,14,16,7,-2,0,1,0,6
+2023,5,Miami Grand Prix,norris,NOR,mclaren,16,17,5,-1,0,1,5,10
+2023,5,Miami Grand Prix,de_vries,DEV,alphatauri,15,18,4,-3,0,1,0,2
+2023,5,Miami Grand Prix,piastri,PIA,mclaren,19,19,3,0,0,1,0,4
+2023,5,Miami Grand Prix,sargeant,SAR,williams,20,20,2,0,0,1,0,3
+2023,6,Monaco Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,0,1,5,46
+2023,6,Monaco Grand Prix,alonso,ALO,aston_martin,2,2,37,0,0,1,5,43
+2023,6,Monaco Grand Prix,ocon,OCO,alpine,3,3,35,0,0,1,5,41
+2023,6,Monaco Grand Prix,hamilton,HAM,mercedes,5,4,32,1,3,1,5,42
+2023,6,Monaco Grand Prix,russell,RUS,mercedes,8,5,30,3,0,1,0,34
+2023,6,Monaco Grand Prix,leclerc,LEC,ferrari,6,6,27,0,0,1,5,33
+2023,6,Monaco Grand Prix,gasly,GAS,alpine,7,7,25,0,0,1,0,26
+2023,6,Monaco Grand Prix,sainz,SAI,ferrari,4,8,23,-4,0,1,0,20
+2023,6,Monaco Grand Prix,norris,NOR,mclaren,10,9,22,1,0,1,5,29
+2023,6,Monaco Grand Prix,piastri,PIA,mclaren,11,10,20,1,0,1,0,22
+2023,6,Monaco Grand Prix,bottas,BOT,alfa,15,11,17,4,0,1,5,27
+2023,6,Monaco Grand Prix,de_vries,DEV,alphatauri,12,12,15,0,0,1,5,21
+2023,6,Monaco Grand Prix,zhou,ZHO,alfa,19,13,13,6,0,1,0,20
+2023,6,Monaco Grand Prix,albon,ALB,williams,13,14,12,-1,0,1,5,17
+2023,6,Monaco Grand Prix,tsunoda,TSU,alphatauri,9,15,10,-6,0,1,0,5
+2023,6,Monaco Grand Prix,perez,PER,red_bull,20,16,7,4,0,1,0,12
+2023,6,Monaco Grand Prix,hulkenberg,HUL,haas,18,17,5,1,0,1,5,12
+2023,6,Monaco Grand Prix,sargeant,SAR,williams,16,18,4,-2,0,1,0,3
+2023,6,Monaco Grand Prix,kevin_magnussen,MAG,haas,17,19,3,-2,0,0,0,1
+2023,6,Monaco Grand Prix,stroll,STR,aston_martin,14,20,2,-6,0,0,0,-4
+2023,7,Spanish Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,3,1,5,49
+2023,7,Spanish Grand Prix,hamilton,HAM,mercedes,4,2,37,2,0,1,5,45
+2023,7,Spanish Grand Prix,russell,RUS,mercedes,12,3,35,9,0,1,0,45
+2023,7,Spanish Grand Prix,perez,PER,red_bull,11,4,32,7,0,1,0,40
+2023,7,Spanish Grand Prix,sainz,SAI,ferrari,2,5,30,-3,0,1,5,33
+2023,7,Spanish Grand Prix,stroll,STR,aston_martin,5,6,27,-1,0,1,5,32
+2023,7,Spanish Grand Prix,alonso,ALO,aston_martin,8,7,25,1,0,1,0,27
+2023,7,Spanish Grand Prix,ocon,OCO,alpine,6,8,23,-2,0,1,5,27
+2023,7,Spanish Grand Prix,zhou,ZHO,alfa,13,9,22,4,0,1,5,32
+2023,7,Spanish Grand Prix,gasly,GAS,alpine,10,10,20,0,0,1,0,21
+2023,7,Spanish Grand Prix,leclerc,LEC,ferrari,19,11,17,8,0,1,0,26
+2023,7,Spanish Grand Prix,tsunoda,TSU,alphatauri,15,12,15,3,0,1,5,24
+2023,7,Spanish Grand Prix,piastri,PIA,mclaren,9,13,13,-4,0,1,5,15
+2023,7,Spanish Grand Prix,de_vries,DEV,alphatauri,14,14,12,0,0,1,0,13
+2023,7,Spanish Grand Prix,hulkenberg,HUL,haas,7,15,10,-8,0,1,5,8
+2023,7,Spanish Grand Prix,albon,ALB,williams,18,16,7,2,0,1,5,15
+2023,7,Spanish Grand Prix,norris,NOR,mclaren,3,17,5,-14,0,1,0,-8
+2023,7,Spanish Grand Prix,kevin_magnussen,MAG,haas,17,18,4,-1,0,1,0,4
+2023,7,Spanish Grand Prix,bottas,BOT,alfa,16,19,3,-3,0,1,0,1
+2023,7,Spanish Grand Prix,sargeant,SAR,williams,20,20,2,0,0,1,0,3
+2023,8,Canadian Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,0,1,5,46
+2023,8,Canadian Grand Prix,alonso,ALO,aston_martin,2,2,37,0,0,1,5,43
+2023,8,Canadian Grand Prix,hamilton,HAM,mercedes,3,3,35,0,0,1,5,41
+2023,8,Canadian Grand Prix,leclerc,LEC,ferrari,10,4,32,6,0,1,5,44
+2023,8,Canadian Grand Prix,sainz,SAI,ferrari,11,5,30,6,0,1,0,37
+2023,8,Canadian Grand Prix,perez,PER,red_bull,12,6,27,6,3,1,0,37
+2023,8,Canadian Grand Prix,albon,ALB,williams,9,7,25,2,0,1,5,33
+2023,8,Canadian Grand Prix,ocon,OCO,alpine,6,8,23,-2,0,1,5,27
+2023,8,Canadian Grand Prix,stroll,STR,aston_martin,16,9,22,7,0,1,0,30
+2023,8,Canadian Grand Prix,bottas,BOT,alfa,14,10,20,4,0,1,5,30
+2023,8,Canadian Grand Prix,piastri,PIA,mclaren,8,11,17,-3,0,1,5,20
+2023,8,Canadian Grand Prix,gasly,GAS,alpine,15,12,15,3,0,1,0,19
+2023,8,Canadian Grand Prix,norris,NOR,mclaren,7,13,13,-6,0,1,0,8
+2023,8,Canadian Grand Prix,tsunoda,TSU,alphatauri,19,14,12,5,0,1,5,23
+2023,8,Canadian Grand Prix,hulkenberg,HUL,haas,5,15,10,-10,0,1,5,6
+2023,8,Canadian Grand Prix,zhou,ZHO,alfa,20,16,7,4,0,1,0,12
+2023,8,Canadian Grand Prix,kevin_magnussen,MAG,haas,13,17,5,-4,0,1,0,2
+2023,8,Canadian Grand Prix,de_vries,DEV,alphatauri,17,18,4,-1,0,1,0,4
+2023,8,Canadian Grand Prix,russell,RUS,mercedes,4,19,3,-15,0,0,0,-12
+2023,8,Canadian Grand Prix,sargeant,SAR,williams,18,20,2,-2,0,0,0,0
+2023,9,Austrian Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,3,1,5,49
+2023,9,Austrian Grand Prix,leclerc,LEC,ferrari,2,2,37,0,0,1,5,43
+2023,9,Austrian Grand Prix,perez,PER,red_bull,15,3,35,12,0,1,0,48
+2023,9,Austrian Grand Prix,norris,NOR,mclaren,4,4,32,0,0,1,5,38
+2023,9,Austrian Grand Prix,alonso,ALO,aston_martin,7,5,30,2,0,1,5,38
+2023,9,Austrian Grand Prix,sainz,SAI,ferrari,3,6,27,-3,0,1,0,25
+2023,9,Austrian Grand Prix,russell,RUS,mercedes,11,7,25,4,0,1,5,35
+2023,9,Austrian Grand Prix,hamilton,HAM,mercedes,5,8,23,-3,0,1,0,21
+2023,9,Austrian Grand Prix,stroll,STR,aston_martin,6,9,22,-3,0,1,0,20
+2023,9,Austrian Grand Prix,gasly,GAS,alpine,9,10,20,-1,0,1,5,25
+2023,9,Austrian Grand Prix,albon,ALB,williams,10,11,17,-1,0,1,5,22
+2023,9,Austrian Grand Prix,zhou,ZHO,alfa,17,12,15,5,0,1,5,26
+2023,9,Austrian Grand Prix,sargeant,SAR,williams,18,13,13,5,0,1,0,19
+2023,9,Austrian Grand Prix,ocon,OCO,alpine,12,14,12,-2,0,1,0,11
+2023,9,Austrian Grand Prix,bottas,BOT,alfa,14,15,10,-1,0,1,0,10
+2023,9,Austrian Grand Prix,piastri,PIA,mclaren,13,16,7,-3,0,1,0,5
+2023,9,Austrian Grand Prix,de_vries,DEV,alphatauri,20,17,5,3,0,1,5,14
+2023,9,Austrian Grand Prix,kevin_magnussen,MAG,haas,19,18,4,1,0,1,5,11
+2023,9,Austrian Grand Prix,tsunoda,TSU,alphatauri,16,19,3,-3,0,1,0,1
+2023,9,Austrian Grand Prix,hulkenberg,HUL,haas,8,20,2,-12,0,0,0,-10
+2023,10,British Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,3,1,5,49
+2023,10,British Grand Prix,norris,NOR,mclaren,2,2,37,0,0,1,5,43
+2023,10,British Grand Prix,hamilton,HAM,mercedes,7,3,35,4,0,1,5,45
+2023,10,British Grand Prix,piastri,PIA,mclaren,3,4,32,-1,0,1,0,32
+2023,10,British Grand Prix,russell,RUS,mercedes,6,5,30,1,0,1,0,32
+2023,10,British Grand Prix,perez,PER,red_bull,15,6,27,9,0,1,0,37
+2023,10,British Grand Prix,alonso,ALO,aston_martin,9,7,25,2,0,1,5,33
+2023,10,British Grand Prix,albon,ALB,williams,8,8,23,0,0,1,5,29
+2023,10,British Grand Prix,leclerc,LEC,ferrari,4,9,22,-5,0,1,5,23
+2023,10,British Grand Prix,sainz,SAI,ferrari,5,10,20,-5,0,1,0,16
+2023,10,British Grand Prix,sargeant,SAR,williams,14,11,17,3,0,1,0,21
+2023,10,British Grand Prix,bottas,BOT,alfa,20,12,15,8,0,1,5,29
+2023,10,British Grand Prix,hulkenberg,HUL,haas,11,13,13,-2,0,1,5,17
+2023,10,British Grand Prix,stroll,STR,aston_martin,12,14,12,-2,0,1,0,11
+2023,10,British Grand Prix,zhou,ZHO,alfa,17,15,10,2,0,1,0,13
+2023,10,British Grand Prix,tsunoda,TSU,alphatauri,16,16,7,0,0,1,5,13
+2023,10,British Grand Prix,de_vries,DEV,alphatauri,18,17,5,1,0,1,0,7
+2023,10,British Grand Prix,gasly,GAS,alpine,10,18,4,-8,0,0,5,1
+2023,10,British Grand Prix,kevin_magnussen,MAG,haas,19,19,3,0,0,0,0,3
+2023,10,British Grand Prix,ocon,OCO,alpine,13,20,2,-7,0,0,0,-5
+2023,11,Hungarian Grand Prix,max_verstappen,VER,red_bull,2,1,40,1,3,1,5,50
+2023,11,Hungarian Grand Prix,norris,NOR,mclaren,3,2,37,1,0,1,5,44
+2023,11,Hungarian Grand Prix,perez,PER,red_bull,9,3,35,6,0,1,0,42
+2023,11,Hungarian Grand Prix,hamilton,HAM,mercedes,1,4,32,-3,0,1,5,35
+2023,11,Hungarian Grand Prix,piastri,PIA,mclaren,4,5,30,-1,0,1,0,30
+2023,11,Hungarian Grand Prix,russell,RUS,mercedes,18,6,27,12,0,1,0,40
+2023,11,Hungarian Grand Prix,leclerc,LEC,ferrari,6,7,25,-1,0,1,5,30
+2023,11,Hungarian Grand Prix,sainz,SAI,ferrari,11,8,23,3,0,1,0,27
+2023,11,Hungarian Grand Prix,alonso,ALO,aston_martin,8,9,22,-1,0,1,5,27
+2023,11,Hungarian Grand Prix,stroll,STR,aston_martin,14,10,20,4,0,1,0,25
+2023,11,Hungarian Grand Prix,albon,ALB,williams,16,11,17,5,0,1,5,28
+2023,11,Hungarian Grand Prix,bottas,BOT,alfa,7,12,15,-5,0,1,5,16
+2023,11,Hungarian Grand Prix,ricciardo,RIC,alphatauri,13,13,13,0,0,1,5,19
+2023,11,Hungarian Grand Prix,hulkenberg,HUL,haas,10,14,12,-4,0,1,5,14
+2023,11,Hungarian Grand Prix,tsunoda,TSU,alphatauri,17,15,10,2,0,1,0,13
+2023,11,Hungarian Grand Prix,zhou,ZHO,alfa,5,16,7,-11,0,1,0,-3
+2023,11,Hungarian Grand Prix,kevin_magnussen,MAG,haas,19,17,5,2,0,1,0,8
+2023,11,Hungarian Grand Prix,sargeant,SAR,williams,20,18,4,2,0,1,0,7
+2023,11,Hungarian Grand Prix,ocon,OCO,alpine,12,19,3,-7,0,0,5,1
+2023,11,Hungarian Grand Prix,gasly,GAS,alpine,15,20,2,-5,0,0,0,-3
+2023,12,Belgian Grand Prix,max_verstappen,VER,red_bull,6,1,40,5,0,1,5,51
+2023,12,Belgian Grand Prix,perez,PER,red_bull,2,2,37,0,0,1,0,38
+2023,12,Belgian Grand Prix,leclerc,LEC,ferrari,1,3,35,-2,0,1,5,39
+2023,12,Belgian Grand Prix,hamilton,HAM,mercedes,3,4,32,-1,3,1,5,40
+2023,12,Belgian Grand Prix,alonso,ALO,aston_martin,9,5,30,4,0,1,5,40
+2023,12,Belgian Grand Prix,russell,RUS,mercedes,8,6,27,2,0,1,0,30
+2023,12,Belgian Grand Prix,norris,NOR,mclaren,7,7,25,0,0,1,5,31
+2023,12,Belgian Grand Prix,ocon,OCO,alpine,14,8,23,6,0,1,5,35
+2023,12,Belgian Grand Prix,stroll,STR,aston_martin,10,9,22,1,0,1,0,24
+2023,12,Belgian Grand Prix,tsunoda,TSU,alphatauri,11,10,20,1,0,1,5,27
+2023,12,Belgian Grand Prix,gasly,GAS,alpine,12,11,17,1,0,1,0,19
+2023,12,Belgian Grand Prix,bottas,BOT,alfa,13,12,15,1,0,1,5,22
+2023,12,Belgian Grand Prix,zhou,ZHO,alfa,17,13,13,4,0,1,0,18
+2023,12,Belgian Grand Prix,albon,ALB,williams,15,14,12,1,0,1,5,19
+2023,12,Belgian Grand Prix,kevin_magnussen,MAG,haas,16,15,10,1,0,1,5,17
+2023,12,Belgian Grand Prix,ricciardo,RIC,alphatauri,19,16,7,3,0,1,0,11
+2023,12,Belgian Grand Prix,sargeant,SAR,williams,18,17,5,1,0,1,0,7
+2023,12,Belgian Grand Prix,hulkenberg,HUL,haas,20,18,4,2,0,1,0,7
+2023,12,Belgian Grand Prix,sainz,SAI,ferrari,4,19,3,-15,0,0,0,-12
+2023,12,Belgian Grand Prix,piastri,PIA,mclaren,5,20,2,-15,0,0,0,-13
+2023,13,Dutch Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,0,1,5,46
+2023,13,Dutch Grand Prix,alonso,ALO,aston_martin,5,2,37,3,3,1,5,49
+2023,13,Dutch Grand Prix,gasly,GAS,alpine,12,3,35,9,0,1,5,50
+2023,13,Dutch Grand Prix,perez,PER,red_bull,7,4,32,3,0,1,0,36
+2023,13,Dutch Grand Prix,sainz,SAI,ferrari,6,5,30,1,0,1,5,37
+2023,13,Dutch Grand Prix,hamilton,HAM,mercedes,13,6,27,7,0,1,5,40
+2023,13,Dutch Grand Prix,norris,NOR,mclaren,2,7,25,-5,0,1,5,26
+2023,13,Dutch Grand Prix,albon,ALB,williams,4,8,23,-4,0,1,5,25
+2023,13,Dutch Grand Prix,piastri,PIA,mclaren,8,9,22,-1,0,1,0,22
+2023,13,Dutch Grand Prix,ocon,OCO,alpine,16,10,20,6,0,1,0,27
+2023,13,Dutch Grand Prix,stroll,STR,aston_martin,11,11,17,0,0,1,0,18
+2023,13,Dutch Grand Prix,hulkenberg,HUL,haas,14,12,15,2,0,1,5,23
+2023,13,Dutch Grand Prix,lawson,LAW,alphatauri,19,13,13,6,0,1,5,25
+2023,13,Dutch Grand Prix,bottas,BOT,alfa,18,14,12,4,0,1,5,22
+2023,13,Dutch Grand Prix,tsunoda,TSU,alphatauri,17,15,10,2,0,1,0,13
+2023,13,Dutch Grand Prix,kevin_magnussen,MAG,haas,0,16,7,4,0,1,0,12
+2023,13,Dutch Grand Prix,russell,RUS,mercedes,3,17,5,-14,0,1,0,-8
+2023,13,Dutch Grand Prix,zhou,ZHO,alfa,15,18,4,-3,0,0,0,1
+2023,13,Dutch Grand Prix,leclerc,LEC,ferrari,9,19,3,-10,0,0,0,-7
+2023,13,Dutch Grand Prix,sargeant,SAR,williams,10,20,2,-10,0,0,0,-8
+2023,14,Italian Grand Prix,max_verstappen,VER,red_bull,2,1,40,1,0,1,5,47
+2023,14,Italian Grand Prix,perez,PER,red_bull,5,2,37,3,0,1,0,41
+2023,14,Italian Grand Prix,sainz,SAI,ferrari,1,3,35,-2,0,1,5,39
+2023,14,Italian Grand Prix,leclerc,LEC,ferrari,3,4,32,-1,0,1,0,32
+2023,14,Italian Grand Prix,russell,RUS,mercedes,4,5,30,-1,0,1,5,35
+2023,14,Italian Grand Prix,hamilton,HAM,mercedes,8,6,27,2,0,1,0,30
+2023,14,Italian Grand Prix,albon,ALB,williams,6,7,25,-1,0,1,5,30
+2023,14,Italian Grand Prix,norris,NOR,mclaren,9,8,23,1,0,1,5,30
+2023,14,Italian Grand Prix,alonso,ALO,aston_martin,10,9,22,1,0,1,5,29
+2023,14,Italian Grand Prix,bottas,BOT,alfa,14,10,20,4,0,1,5,30
+2023,14,Italian Grand Prix,lawson,LAW,alphatauri,12,11,17,1,0,1,5,24
+2023,14,Italian Grand Prix,piastri,PIA,mclaren,7,12,15,-5,3,1,0,14
+2023,14,Italian Grand Prix,sargeant,SAR,williams,15,13,13,2,0,1,0,16
+2023,14,Italian Grand Prix,zhou,ZHO,alfa,16,14,12,2,0,1,0,15
+2023,14,Italian Grand Prix,gasly,GAS,alpine,17,15,10,2,0,1,5,18
+2023,14,Italian Grand Prix,stroll,STR,aston_martin,20,16,7,4,0,1,0,12
+2023,14,Italian Grand Prix,hulkenberg,HUL,haas,13,17,5,-4,0,1,5,7
+2023,14,Italian Grand Prix,kevin_magnussen,MAG,haas,19,18,4,1,0,1,0,6
+2023,14,Italian Grand Prix,ocon,OCO,alpine,18,19,3,-1,0,0,0,2
+2023,14,Italian Grand Prix,tsunoda,TSU,alphatauri,11,20,2,-9,0,0,0,-7
+2023,15,Singapore Grand Prix,sainz,SAI,ferrari,1,1,40,0,0,1,5,46
+2023,15,Singapore Grand Prix,norris,NOR,mclaren,4,2,37,2,0,1,5,45
+2023,15,Singapore Grand Prix,hamilton,HAM,mercedes,5,3,35,2,3,1,5,46
+2023,15,Singapore Grand Prix,leclerc,LEC,ferrari,3,4,32,-1,0,1,0,32
+2023,15,Singapore Grand Prix,max_verstappen,VER,red_bull,11,5,30,6,0,1,5,42
+2023,15,Singapore Grand Prix,gasly,GAS,alpine,12,6,27,6,0,1,5,39
+2023,15,Singapore Grand Prix,piastri,PIA,mclaren,17,7,25,10,0,1,0,36
+2023,15,Singapore Grand Prix,perez,PER,red_bull,13,8,23,5,0,1,0,29
+2023,15,Singapore Grand Prix,lawson,LAW,alphatauri,10,9,22,1,0,1,5,29
+2023,15,Singapore Grand Prix,kevin_magnussen,MAG,haas,6,10,20,-4,0,1,5,22
+2023,15,Singapore Grand Prix,albon,ALB,williams,14,11,17,3,0,1,5,26
+2023,15,Singapore Grand Prix,zhou,ZHO,alfa,19,12,15,7,0,1,5,28
+2023,15,Singapore Grand Prix,hulkenberg,HUL,haas,9,13,13,-4,0,1,0,10
+2023,15,Singapore Grand Prix,sargeant,SAR,williams,18,14,12,4,0,1,0,17
+2023,15,Singapore Grand Prix,alonso,ALO,aston_martin,7,15,10,-8,0,1,5,8
+2023,15,Singapore Grand Prix,russell,RUS,mercedes,2,16,7,-14,0,1,0,-6
+2023,15,Singapore Grand Prix,bottas,BOT,alfa,16,17,5,-1,0,0,0,4
+2023,15,Singapore Grand Prix,ocon,OCO,alpine,8,18,4,-10,0,0,0,-6
+2023,15,Singapore Grand Prix,tsunoda,TSU,alphatauri,15,19,3,-4,0,0,0,-1
+2023,15,Singapore Grand Prix,stroll,STR,aston_martin,0,20,2,0,0,0,0,2
+2023,16,Japanese Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,3,1,5,49
+2023,16,Japanese Grand Prix,norris,NOR,mclaren,3,2,37,1,0,1,5,44
+2023,16,Japanese Grand Prix,piastri,PIA,mclaren,2,3,35,-1,0,1,0,35
+2023,16,Japanese Grand Prix,leclerc,LEC,ferrari,4,4,32,0,0,1,5,38
+2023,16,Japanese Grand Prix,hamilton,HAM,mercedes,7,5,30,2,0,1,5,38
+2023,16,Japanese Grand Prix,sainz,SAI,ferrari,6,6,27,0,0,1,0,28
+2023,16,Japanese Grand Prix,russell,RUS,mercedes,8,7,25,1,0,1,0,27
+2023,16,Japanese Grand Prix,alonso,ALO,aston_martin,10,8,23,2,0,1,5,31
+2023,16,Japanese Grand Prix,ocon,OCO,alpine,14,9,22,5,0,1,5,33
+2023,16,Japanese Grand Prix,gasly,GAS,alpine,12,10,20,2,0,1,0,23
+2023,16,Japanese Grand Prix,lawson,LAW,alphatauri,11,11,17,0,0,1,5,23
+2023,16,Japanese Grand Prix,tsunoda,TSU,alphatauri,9,12,15,-3,0,1,0,13
+2023,16,Japanese Grand Prix,zhou,ZHO,alfa,19,13,13,6,0,1,5,25
+2023,16,Japanese Grand Prix,hulkenberg,HUL,haas,18,14,12,4,0,1,5,22
+2023,16,Japanese Grand Prix,kevin_magnussen,MAG,haas,15,15,10,0,0,1,0,11
+2023,16,Japanese Grand Prix,albon,ALB,williams,13,16,7,-3,0,0,5,9
+2023,16,Japanese Grand Prix,sargeant,SAR,williams,20,17,5,3,0,0,0,8
+2023,16,Japanese Grand Prix,stroll,STR,aston_martin,17,18,4,-1,0,0,0,3
+2023,16,Japanese Grand Prix,perez,PER,red_bull,5,19,3,-14,0,0,0,-11
+2023,16,Japanese Grand Prix,bottas,BOT,alfa,16,20,2,-4,0,0,0,-2
+2023,17,Qatar Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,3,1,5,49
+2023,17,Qatar Grand Prix,piastri,PIA,mclaren,6,2,37,4,0,1,5,47
+2023,17,Qatar Grand Prix,norris,NOR,mclaren,10,3,35,7,0,1,0,43
+2023,17,Qatar Grand Prix,russell,RUS,mercedes,2,4,32,-2,0,1,5,36
+2023,17,Qatar Grand Prix,leclerc,LEC,ferrari,5,5,30,0,0,1,5,36
+2023,17,Qatar Grand Prix,alonso,ALO,aston_martin,4,6,27,-2,0,1,5,31
+2023,17,Qatar Grand Prix,ocon,OCO,alpine,8,7,25,1,0,1,5,32
+2023,17,Qatar Grand Prix,bottas,BOT,alfa,9,8,23,1,0,1,5,30
+2023,17,Qatar Grand Prix,zhou,ZHO,alfa,19,9,22,10,0,1,0,33
+2023,17,Qatar Grand Prix,perez,PER,red_bull,20,10,20,10,0,1,0,31
+2023,17,Qatar Grand Prix,stroll,STR,aston_martin,16,11,17,5,0,1,0,23
+2023,17,Qatar Grand Prix,gasly,GAS,alpine,7,12,15,-5,0,1,0,11
+2023,17,Qatar Grand Prix,albon,ALB,williams,13,13,13,0,0,1,5,19
+2023,17,Qatar Grand Prix,kevin_magnussen,MAG,haas,18,14,12,4,0,1,5,22
+2023,17,Qatar Grand Prix,tsunoda,TSU,alphatauri,11,15,10,-4,0,1,5,12
+2023,17,Qatar Grand Prix,hulkenberg,HUL,haas,14,16,7,-2,0,1,0,6
+2023,17,Qatar Grand Prix,lawson,LAW,alphatauri,17,17,5,0,0,1,0,6
+2023,17,Qatar Grand Prix,sargeant,SAR,williams,15,18,4,-3,0,0,0,1
+2023,17,Qatar Grand Prix,hamilton,HAM,mercedes,3,19,3,-16,0,0,0,-13
+2023,17,Qatar Grand Prix,sainz,SAI,ferrari,12,20,2,-8,0,0,0,-6
+2023,18,United States Grand Prix,max_verstappen,VER,red_bull,6,1,40,5,0,1,5,51
+2023,18,United States Grand Prix,norris,NOR,mclaren,2,2,37,0,0,1,5,43
+2023,18,United States Grand Prix,sainz,SAI,ferrari,4,3,35,1,0,1,5,42
+2023,18,United States Grand Prix,perez,PER,red_bull,9,4,32,5,0,1,0,38
+2023,18,United States Grand Prix,russell,RUS,mercedes,5,5,30,0,0,1,5,36
+2023,18,United States Grand Prix,gasly,GAS,alpine,7,6,27,1,0,1,5,34
+2023,18,United States Grand Prix,stroll,STR,aston_martin,20,7,25,13,0,1,5,44
+2023,18,United States Grand Prix,tsunoda,TSU,alphatauri,11,8,23,3,3,1,5,35
+2023,18,United States Grand Prix,albon,ALB,williams,15,9,22,6,0,1,5,34
+2023,18,United States Grand Prix,sargeant,SAR,williams,16,10,20,6,0,1,0,27
+2023,18,United States Grand Prix,hulkenberg,HUL,haas,18,11,17,7,0,1,5,30
+2023,18,United States Grand Prix,bottas,BOT,alfa,13,12,15,1,0,1,5,22
+2023,18,United States Grand Prix,zhou,ZHO,alfa,12,13,13,-1,0,1,0,13
+2023,18,United States Grand Prix,kevin_magnussen,MAG,haas,17,14,12,3,0,1,0,16
+2023,18,United States Grand Prix,ricciardo,RIC,alphatauri,14,15,10,-1,0,1,0,10
+2023,18,United States Grand Prix,alonso,ALO,aston_martin,19,16,7,3,0,0,0,10
+2023,18,United States Grand Prix,piastri,PIA,mclaren,10,17,5,-7,0,0,0,-2
+2023,18,United States Grand Prix,ocon,OCO,alpine,8,18,4,-10,0,0,0,-6
+2023,18,United States Grand Prix,hamilton,HAM,mercedes,3,19,3,-16,0,1,0,-12
+2023,18,United States Grand Prix,leclerc,LEC,ferrari,1,20,2,-19,0,1,0,-16
+2023,19,Mexico City Grand Prix,max_verstappen,VER,red_bull,3,1,40,2,0,1,5,48
+2023,19,Mexico City Grand Prix,hamilton,HAM,mercedes,6,2,37,4,3,1,5,50
+2023,19,Mexico City Grand Prix,leclerc,LEC,ferrari,1,3,35,-2,0,1,5,39
+2023,19,Mexico City Grand Prix,sainz,SAI,ferrari,2,4,32,-2,0,1,0,31
+2023,19,Mexico City Grand Prix,norris,NOR,mclaren,17,5,30,12,0,1,5,48
+2023,19,Mexico City Grand Prix,russell,RUS,mercedes,8,6,27,2,0,1,0,30
+2023,19,Mexico City Grand Prix,ricciardo,RIC,alphatauri,4,7,25,-3,0,1,5,28
+2023,19,Mexico City Grand Prix,piastri,PIA,mclaren,7,8,23,-1,0,1,0,23
+2023,19,Mexico City Grand Prix,albon,ALB,williams,14,9,22,5,0,1,5,33
+2023,19,Mexico City Grand Prix,ocon,OCO,alpine,15,10,20,5,0,1,5,31
+2023,19,Mexico City Grand Prix,gasly,GAS,alpine,11,11,17,0,0,1,0,18
+2023,19,Mexico City Grand Prix,tsunoda,TSU,alphatauri,18,12,15,6,0,1,0,22
+2023,19,Mexico City Grand Prix,hulkenberg,HUL,haas,12,13,13,-1,0,1,5,18
+2023,19,Mexico City Grand Prix,zhou,ZHO,alfa,10,14,12,-4,0,1,5,14
+2023,19,Mexico City Grand Prix,bottas,BOT,alfa,9,15,10,-6,0,1,0,5
+2023,19,Mexico City Grand Prix,sargeant,SAR,williams,19,16,7,3,0,1,0,11
+2023,19,Mexico City Grand Prix,stroll,STR,aston_martin,0,17,5,3,0,1,5,14
+2023,19,Mexico City Grand Prix,alonso,ALO,aston_martin,13,18,4,-5,0,0,0,-1
+2023,19,Mexico City Grand Prix,kevin_magnussen,MAG,haas,16,19,3,-3,0,0,0,0
+2023,19,Mexico City Grand Prix,perez,PER,red_bull,5,20,2,-15,0,0,0,-13
+2023,20,São Paulo Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,0,1,5,46
+2023,20,São Paulo Grand Prix,norris,NOR,mclaren,6,2,37,4,3,1,5,50
+2023,20,São Paulo Grand Prix,alonso,ALO,aston_martin,4,3,35,1,0,1,5,42
+2023,20,São Paulo Grand Prix,perez,PER,red_bull,9,4,32,5,0,1,0,38
+2023,20,São Paulo Grand Prix,stroll,STR,aston_martin,3,5,30,-2,0,1,0,29
+2023,20,São Paulo Grand Prix,sainz,SAI,ferrari,7,6,27,1,0,1,5,34
+2023,20,São Paulo Grand Prix,gasly,GAS,alpine,15,7,25,8,0,1,5,39
+2023,20,São Paulo Grand Prix,hamilton,HAM,mercedes,5,8,23,-3,0,1,5,26
+2023,20,São Paulo Grand Prix,tsunoda,TSU,alphatauri,16,9,22,7,0,1,5,35
+2023,20,São Paulo Grand Prix,ocon,OCO,alpine,14,10,20,4,0,1,0,25
+2023,20,São Paulo Grand Prix,sargeant,SAR,williams,19,11,17,8,0,1,5,31
+2023,20,São Paulo Grand Prix,hulkenberg,HUL,haas,11,12,15,-1,0,1,5,20
+2023,20,São Paulo Grand Prix,ricciardo,RIC,alphatauri,17,13,13,4,0,1,0,18
+2023,20,São Paulo Grand Prix,piastri,PIA,mclaren,10,14,12,-4,0,1,0,9
+2023,20,São Paulo Grand Prix,russell,RUS,mercedes,8,15,10,-7,0,0,0,3
+2023,20,São Paulo Grand Prix,bottas,BOT,alfa,18,16,7,2,0,0,5,14
+2023,20,São Paulo Grand Prix,zhou,ZHO,alfa,20,17,5,3,0,0,0,8
+2023,20,São Paulo Grand Prix,kevin_magnussen,MAG,haas,12,18,4,-6,0,0,0,-2
+2023,20,São Paulo Grand Prix,albon,ALB,williams,13,19,3,-6,0,0,0,-3
+2023,20,São Paulo Grand Prix,leclerc,LEC,ferrari,2,20,2,-18,0,0,0,-16
+2023,21,Las Vegas Grand Prix,max_verstappen,VER,red_bull,2,1,40,1,0,1,5,47
+2023,21,Las Vegas Grand Prix,leclerc,LEC,ferrari,1,2,37,-1,0,1,5,42
+2023,21,Las Vegas Grand Prix,perez,PER,red_bull,11,3,35,8,0,1,0,44
+2023,21,Las Vegas Grand Prix,ocon,OCO,alpine,16,4,32,12,0,1,5,50
+2023,21,Las Vegas Grand Prix,stroll,STR,aston_martin,19,5,30,14,0,1,5,50
+2023,21,Las Vegas Grand Prix,sainz,SAI,ferrari,12,6,27,6,0,1,0,34
+2023,21,Las Vegas Grand Prix,hamilton,HAM,mercedes,10,7,25,3,0,1,5,34
+2023,21,Las Vegas Grand Prix,russell,RUS,mercedes,3,8,23,-5,0,1,0,19
+2023,21,Las Vegas Grand Prix,alonso,ALO,aston_martin,9,9,22,0,0,1,0,23
+2023,21,Las Vegas Grand Prix,piastri,PIA,mclaren,18,10,20,8,3,1,5,37
+2023,21,Las Vegas Grand Prix,gasly,GAS,alpine,4,11,17,-7,0,1,0,11
+2023,21,Las Vegas Grand Prix,albon,ALB,williams,5,12,15,-7,0,1,5,14
+2023,21,Las Vegas Grand Prix,kevin_magnussen,MAG,haas,8,13,13,-5,0,1,5,14
+2023,21,Las Vegas Grand Prix,ricciardo,RIC,alphatauri,14,14,12,0,0,1,5,18
+2023,21,Las Vegas Grand Prix,zhou,ZHO,alfa,17,15,10,2,0,1,5,18
+2023,21,Las Vegas Grand Prix,sargeant,SAR,williams,6,16,7,-10,0,1,0,-2
+2023,21,Las Vegas Grand Prix,bottas,BOT,alfa,7,17,5,-10,0,1,0,-4
+2023,21,Las Vegas Grand Prix,tsunoda,TSU,alphatauri,20,18,4,2,0,1,0,7
+2023,21,Las Vegas Grand Prix,hulkenberg,HUL,haas,13,19,3,-6,0,1,0,-2
+2023,21,Las Vegas Grand Prix,norris,NOR,mclaren,15,20,2,-5,0,0,0,-3
+2023,22,Abu Dhabi Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,3,1,5,49
+2023,22,Abu Dhabi Grand Prix,leclerc,LEC,ferrari,2,2,37,0,0,1,5,43
+2023,22,Abu Dhabi Grand Prix,russell,RUS,mercedes,4,3,35,1,0,1,5,42
+2023,22,Abu Dhabi Grand Prix,perez,PER,red_bull,9,4,32,5,0,1,0,38
+2023,22,Abu Dhabi Grand Prix,norris,NOR,mclaren,5,5,30,0,0,1,5,36
+2023,22,Abu Dhabi Grand Prix,piastri,PIA,mclaren,3,6,27,-3,0,1,0,25
+2023,22,Abu Dhabi Grand Prix,alonso,ALO,aston_martin,7,7,25,0,0,1,5,31
+2023,22,Abu Dhabi Grand Prix,tsunoda,TSU,alphatauri,6,8,23,-2,0,1,5,27
+2023,22,Abu Dhabi Grand Prix,hamilton,HAM,mercedes,11,9,22,2,0,1,0,25
+2023,22,Abu Dhabi Grand Prix,stroll,STR,aston_martin,13,10,20,3,0,1,0,24
+2023,22,Abu Dhabi Grand Prix,ricciardo,RIC,alphatauri,15,11,17,4,0,1,0,22
+2023,22,Abu Dhabi Grand Prix,ocon,OCO,alpine,12,12,15,0,0,1,5,21
+2023,22,Abu Dhabi Grand Prix,gasly,GAS,alpine,10,13,13,-3,0,1,0,11
+2023,22,Abu Dhabi Grand Prix,albon,ALB,williams,14,14,12,0,0,1,5,18
+2023,22,Abu Dhabi Grand Prix,hulkenberg,HUL,haas,8,15,10,-7,0,1,5,9
+2023,22,Abu Dhabi Grand Prix,sargeant,SAR,williams,20,16,7,4,0,1,0,12
+2023,22,Abu Dhabi Grand Prix,zhou,ZHO,alfa,19,17,5,2,0,1,5,13
+2023,22,Abu Dhabi Grand Prix,sainz,SAI,ferrari,16,18,4,-2,0,1,0,3
+2023,22,Abu Dhabi Grand Prix,bottas,BOT,alfa,18,19,3,-1,0,1,0,3
+2023,22,Abu Dhabi Grand Prix,kevin_magnussen,MAG,haas,17,20,2,-3,0,1,0,0
+2024,1,Bahrain Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,3,1,5,49
+2024,1,Bahrain Grand Prix,perez,PER,red_bull,5,2,37,3,0,1,0,41
+2024,1,Bahrain Grand Prix,sainz,SAI,ferrari,4,3,35,1,0,1,5,42
+2024,1,Bahrain Grand Prix,leclerc,LEC,ferrari,2,4,32,-2,0,1,0,31
+2024,1,Bahrain Grand Prix,russell,RUS,mercedes,3,5,30,-2,0,1,5,34
+2024,1,Bahrain Grand Prix,norris,NOR,mclaren,7,6,27,1,0,1,5,34
+2024,1,Bahrain Grand Prix,hamilton,HAM,mercedes,9,7,25,2,0,1,0,28
+2024,1,Bahrain Grand Prix,piastri,PIA,mclaren,8,8,23,0,0,1,0,24
+2024,1,Bahrain Grand Prix,alonso,ALO,aston_martin,6,9,22,-3,0,1,5,25
+2024,1,Bahrain Grand Prix,stroll,STR,aston_martin,12,10,20,2,0,1,0,23
+2024,1,Bahrain Grand Prix,zhou,ZHO,sauber,17,11,17,6,0,1,5,29
+2024,1,Bahrain Grand Prix,kevin_magnussen,MAG,haas,15,12,15,3,0,1,5,24
+2024,1,Bahrain Grand Prix,ricciardo,RIC,rb,14,13,13,1,0,1,5,20
+2024,1,Bahrain Grand Prix,tsunoda,TSU,rb,11,14,12,-3,0,1,0,10
+2024,1,Bahrain Grand Prix,albon,ALB,williams,13,15,10,-2,0,1,5,14
+2024,1,Bahrain Grand Prix,hulkenberg,HUL,haas,10,16,7,-6,0,1,0,2
+2024,1,Bahrain Grand Prix,ocon,OCO,alpine,19,17,5,2,0,1,5,13
+2024,1,Bahrain Grand Prix,gasly,GAS,alpine,20,18,4,2,0,1,0,7
+2024,1,Bahrain Grand Prix,bottas,BOT,sauber,16,19,3,-3,0,1,0,1
+2024,1,Bahrain Grand Prix,sargeant,SAR,williams,18,20,2,-2,0,1,0,1
+2024,2,Saudi Arabian Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,0,1,5,46
+2024,2,Saudi Arabian Grand Prix,perez,PER,red_bull,3,2,37,1,0,1,0,39
+2024,2,Saudi Arabian Grand Prix,leclerc,LEC,ferrari,2,3,35,-1,3,1,5,43
+2024,2,Saudi Arabian Grand Prix,piastri,PIA,mclaren,5,4,32,1,0,1,5,39
+2024,2,Saudi Arabian Grand Prix,alonso,ALO,aston_martin,4,5,30,-1,0,1,5,35
+2024,2,Saudi Arabian Grand Prix,russell,RUS,mercedes,7,6,27,1,0,1,5,34
+2024,2,Saudi Arabian Grand Prix,bearman,BEA,ferrari,11,7,25,4,0,1,0,30
+2024,2,Saudi Arabian Grand Prix,norris,NOR,mclaren,6,8,23,-2,0,1,0,22
+2024,2,Saudi Arabian Grand Prix,hamilton,HAM,mercedes,8,9,22,-1,0,1,0,22
+2024,2,Saudi Arabian Grand Prix,hulkenberg,HUL,haas,15,10,20,5,0,1,5,31
+2024,2,Saudi Arabian Grand Prix,albon,ALB,williams,12,11,17,1,0,1,5,24
+2024,2,Saudi Arabian Grand Prix,kevin_magnussen,MAG,haas,13,12,15,1,0,1,0,17
+2024,2,Saudi Arabian Grand Prix,ocon,OCO,alpine,17,13,13,4,0,1,5,23
+2024,2,Saudi Arabian Grand Prix,sargeant,SAR,williams,19,14,12,5,0,1,0,18
+2024,2,Saudi Arabian Grand Prix,tsunoda,TSU,rb,9,15,10,-6,0,1,5,10
+2024,2,Saudi Arabian Grand Prix,ricciardo,RIC,rb,14,16,7,-2,0,1,0,6
+2024,2,Saudi Arabian Grand Prix,bottas,BOT,sauber,16,17,5,-1,0,1,5,10
+2024,2,Saudi Arabian Grand Prix,zhou,ZHO,sauber,20,18,4,2,0,1,0,7
+2024,2,Saudi Arabian Grand Prix,stroll,STR,aston_martin,10,19,3,-9,0,0,0,-6
+2024,2,Saudi Arabian Grand Prix,gasly,GAS,alpine,18,20,2,-2,0,0,0,0
+2024,3,Australian Grand Prix,sainz,SAI,ferrari,2,1,40,1,0,1,5,47
+2024,3,Australian Grand Prix,leclerc,LEC,ferrari,4,2,37,2,3,1,0,43
+2024,3,Australian Grand Prix,norris,NOR,mclaren,3,3,35,0,0,1,5,41
+2024,3,Australian Grand Prix,piastri,PIA,mclaren,5,4,32,1,0,1,0,34
+2024,3,Australian Grand Prix,perez,PER,red_bull,6,5,30,1,0,1,5,37
+2024,3,Australian Grand Prix,stroll,STR,aston_martin,9,6,27,3,0,1,5,36
+2024,3,Australian Grand Prix,tsunoda,TSU,rb,8,7,25,1,0,1,5,32
+2024,3,Australian Grand Prix,alonso,ALO,aston_martin,10,8,23,2,0,1,0,26
+2024,3,Australian Grand Prix,hulkenberg,HUL,haas,16,9,22,7,0,1,5,35
+2024,3,Australian Grand Prix,kevin_magnussen,MAG,haas,14,10,20,4,0,1,0,25
+2024,3,Australian Grand Prix,albon,ALB,williams,12,11,17,1,0,1,0,19
+2024,3,Australian Grand Prix,ricciardo,RIC,rb,18,12,15,6,0,1,0,22
+2024,3,Australian Grand Prix,gasly,GAS,alpine,17,13,13,4,0,1,5,23
+2024,3,Australian Grand Prix,bottas,BOT,sauber,13,14,12,-1,0,1,5,17
+2024,3,Australian Grand Prix,zhou,ZHO,sauber,19,15,10,4,0,1,0,15
+2024,3,Australian Grand Prix,ocon,OCO,alpine,15,16,7,-1,0,1,0,7
+2024,3,Australian Grand Prix,russell,RUS,mercedes,7,17,5,-10,0,1,5,1
+2024,3,Australian Grand Prix,hamilton,HAM,mercedes,11,18,4,-7,0,0,0,-3
+2024,3,Australian Grand Prix,max_verstappen,VER,red_bull,1,19,3,-18,0,0,0,-15
+2024,4,Japanese Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,3,1,5,49
+2024,4,Japanese Grand Prix,perez,PER,red_bull,2,2,37,0,0,1,0,38
+2024,4,Japanese Grand Prix,sainz,SAI,ferrari,4,3,35,1,0,1,5,42
+2024,4,Japanese Grand Prix,leclerc,LEC,ferrari,8,4,32,4,0,1,0,37
+2024,4,Japanese Grand Prix,norris,NOR,mclaren,3,5,30,-2,0,1,5,34
+2024,4,Japanese Grand Prix,alonso,ALO,aston_martin,5,6,27,-1,0,1,5,32
+2024,4,Japanese Grand Prix,russell,RUS,mercedes,9,7,25,2,0,1,5,33
+2024,4,Japanese Grand Prix,piastri,PIA,mclaren,6,8,23,-2,0,1,0,22
+2024,4,Japanese Grand Prix,hamilton,HAM,mercedes,7,9,22,-2,0,1,0,21
+2024,4,Japanese Grand Prix,tsunoda,TSU,rb,10,10,20,0,0,1,5,26
+2024,4,Japanese Grand Prix,hulkenberg,HUL,haas,12,11,17,1,0,1,5,24
+2024,4,Japanese Grand Prix,stroll,STR,aston_martin,16,12,15,4,0,1,0,20
+2024,4,Japanese Grand Prix,kevin_magnussen,MAG,haas,18,13,13,5,0,1,0,19
+2024,4,Japanese Grand Prix,bottas,BOT,sauber,13,14,12,-1,0,1,5,17
+2024,4,Japanese Grand Prix,ocon,OCO,alpine,15,15,10,0,0,1,5,16
+2024,4,Japanese Grand Prix,gasly,GAS,alpine,17,16,7,1,0,1,0,9
+2024,4,Japanese Grand Prix,sargeant,SAR,williams,19,17,5,2,0,1,5,13
+2024,4,Japanese Grand Prix,zhou,ZHO,sauber,20,18,4,2,0,0,0,6
+2024,4,Japanese Grand Prix,ricciardo,RIC,rb,11,19,3,-8,0,0,0,-5
+2024,4,Japanese Grand Prix,albon,ALB,williams,14,20,2,-6,0,0,0,-4
+2024,5,Chinese Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,0,1,5,46
+2024,5,Chinese Grand Prix,norris,NOR,mclaren,4,2,37,2,0,1,5,45
+2024,5,Chinese Grand Prix,perez,PER,red_bull,2,3,35,-1,0,1,0,35
+2024,5,Chinese Grand Prix,leclerc,LEC,ferrari,6,4,32,2,0,1,5,40
+2024,5,Chinese Grand Prix,sainz,SAI,ferrari,7,5,30,2,0,1,0,33
+2024,5,Chinese Grand Prix,russell,RUS,mercedes,8,6,27,2,0,1,5,35
+2024,5,Chinese Grand Prix,alonso,ALO,aston_martin,3,7,25,-4,3,1,5,30
+2024,5,Chinese Grand Prix,piastri,PIA,mclaren,5,8,23,-3,0,1,0,21
+2024,5,Chinese Grand Prix,hamilton,HAM,mercedes,18,9,22,9,0,1,0,32
+2024,5,Chinese Grand Prix,hulkenberg,HUL,haas,9,10,20,-1,0,1,5,25
+2024,5,Chinese Grand Prix,ocon,OCO,alpine,13,11,17,2,0,1,5,25
+2024,5,Chinese Grand Prix,albon,ALB,williams,14,12,15,2,0,1,5,23
+2024,5,Chinese Grand Prix,gasly,GAS,alpine,15,13,13,2,0,1,0,16
+2024,5,Chinese Grand Prix,zhou,ZHO,sauber,16,14,12,2,0,1,5,20
+2024,5,Chinese Grand Prix,stroll,STR,aston_martin,11,15,10,-4,0,1,0,7
+2024,5,Chinese Grand Prix,kevin_magnussen,MAG,haas,17,16,7,1,0,1,0,9
+2024,5,Chinese Grand Prix,sargeant,SAR,williams,20,17,5,3,0,1,0,9
+2024,5,Chinese Grand Prix,ricciardo,RIC,rb,12,18,4,-6,0,0,5,3
+2024,5,Chinese Grand Prix,tsunoda,TSU,rb,19,19,3,0,0,0,0,3
+2024,5,Chinese Grand Prix,bottas,BOT,sauber,10,20,2,-10,0,0,0,-8
+2024,6,Miami Grand Prix,norris,NOR,mclaren,5,1,40,4,0,1,5,50
+2024,6,Miami Grand Prix,max_verstappen,VER,red_bull,1,2,37,-1,0,1,5,42
+2024,6,Miami Grand Prix,leclerc,LEC,ferrari,2,3,35,-1,0,1,5,40
+2024,6,Miami Grand Prix,perez,PER,red_bull,4,4,32,0,0,1,0,33
+2024,6,Miami Grand Prix,sainz,SAI,ferrari,3,5,30,-2,0,1,0,29
+2024,6,Miami Grand Prix,hamilton,HAM,mercedes,8,6,27,2,0,1,5,35
+2024,6,Miami Grand Prix,tsunoda,TSU,rb,10,7,25,3,0,1,5,34
+2024,6,Miami Grand Prix,russell,RUS,mercedes,7,8,23,-1,0,1,0,23
+2024,6,Miami Grand Prix,alonso,ALO,aston_martin,15,9,22,6,0,1,5,34
+2024,6,Miami Grand Prix,ocon,OCO,alpine,13,10,20,3,0,1,5,29
+2024,6,Miami Grand Prix,hulkenberg,HUL,haas,9,11,17,-2,0,1,5,21
+2024,6,Miami Grand Prix,gasly,GAS,alpine,12,12,15,0,0,1,0,16
+2024,6,Miami Grand Prix,piastri,PIA,mclaren,6,13,13,-7,3,1,0,10
+2024,6,Miami Grand Prix,zhou,ZHO,sauber,19,14,12,5,0,1,5,23
+2024,6,Miami Grand Prix,ricciardo,RIC,rb,20,15,10,5,0,1,0,16
+2024,6,Miami Grand Prix,bottas,BOT,sauber,16,16,7,0,0,1,0,8
+2024,6,Miami Grand Prix,stroll,STR,aston_martin,11,17,5,-6,0,1,0,0
+2024,6,Miami Grand Prix,albon,ALB,williams,14,18,4,-4,0,1,5,6
+2024,6,Miami Grand Prix,kevin_magnussen,MAG,haas,18,19,3,-1,0,1,0,3
+2024,6,Miami Grand Prix,sargeant,SAR,williams,17,20,2,-3,0,0,0,-1
+2024,7,Emilia Romagna Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,0,1,5,46
+2024,7,Emilia Romagna Grand Prix,norris,NOR,mclaren,2,2,37,0,0,1,5,43
+2024,7,Emilia Romagna Grand Prix,leclerc,LEC,ferrari,3,3,35,0,0,1,5,41
+2024,7,Emilia Romagna Grand Prix,piastri,PIA,mclaren,5,4,32,1,0,1,0,34
+2024,7,Emilia Romagna Grand Prix,sainz,SAI,ferrari,4,5,30,-1,0,1,0,30
+2024,7,Emilia Romagna Grand Prix,hamilton,HAM,mercedes,8,6,27,2,0,1,5,35
+2024,7,Emilia Romagna Grand Prix,russell,RUS,mercedes,6,7,25,-1,3,1,0,28
+2024,7,Emilia Romagna Grand Prix,perez,PER,red_bull,11,8,23,3,0,1,0,27
+2024,7,Emilia Romagna Grand Prix,stroll,STR,aston_martin,13,9,22,4,0,1,5,32
+2024,7,Emilia Romagna Grand Prix,tsunoda,TSU,rb,7,10,20,-3,0,1,5,23
+2024,7,Emilia Romagna Grand Prix,hulkenberg,HUL,haas,10,11,17,-1,0,1,5,22
+2024,7,Emilia Romagna Grand Prix,kevin_magnussen,MAG,haas,18,12,15,6,0,1,0,22
+2024,7,Emilia Romagna Grand Prix,ricciardo,RIC,rb,9,13,13,-4,0,1,0,10
+2024,7,Emilia Romagna Grand Prix,ocon,OCO,alpine,12,14,12,-2,0,1,5,16
+2024,7,Emilia Romagna Grand Prix,zhou,ZHO,sauber,17,15,10,2,0,1,5,18
+2024,7,Emilia Romagna Grand Prix,gasly,GAS,alpine,15,16,7,-1,0,1,0,7
+2024,7,Emilia Romagna Grand Prix,sargeant,SAR,williams,19,17,5,2,0,1,5,13
+2024,7,Emilia Romagna Grand Prix,bottas,BOT,sauber,16,18,4,-2,0,1,0,3
+2024,7,Emilia Romagna Grand Prix,alonso,ALO,aston_martin,20,19,3,1,0,1,0,5
+2024,7,Emilia Romagna Grand Prix,albon,ALB,williams,14,20,2,-6,0,0,0,-4
+2024,8,Monaco Grand Prix,leclerc,LEC,ferrari,1,1,40,0,0,1,5,46
+2024,8,Monaco Grand Prix,piastri,PIA,mclaren,2,2,37,0,0,1,5,43
+2024,8,Monaco Grand Prix,sainz,SAI,ferrari,3,3,35,0,0,1,0,36
+2024,8,Monaco Grand Prix,norris,NOR,mclaren,4,4,32,0,0,1,0,33
+2024,8,Monaco Grand Prix,russell,RUS,mercedes,5,5,30,0,0,1,5,36
+2024,8,Monaco Grand Prix,max_verstappen,VER,red_bull,6,6,27,0,0,1,5,33
+2024,8,Monaco Grand Prix,hamilton,HAM,mercedes,7,7,25,0,3,1,0,29
+2024,8,Monaco Grand Prix,tsunoda,TSU,rb,8,8,23,0,0,1,5,29
+2024,8,Monaco Grand Prix,albon,ALB,williams,9,9,22,0,0,1,5,28
+2024,8,Monaco Grand Prix,gasly,GAS,alpine,10,10,20,0,0,1,5,26
+2024,8,Monaco Grand Prix,alonso,ALO,aston_martin,14,11,17,3,0,1,5,26
+2024,8,Monaco Grand Prix,ricciardo,RIC,rb,12,12,15,0,0,1,0,16
+2024,8,Monaco Grand Prix,bottas,BOT,sauber,17,13,13,4,0,1,5,23
+2024,8,Monaco Grand Prix,stroll,STR,aston_martin,13,14,12,-1,0,1,0,12
+2024,8,Monaco Grand Prix,sargeant,SAR,williams,15,15,10,0,0,1,0,11
+2024,8,Monaco Grand Prix,zhou,ZHO,sauber,18,16,7,2,0,1,0,10
+2024,8,Monaco Grand Prix,ocon,OCO,alpine,11,17,5,-6,0,0,0,-1
+2024,8,Monaco Grand Prix,perez,PER,red_bull,16,18,4,-2,0,0,0,2
+2024,8,Monaco Grand Prix,hulkenberg,HUL,haas,19,19,3,0,0,0,5,8
+2024,8,Monaco Grand Prix,kevin_magnussen,MAG,haas,20,20,2,0,0,0,0,2
+2024,9,Canadian Grand Prix,max_verstappen,VER,red_bull,2,1,40,1,0,1,5,47
+2024,9,Canadian Grand Prix,norris,NOR,mclaren,3,2,37,1,0,1,5,44
+2024,9,Canadian Grand Prix,russell,RUS,mercedes,1,3,35,-2,0,1,5,39
+2024,9,Canadian Grand Prix,hamilton,HAM,mercedes,7,4,32,3,3,1,0,39
+2024,9,Canadian Grand Prix,piastri,PIA,mclaren,4,5,30,-1,0,1,0,30
+2024,9,Canadian Grand Prix,alonso,ALO,aston_martin,6,6,27,0,0,1,5,33
+2024,9,Canadian Grand Prix,stroll,STR,aston_martin,9,7,25,2,0,1,0,28
+2024,9,Canadian Grand Prix,ricciardo,RIC,rb,5,8,23,-3,0,1,5,26
+2024,9,Canadian Grand Prix,gasly,GAS,alpine,15,9,22,6,0,1,5,34
+2024,9,Canadian Grand Prix,ocon,OCO,alpine,18,10,20,8,0,1,0,29
+2024,9,Canadian Grand Prix,hulkenberg,HUL,haas,17,11,17,6,0,1,5,29
+2024,9,Canadian Grand Prix,kevin_magnussen,MAG,haas,14,12,15,2,0,1,0,18
+2024,9,Canadian Grand Prix,bottas,BOT,sauber,19,13,13,6,0,1,5,25
+2024,9,Canadian Grand Prix,tsunoda,TSU,rb,8,14,12,-6,0,1,0,7
+2024,9,Canadian Grand Prix,zhou,ZHO,sauber,20,15,10,5,0,1,0,16
+2024,9,Canadian Grand Prix,sainz,SAI,ferrari,12,16,7,-4,0,0,5,8
+2024,9,Canadian Grand Prix,albon,ALB,williams,10,17,5,-7,0,0,5,3
+2024,9,Canadian Grand Prix,perez,PER,red_bull,16,18,4,-2,0,0,0,2
+2024,9,Canadian Grand Prix,leclerc,LEC,ferrari,11,19,3,-8,0,0,0,-5
+2024,9,Canadian Grand Prix,sargeant,SAR,williams,13,20,2,-7,0,0,0,-5
+2024,10,Spanish Grand Prix,max_verstappen,VER,red_bull,2,1,40,1,0,1,5,47
+2024,10,Spanish Grand Prix,norris,NOR,mclaren,1,2,37,-1,3,1,5,45
+2024,10,Spanish Grand Prix,hamilton,HAM,mercedes,3,3,35,0,0,1,5,41
+2024,10,Spanish Grand Prix,russell,RUS,mercedes,4,4,32,0,0,1,0,33
+2024,10,Spanish Grand Prix,leclerc,LEC,ferrari,5,5,30,0,0,1,5,36
+2024,10,Spanish Grand Prix,sainz,SAI,ferrari,6,6,27,0,0,1,0,28
+2024,10,Spanish Grand Prix,piastri,PIA,mclaren,9,7,25,2,0,1,0,28
+2024,10,Spanish Grand Prix,perez,PER,red_bull,11,8,23,3,0,1,0,27
+2024,10,Spanish Grand Prix,gasly,GAS,alpine,7,9,22,-2,0,1,5,26
+2024,10,Spanish Grand Prix,ocon,OCO,alpine,8,10,20,-2,0,1,0,19
+2024,10,Spanish Grand Prix,hulkenberg,HUL,haas,13,11,17,2,0,1,5,25
+2024,10,Spanish Grand Prix,alonso,ALO,aston_martin,10,12,15,-2,0,1,5,19
+2024,10,Spanish Grand Prix,zhou,ZHO,sauber,15,13,13,2,0,1,5,21
+2024,10,Spanish Grand Prix,stroll,STR,aston_martin,14,14,12,0,0,1,0,13
+2024,10,Spanish Grand Prix,ricciardo,RIC,rb,18,15,10,3,0,1,5,19
+2024,10,Spanish Grand Prix,bottas,BOT,sauber,12,16,7,-4,0,1,0,4
+2024,10,Spanish Grand Prix,kevin_magnussen,MAG,haas,16,17,5,-1,0,1,0,5
+2024,10,Spanish Grand Prix,albon,ALB,williams,20,18,4,2,0,1,5,12
+2024,10,Spanish Grand Prix,tsunoda,TSU,rb,17,19,3,-2,0,1,0,2
+2024,10,Spanish Grand Prix,sargeant,SAR,williams,19,20,2,-1,0,1,0,2
+2024,11,Austrian Grand Prix,russell,RUS,mercedes,3,1,40,2,0,1,5,48
+2024,11,Austrian Grand Prix,piastri,PIA,mclaren,7,2,37,5,0,1,5,48
+2024,11,Austrian Grand Prix,sainz,SAI,ferrari,4,3,35,1,0,1,5,42
+2024,11,Austrian Grand Prix,hamilton,HAM,mercedes,5,4,32,1,0,1,0,34
+2024,11,Austrian Grand Prix,max_verstappen,VER,red_bull,1,5,30,-4,0,1,5,32
+2024,11,Austrian Grand Prix,hulkenberg,HUL,haas,9,6,27,3,0,1,5,36
+2024,11,Austrian Grand Prix,perez,PER,red_bull,8,7,25,1,0,1,0,27
+2024,11,Austrian Grand Prix,kevin_magnussen,MAG,haas,12,8,23,4,0,1,0,28
+2024,11,Austrian Grand Prix,ricciardo,RIC,rb,11,9,22,2,0,1,5,30
+2024,11,Austrian Grand Prix,gasly,GAS,alpine,13,10,20,3,0,1,5,29
+2024,11,Austrian Grand Prix,leclerc,LEC,ferrari,6,11,17,-5,0,1,0,13
+2024,11,Austrian Grand Prix,ocon,OCO,alpine,10,12,15,-2,0,1,0,14
+2024,11,Austrian Grand Prix,stroll,STR,aston_martin,17,13,13,4,0,1,5,23
+2024,11,Austrian Grand Prix,tsunoda,TSU,rb,14,14,12,0,0,1,0,13
+2024,11,Austrian Grand Prix,albon,ALB,williams,16,15,10,1,0,1,5,17
+2024,11,Austrian Grand Prix,bottas,BOT,sauber,18,16,7,2,0,1,5,15
+2024,11,Austrian Grand Prix,zhou,ZHO,sauber,20,17,5,3,0,1,0,9
+2024,11,Austrian Grand Prix,alonso,ALO,aston_martin,15,18,4,-3,3,1,0,5
+2024,11,Austrian Grand Prix,sargeant,SAR,williams,19,19,3,0,0,1,0,4
+2024,11,Austrian Grand Prix,norris,NOR,mclaren,2,20,2,-18,0,1,0,-15
+2024,12,British Grand Prix,hamilton,HAM,mercedes,2,1,40,1,0,1,5,47
+2024,12,British Grand Prix,max_verstappen,VER,red_bull,4,2,37,2,0,1,5,45
+2024,12,British Grand Prix,norris,NOR,mclaren,3,3,35,0,0,1,5,41
+2024,12,British Grand Prix,piastri,PIA,mclaren,5,4,32,1,0,1,0,34
+2024,12,British Grand Prix,sainz,SAI,ferrari,7,5,30,2,3,1,5,41
+2024,12,British Grand Prix,hulkenberg,HUL,haas,6,6,27,0,0,1,5,33
+2024,12,British Grand Prix,stroll,STR,aston_martin,8,7,25,1,0,1,5,32
+2024,12,British Grand Prix,alonso,ALO,aston_martin,10,8,23,2,0,1,0,26
+2024,12,British Grand Prix,albon,ALB,williams,9,9,22,0,0,1,5,28
+2024,12,British Grand Prix,tsunoda,TSU,rb,13,10,20,3,0,1,5,29
+2024,12,British Grand Prix,sargeant,SAR,williams,12,11,17,1,0,1,0,19
+2024,12,British Grand Prix,kevin_magnussen,MAG,haas,17,12,15,5,0,1,0,21
+2024,12,British Grand Prix,ricciardo,RIC,rb,15,13,13,2,0,1,0,16
+2024,12,British Grand Prix,leclerc,LEC,ferrari,11,14,12,-3,0,1,0,10
+2024,12,British Grand Prix,bottas,BOT,sauber,16,15,10,1,0,1,5,17
+2024,12,British Grand Prix,ocon,OCO,alpine,18,16,7,2,0,1,5,15
+2024,12,British Grand Prix,perez,PER,red_bull,20,17,5,3,0,1,0,9
+2024,12,British Grand Prix,zhou,ZHO,sauber,14,18,4,-4,0,1,0,1
+2024,12,British Grand Prix,russell,RUS,mercedes,1,19,3,-18,0,0,0,-15
+2024,12,British Grand Prix,gasly,GAS,alpine,19,20,2,-1,0,0,0,1
+2024,13,Hungarian Grand Prix,piastri,PIA,mclaren,2,1,40,1,0,1,5,47
+2024,13,Hungarian Grand Prix,norris,NOR,mclaren,1,2,37,-1,0,1,0,37
+2024,13,Hungarian Grand Prix,hamilton,HAM,mercedes,5,3,35,2,0,1,5,43
+2024,13,Hungarian Grand Prix,leclerc,LEC,ferrari,6,4,32,2,0,1,5,40
+2024,13,Hungarian Grand Prix,max_verstappen,VER,red_bull,3,5,30,-2,0,1,5,34
+2024,13,Hungarian Grand Prix,sainz,SAI,ferrari,4,6,27,-2,0,1,0,26
+2024,13,Hungarian Grand Prix,perez,PER,red_bull,16,7,25,9,0,1,0,35
+2024,13,Hungarian Grand Prix,russell,RUS,mercedes,17,8,23,9,3,1,0,36
+2024,13,Hungarian Grand Prix,tsunoda,TSU,rb,10,9,22,1,0,1,5,29
+2024,13,Hungarian Grand Prix,stroll,STR,aston_martin,8,10,20,-2,0,1,5,24
+2024,13,Hungarian Grand Prix,alonso,ALO,aston_martin,7,11,17,-4,0,1,0,14
+2024,13,Hungarian Grand Prix,ricciardo,RIC,rb,9,12,15,-3,0,1,0,13
+2024,13,Hungarian Grand Prix,hulkenberg,HUL,haas,11,13,13,-2,0,1,5,17
+2024,13,Hungarian Grand Prix,albon,ALB,williams,13,14,12,-1,0,1,5,17
+2024,13,Hungarian Grand Prix,kevin_magnussen,MAG,haas,15,15,10,0,0,1,0,11
+2024,13,Hungarian Grand Prix,bottas,BOT,sauber,12,16,7,-4,0,1,5,9
+2024,13,Hungarian Grand Prix,sargeant,SAR,williams,14,17,5,-3,0,1,0,3
+2024,13,Hungarian Grand Prix,ocon,OCO,alpine,19,18,4,1,0,1,5,11
+2024,13,Hungarian Grand Prix,zhou,ZHO,sauber,18,19,3,-1,0,1,0,3
+2024,13,Hungarian Grand Prix,gasly,GAS,alpine,20,20,2,0,0,0,0,2
+2024,14,Belgian Grand Prix,hamilton,HAM,mercedes,3,1,40,2,0,1,5,48
+2024,14,Belgian Grand Prix,piastri,PIA,mclaren,5,2,37,3,0,1,5,46
+2024,14,Belgian Grand Prix,leclerc,LEC,ferrari,1,3,35,-2,0,1,5,39
+2024,14,Belgian Grand Prix,max_verstappen,VER,red_bull,11,4,32,7,0,1,5,45
+2024,14,Belgian Grand Prix,norris,NOR,mclaren,4,5,30,-1,0,1,0,30
+2024,14,Belgian Grand Prix,sainz,SAI,ferrari,7,6,27,1,0,1,0,29
+2024,14,Belgian Grand Prix,perez,PER,red_bull,2,7,25,-5,3,1,0,24
+2024,14,Belgian Grand Prix,alonso,ALO,aston_martin,8,8,23,0,0,1,5,29
+2024,14,Belgian Grand Prix,ocon,OCO,alpine,9,9,22,0,0,1,5,28
+2024,14,Belgian Grand Prix,ricciardo,RIC,rb,13,10,20,3,0,1,5,29
+2024,14,Belgian Grand Prix,stroll,STR,aston_martin,15,11,17,4,0,1,0,22
+2024,14,Belgian Grand Prix,albon,ALB,williams,10,12,15,-2,0,1,5,19
+2024,14,Belgian Grand Prix,gasly,GAS,alpine,12,13,13,-1,0,1,0,13
+2024,14,Belgian Grand Prix,kevin_magnussen,MAG,haas,17,14,12,3,0,1,5,21
+2024,14,Belgian Grand Prix,bottas,BOT,sauber,14,15,10,-1,0,1,5,15
+2024,14,Belgian Grand Prix,tsunoda,TSU,rb,20,16,7,4,0,1,0,12
+2024,14,Belgian Grand Prix,sargeant,SAR,williams,18,17,5,1,0,1,0,7
+2024,14,Belgian Grand Prix,hulkenberg,HUL,haas,16,18,4,-2,0,1,0,3
+2024,14,Belgian Grand Prix,zhou,ZHO,sauber,19,19,3,0,0,0,0,3
+2024,14,Belgian Grand Prix,russell,RUS,mercedes,6,20,2,-14,0,1,0,-11
+2024,15,Dutch Grand Prix,norris,NOR,mclaren,1,1,40,0,3,1,5,49
+2024,15,Dutch Grand Prix,max_verstappen,VER,red_bull,2,2,37,0,0,1,5,43
+2024,15,Dutch Grand Prix,leclerc,LEC,ferrari,6,3,35,3,0,1,5,44
+2024,15,Dutch Grand Prix,piastri,PIA,mclaren,3,4,32,-1,0,1,0,32
+2024,15,Dutch Grand Prix,sainz,SAI,ferrari,10,5,30,5,0,1,0,36
+2024,15,Dutch Grand Prix,perez,PER,red_bull,5,6,27,-1,0,1,0,27
+2024,15,Dutch Grand Prix,russell,RUS,mercedes,4,7,25,-3,0,1,5,28
+2024,15,Dutch Grand Prix,hamilton,HAM,mercedes,14,8,23,6,0,1,0,30
+2024,15,Dutch Grand Prix,gasly,GAS,alpine,9,9,22,0,0,1,5,28
+2024,15,Dutch Grand Prix,alonso,ALO,aston_martin,7,10,20,-3,0,1,5,23
+2024,15,Dutch Grand Prix,hulkenberg,HUL,haas,12,11,17,1,0,1,5,24
+2024,15,Dutch Grand Prix,ricciardo,RIC,rb,13,12,15,1,0,1,5,22
+2024,15,Dutch Grand Prix,stroll,STR,aston_martin,8,13,13,-5,0,1,0,9
+2024,15,Dutch Grand Prix,albon,ALB,williams,19,14,12,5,0,1,5,23
+2024,15,Dutch Grand Prix,ocon,OCO,alpine,15,15,10,0,0,1,0,11
+2024,15,Dutch Grand Prix,sargeant,SAR,williams,18,16,7,2,0,1,0,10
+2024,15,Dutch Grand Prix,tsunoda,TSU,rb,11,17,5,-6,0,1,0,0
+2024,15,Dutch Grand Prix,kevin_magnussen,MAG,haas,20,18,4,2,0,1,0,7
+2024,15,Dutch Grand Prix,bottas,BOT,sauber,16,19,3,-3,0,1,5,6
+2024,15,Dutch Grand Prix,zhou,ZHO,sauber,17,20,2,-3,0,1,0,0
+2024,16,Italian Grand Prix,leclerc,LEC,ferrari,4,1,40,3,0,1,5,49
+2024,16,Italian Grand Prix,piastri,PIA,mclaren,2,2,37,0,0,1,5,43
+2024,16,Italian Grand Prix,norris,NOR,mclaren,1,3,35,-2,3,1,0,37
+2024,16,Italian Grand Prix,sainz,SAI,ferrari,5,4,32,1,0,1,0,34
+2024,16,Italian Grand Prix,hamilton,HAM,mercedes,6,5,30,1,0,1,5,37
+2024,16,Italian Grand Prix,max_verstappen,VER,red_bull,7,6,27,1,0,1,5,34
+2024,16,Italian Grand Prix,russell,RUS,mercedes,3,7,25,-4,0,1,0,22
+2024,16,Italian Grand Prix,perez,PER,red_bull,8,8,23,0,0,1,0,24
+2024,16,Italian Grand Prix,albon,ALB,williams,9,9,22,0,0,1,5,28
+2024,16,Italian Grand Prix,kevin_magnussen,MAG,haas,13,10,20,3,0,1,5,29
+2024,16,Italian Grand Prix,alonso,ALO,aston_martin,11,11,17,0,0,1,5,23
+2024,16,Italian Grand Prix,colapinto,COL,williams,18,12,15,6,0,1,0,22
+2024,16,Italian Grand Prix,ricciardo,RIC,rb,12,13,13,-1,0,1,5,18
+2024,16,Italian Grand Prix,ocon,OCO,alpine,15,14,12,1,0,1,5,19
+2024,16,Italian Grand Prix,gasly,GAS,alpine,14,15,10,-1,0,1,0,10
+2024,16,Italian Grand Prix,bottas,BOT,sauber,19,16,7,3,0,1,5,16
+2024,16,Italian Grand Prix,hulkenberg,HUL,haas,10,17,5,-7,0,1,0,-1
+2024,16,Italian Grand Prix,zhou,ZHO,sauber,20,18,4,2,0,1,0,7
+2024,16,Italian Grand Prix,stroll,STR,aston_martin,17,19,3,-2,0,1,0,2
+2024,16,Italian Grand Prix,tsunoda,TSU,rb,16,20,2,-4,0,0,0,-2
+2024,17,Azerbaijan Grand Prix,piastri,PIA,mclaren,2,1,40,1,0,1,5,47
+2024,17,Azerbaijan Grand Prix,leclerc,LEC,ferrari,1,2,37,-1,0,1,5,42
+2024,17,Azerbaijan Grand Prix,russell,RUS,mercedes,5,3,35,2,0,1,5,43
+2024,17,Azerbaijan Grand Prix,norris,NOR,mclaren,15,4,32,11,3,1,0,47
+2024,17,Azerbaijan Grand Prix,max_verstappen,VER,red_bull,6,5,30,1,0,1,5,37
+2024,17,Azerbaijan Grand Prix,alonso,ALO,aston_martin,7,6,27,1,0,1,5,34
+2024,17,Azerbaijan Grand Prix,albon,ALB,williams,9,7,25,2,0,1,5,33
+2024,17,Azerbaijan Grand Prix,colapinto,COL,williams,8,8,23,0,0,1,0,24
+2024,17,Azerbaijan Grand Prix,hamilton,HAM,mercedes,19,9,22,10,0,1,0,33
+2024,17,Azerbaijan Grand Prix,bearman,BEA,haas,10,10,20,0,0,1,5,26
+2024,17,Azerbaijan Grand Prix,hulkenberg,HUL,haas,12,11,17,1,0,1,0,19
+2024,17,Azerbaijan Grand Prix,gasly,GAS,alpine,18,12,15,6,0,1,5,27
+2024,17,Azerbaijan Grand Prix,ricciardo,RIC,rb,14,13,13,1,0,1,5,20
+2024,17,Azerbaijan Grand Prix,zhou,ZHO,sauber,17,14,12,3,0,1,5,21
+2024,17,Azerbaijan Grand Prix,ocon,OCO,alpine,20,15,10,5,0,1,0,16
+2024,17,Azerbaijan Grand Prix,bottas,BOT,sauber,16,16,7,0,0,1,0,8
+2024,17,Azerbaijan Grand Prix,perez,PER,red_bull,4,17,5,-13,0,1,0,-7
+2024,17,Azerbaijan Grand Prix,sainz,SAI,ferrari,3,18,4,-15,0,1,0,-10
+2024,17,Azerbaijan Grand Prix,stroll,STR,aston_martin,13,19,3,-6,0,0,0,-3
+2024,17,Azerbaijan Grand Prix,tsunoda,TSU,rb,11,20,2,-9,0,0,0,-7
+2024,18,Singapore Grand Prix,norris,NOR,mclaren,1,1,40,0,0,1,5,46
+2024,18,Singapore Grand Prix,max_verstappen,VER,red_bull,2,2,37,0,0,1,5,43
+2024,18,Singapore Grand Prix,piastri,PIA,mclaren,5,3,35,2,0,1,0,38
+2024,18,Singapore Grand Prix,russell,RUS,mercedes,4,4,32,0,0,1,5,38
+2024,18,Singapore Grand Prix,leclerc,LEC,ferrari,9,5,30,4,0,1,5,40
+2024,18,Singapore Grand Prix,hamilton,HAM,mercedes,3,6,27,-3,0,1,0,25
+2024,18,Singapore Grand Prix,sainz,SAI,ferrari,10,7,25,3,0,1,0,29
+2024,18,Singapore Grand Prix,alonso,ALO,aston_martin,7,8,23,-1,0,1,5,28
+2024,18,Singapore Grand Prix,hulkenberg,HUL,haas,6,9,22,-3,0,1,5,25
+2024,18,Singapore Grand Prix,perez,PER,red_bull,13,10,20,3,0,1,0,24
+2024,18,Singapore Grand Prix,colapinto,COL,williams,12,11,17,1,0,1,5,24
+2024,18,Singapore Grand Prix,tsunoda,TSU,rb,8,12,15,-4,0,1,5,17
+2024,18,Singapore Grand Prix,ocon,OCO,alpine,15,13,13,2,0,1,5,21
+2024,18,Singapore Grand Prix,stroll,STR,aston_martin,17,14,12,3,0,1,0,16
+2024,18,Singapore Grand Prix,zhou,ZHO,sauber,20,15,10,5,0,1,5,21
+2024,18,Singapore Grand Prix,bottas,BOT,sauber,19,16,7,3,0,1,0,11
+2024,18,Singapore Grand Prix,gasly,GAS,alpine,18,17,5,1,0,1,0,7
+2024,18,Singapore Grand Prix,ricciardo,RIC,rb,16,18,4,-2,3,1,0,6
+2024,18,Singapore Grand Prix,kevin_magnussen,MAG,haas,14,19,3,-5,0,1,0,-1
+2024,18,Singapore Grand Prix,albon,ALB,williams,11,20,2,-9,0,0,0,-7
+2024,19,United States Grand Prix,leclerc,LEC,ferrari,4,1,40,3,0,1,5,49
+2024,19,United States Grand Prix,sainz,SAI,ferrari,3,2,37,1,0,1,0,39
+2024,19,United States Grand Prix,max_verstappen,VER,red_bull,2,3,35,-1,0,1,5,40
+2024,19,United States Grand Prix,norris,NOR,mclaren,1,4,32,-3,0,1,5,35
+2024,19,United States Grand Prix,piastri,PIA,mclaren,5,5,30,0,0,1,0,31
+2024,19,United States Grand Prix,russell,RUS,mercedes,20,6,27,14,0,1,5,47
+2024,19,United States Grand Prix,perez,PER,red_bull,9,7,25,2,0,1,0,28
+2024,19,United States Grand Prix,hulkenberg,HUL,haas,11,8,23,3,0,1,5,32
+2024,19,United States Grand Prix,lawson,LAW,rb,19,9,22,10,0,1,5,38
+2024,19,United States Grand Prix,colapinto,COL,williams,15,10,20,5,0,1,5,31
+2024,19,United States Grand Prix,kevin_magnussen,MAG,haas,8,11,17,-3,0,1,0,15
+2024,19,United States Grand Prix,gasly,GAS,alpine,6,12,15,-6,0,1,5,15
+2024,19,United States Grand Prix,alonso,ALO,aston_martin,7,13,13,-6,0,1,5,13
+2024,19,United States Grand Prix,tsunoda,TSU,rb,10,14,12,-4,0,1,0,9
+2024,19,United States Grand Prix,stroll,STR,aston_martin,13,15,10,-2,0,1,0,9
+2024,19,United States Grand Prix,albon,ALB,williams,14,16,7,-2,0,1,0,6
+2024,19,United States Grand Prix,bottas,BOT,sauber,16,17,5,-1,0,1,5,10
+2024,19,United States Grand Prix,ocon,OCO,alpine,12,18,4,-6,3,1,0,2
+2024,19,United States Grand Prix,zhou,ZHO,sauber,18,19,3,-1,0,1,0,3
+2024,19,United States Grand Prix,hamilton,HAM,mercedes,17,20,2,-3,0,0,0,-1
+2024,20,Mexico City Grand Prix,sainz,SAI,ferrari,1,1,40,0,0,1,5,46
+2024,20,Mexico City Grand Prix,norris,NOR,mclaren,3,2,37,1,0,1,5,44
+2024,20,Mexico City Grand Prix,leclerc,LEC,ferrari,4,3,35,1,3,1,0,40
+2024,20,Mexico City Grand Prix,hamilton,HAM,mercedes,6,4,32,2,0,1,5,40
+2024,20,Mexico City Grand Prix,russell,RUS,mercedes,5,5,30,0,0,1,0,31
+2024,20,Mexico City Grand Prix,max_verstappen,VER,red_bull,2,6,27,-4,0,1,5,29
+2024,20,Mexico City Grand Prix,kevin_magnussen,MAG,haas,7,7,25,0,0,1,5,31
+2024,20,Mexico City Grand Prix,piastri,PIA,mclaren,17,8,23,9,0,1,0,33
+2024,20,Mexico City Grand Prix,hulkenberg,HUL,haas,10,9,22,1,0,1,0,24
+2024,20,Mexico City Grand Prix,gasly,GAS,alpine,8,10,20,-2,0,1,5,24
+2024,20,Mexico City Grand Prix,stroll,STR,aston_martin,14,11,17,3,0,1,5,26
+2024,20,Mexico City Grand Prix,colapinto,COL,williams,16,12,15,4,0,1,5,25
+2024,20,Mexico City Grand Prix,ocon,OCO,alpine,0,13,13,7,0,1,0,21
+2024,20,Mexico City Grand Prix,bottas,BOT,sauber,15,14,12,1,0,1,5,19
+2024,20,Mexico City Grand Prix,zhou,ZHO,sauber,19,15,10,4,0,1,0,15
+2024,20,Mexico City Grand Prix,lawson,LAW,rb,12,16,7,-4,0,1,5,9
+2024,20,Mexico City Grand Prix,perez,PER,red_bull,18,17,5,1,0,1,0,7
+2024,20,Mexico City Grand Prix,alonso,ALO,aston_martin,13,18,4,-5,0,0,0,-1
+2024,20,Mexico City Grand Prix,albon,ALB,williams,9,19,3,-10,0,0,0,-7
+2024,20,Mexico City Grand Prix,tsunoda,TSU,rb,11,20,2,-9,0,0,0,-7
+2024,21,São Paulo Grand Prix,max_verstappen,VER,red_bull,17,1,40,16,3,1,5,65
+2024,21,São Paulo Grand Prix,ocon,OCO,alpine,4,2,37,2,0,1,5,45
+2024,21,São Paulo Grand Prix,gasly,GAS,alpine,13,3,35,10,0,1,0,46
+2024,21,São Paulo Grand Prix,russell,RUS,mercedes,2,4,32,-2,0,1,5,36
+2024,21,São Paulo Grand Prix,leclerc,LEC,ferrari,6,5,30,1,0,1,5,37
+2024,21,São Paulo Grand Prix,norris,NOR,mclaren,1,6,27,-5,0,1,5,28
+2024,21,São Paulo Grand Prix,tsunoda,TSU,rb,3,7,25,-4,0,1,5,27
+2024,21,São Paulo Grand Prix,piastri,PIA,mclaren,8,8,23,0,0,1,0,24
+2024,21,São Paulo Grand Prix,lawson,LAW,rb,5,9,22,-4,0,1,0,19
+2024,21,São Paulo Grand Prix,hamilton,HAM,mercedes,14,10,20,4,0,1,0,25
+2024,21,São Paulo Grand Prix,perez,PER,red_bull,12,11,17,1,0,1,0,19
+2024,21,São Paulo Grand Prix,bearman,BEA,haas,15,12,15,3,0,1,5,24
+2024,21,São Paulo Grand Prix,bottas,BOT,sauber,11,13,13,-2,0,1,5,17
+2024,21,São Paulo Grand Prix,alonso,ALO,aston_martin,9,14,12,-5,0,1,5,13
+2024,21,São Paulo Grand Prix,zhou,ZHO,sauber,19,15,10,4,0,1,0,15
+2024,21,São Paulo Grand Prix,sainz,SAI,ferrari,20,16,7,4,0,0,0,11
+2024,21,São Paulo Grand Prix,colapinto,COL,williams,16,17,5,-1,0,0,5,9
+2024,21,São Paulo Grand Prix,albon,ALB,williams,7,18,4,-11,0,0,0,-7
+2024,21,São Paulo Grand Prix,stroll,STR,aston_martin,10,19,3,-9,0,0,0,-6
+2024,21,São Paulo Grand Prix,hulkenberg,HUL,haas,18,20,2,-2,0,0,0,0
+2024,22,Las Vegas Grand Prix,russell,RUS,mercedes,1,1,40,0,0,1,5,46
+2024,22,Las Vegas Grand Prix,hamilton,HAM,mercedes,10,2,37,8,0,1,0,46
+2024,22,Las Vegas Grand Prix,sainz,SAI,ferrari,2,3,35,-1,0,1,5,40
+2024,22,Las Vegas Grand Prix,leclerc,LEC,ferrari,4,4,32,0,0,1,0,33
+2024,22,Las Vegas Grand Prix,max_verstappen,VER,red_bull,5,5,30,0,0,1,5,36
+2024,22,Las Vegas Grand Prix,norris,NOR,mclaren,6,6,27,0,3,1,5,36
+2024,22,Las Vegas Grand Prix,piastri,PIA,mclaren,8,7,25,1,0,1,0,27
+2024,22,Las Vegas Grand Prix,hulkenberg,HUL,haas,9,8,23,1,0,1,5,30
+2024,22,Las Vegas Grand Prix,tsunoda,TSU,rb,7,9,22,-2,0,1,5,26
+2024,22,Las Vegas Grand Prix,perez,PER,red_bull,15,10,20,5,0,1,0,26
+2024,22,Las Vegas Grand Prix,alonso,ALO,aston_martin,16,11,17,5,0,1,5,28
+2024,22,Las Vegas Grand Prix,kevin_magnussen,MAG,haas,12,12,15,0,0,1,0,16
+2024,22,Las Vegas Grand Prix,zhou,ZHO,sauber,13,13,13,0,0,1,5,19
+2024,22,Las Vegas Grand Prix,colapinto,COL,williams,20,14,12,6,0,1,5,24
+2024,22,Las Vegas Grand Prix,stroll,STR,aston_martin,18,15,10,3,0,1,0,14
+2024,22,Las Vegas Grand Prix,lawson,LAW,rb,14,16,7,-2,0,1,0,6
+2024,22,Las Vegas Grand Prix,ocon,OCO,alpine,11,17,5,-6,0,1,5,5
+2024,22,Las Vegas Grand Prix,bottas,BOT,sauber,19,18,4,1,0,1,0,6
+2024,22,Las Vegas Grand Prix,albon,ALB,williams,17,19,3,-2,0,0,0,1
+2024,22,Las Vegas Grand Prix,gasly,GAS,alpine,3,20,2,-17,0,0,0,-15
+2024,23,Qatar Grand Prix,max_verstappen,VER,red_bull,2,1,40,1,0,1,5,47
+2024,23,Qatar Grand Prix,leclerc,LEC,ferrari,5,2,37,3,0,1,5,46
+2024,23,Qatar Grand Prix,piastri,PIA,mclaren,4,3,35,1,0,1,5,42
+2024,23,Qatar Grand Prix,russell,RUS,mercedes,1,4,32,-3,0,1,5,35
+2024,23,Qatar Grand Prix,gasly,GAS,alpine,11,5,30,6,0,1,5,42
+2024,23,Qatar Grand Prix,sainz,SAI,ferrari,7,6,27,1,0,1,0,29
+2024,23,Qatar Grand Prix,alonso,ALO,aston_martin,8,7,25,1,0,1,5,32
+2024,23,Qatar Grand Prix,zhou,ZHO,sauber,12,8,23,4,0,1,5,33
+2024,23,Qatar Grand Prix,kevin_magnussen,MAG,haas,10,9,22,1,0,1,5,29
+2024,23,Qatar Grand Prix,norris,NOR,mclaren,3,10,20,-7,3,1,0,17
+2024,23,Qatar Grand Prix,bottas,BOT,sauber,13,11,17,2,0,1,0,20
+2024,23,Qatar Grand Prix,hamilton,HAM,mercedes,6,12,15,-6,0,1,0,10
+2024,23,Qatar Grand Prix,tsunoda,TSU,rb,14,13,13,1,0,1,5,20
+2024,23,Qatar Grand Prix,lawson,LAW,rb,17,14,12,3,0,1,0,16
+2024,23,Qatar Grand Prix,albon,ALB,williams,16,15,10,1,0,1,5,17
+2024,23,Qatar Grand Prix,hulkenberg,HUL,haas,18,16,7,2,0,0,0,9
+2024,23,Qatar Grand Prix,perez,PER,red_bull,9,17,5,-8,0,0,0,-3
+2024,23,Qatar Grand Prix,stroll,STR,aston_martin,15,18,4,-3,0,0,0,1
+2024,23,Qatar Grand Prix,colapinto,COL,williams,19,19,3,0,0,0,0,3
+2024,23,Qatar Grand Prix,ocon,OCO,alpine,20,20,2,0,0,0,0,2
+2024,24,Abu Dhabi Grand Prix,norris,NOR,mclaren,1,1,40,0,0,1,5,46
+2024,24,Abu Dhabi Grand Prix,sainz,SAI,ferrari,3,2,37,1,0,1,5,44
+2024,24,Abu Dhabi Grand Prix,leclerc,LEC,ferrari,19,3,35,16,0,1,0,52
+2024,24,Abu Dhabi Grand Prix,hamilton,HAM,mercedes,16,4,32,12,0,1,5,50
+2024,24,Abu Dhabi Grand Prix,russell,RUS,mercedes,6,5,30,1,0,1,0,32
+2024,24,Abu Dhabi Grand Prix,max_verstappen,VER,red_bull,4,6,27,-2,0,1,5,31
+2024,24,Abu Dhabi Grand Prix,gasly,GAS,alpine,5,7,25,-2,0,1,5,29
+2024,24,Abu Dhabi Grand Prix,hulkenberg,HUL,haas,7,8,23,-1,0,1,5,28
+2024,24,Abu Dhabi Grand Prix,alonso,ALO,aston_martin,8,9,22,-1,0,1,5,27
+2024,24,Abu Dhabi Grand Prix,piastri,PIA,mclaren,2,10,20,-8,0,1,0,13
+2024,24,Abu Dhabi Grand Prix,albon,ALB,williams,18,11,17,7,0,1,5,30
+2024,24,Abu Dhabi Grand Prix,tsunoda,TSU,rb,11,12,15,-1,0,1,5,20
+2024,24,Abu Dhabi Grand Prix,zhou,ZHO,sauber,15,13,13,2,0,1,5,21
+2024,24,Abu Dhabi Grand Prix,stroll,STR,aston_martin,13,14,12,-1,0,1,0,12
+2024,24,Abu Dhabi Grand Prix,doohan,DOO,alpine,17,15,10,2,0,1,0,13
+2024,24,Abu Dhabi Grand Prix,kevin_magnussen,MAG,haas,14,16,7,-2,3,1,0,9
+2024,24,Abu Dhabi Grand Prix,lawson,LAW,rb,12,17,5,-5,0,1,0,1
+2024,24,Abu Dhabi Grand Prix,bottas,BOT,sauber,9,18,4,-9,0,0,0,-5
+2024,24,Abu Dhabi Grand Prix,colapinto,COL,williams,20,19,3,1,0,0,0,4
+2024,24,Abu Dhabi Grand Prix,perez,PER,red_bull,10,20,2,-10,0,0,0,-8
+2025,1,Australian Grand Prix,norris,NOR,mclaren,1,1,40,0,3,1,5,49
+2025,1,Australian Grand Prix,max_verstappen,VER,red_bull,3,2,37,1,0,1,5,44
+2025,1,Australian Grand Prix,russell,RUS,mercedes,4,3,35,1,0,1,5,42
+2025,1,Australian Grand Prix,antonelli,ANT,mercedes,16,4,32,12,0,1,0,45
+2025,1,Australian Grand Prix,albon,ALB,williams,6,5,30,1,0,1,5,37
+2025,1,Australian Grand Prix,stroll,STR,aston_martin,13,6,27,7,0,1,5,40
+2025,1,Australian Grand Prix,hulkenberg,HUL,sauber,17,7,25,10,0,1,5,41
+2025,1,Australian Grand Prix,leclerc,LEC,ferrari,7,8,23,-1,0,1,5,28
+2025,1,Australian Grand Prix,piastri,PIA,mclaren,2,9,22,-7,0,1,0,16
+2025,1,Australian Grand Prix,hamilton,HAM,ferrari,8,10,20,-2,0,1,0,19
+2025,1,Australian Grand Prix,gasly,GAS,alpine,9,11,17,-2,0,1,5,21
+2025,1,Australian Grand Prix,tsunoda,TSU,rb,5,12,15,-7,0,1,5,14
+2025,1,Australian Grand Prix,ocon,OCO,haas,19,13,13,6,0,1,5,25
+2025,1,Australian Grand Prix,bearman,BEA,haas,20,14,12,6,0,1,0,19
+2025,1,Australian Grand Prix,lawson,LAW,red_bull,18,15,10,3,0,0,0,13
+2025,1,Australian Grand Prix,bortoleto,BOR,sauber,15,16,7,-1,0,0,0,6
+2025,1,Australian Grand Prix,alonso,ALO,aston_martin,12,17,5,-5,0,0,0,0
+2025,1,Australian Grand Prix,sainz,SAI,williams,10,18,4,-8,0,0,0,-4
+2025,1,Australian Grand Prix,doohan,DOO,alpine,14,19,3,-5,0,0,0,-2
+2025,1,Australian Grand Prix,hadjar,HAD,rb,11,20,2,-9,0,0,0,-7
+2025,2,Chinese Grand Prix,piastri,PIA,mclaren,1,1,40,0,0,1,5,46
+2025,2,Chinese Grand Prix,norris,NOR,mclaren,3,2,37,1,3,1,0,42
+2025,2,Chinese Grand Prix,russell,RUS,mercedes,2,3,35,-1,0,1,5,40
+2025,2,Chinese Grand Prix,max_verstappen,VER,red_bull,4,4,32,0,0,1,5,38
+2025,2,Chinese Grand Prix,ocon,OCO,haas,11,5,30,6,0,1,5,42
+2025,2,Chinese Grand Prix,antonelli,ANT,mercedes,8,6,27,2,0,1,0,30
+2025,2,Chinese Grand Prix,albon,ALB,williams,10,7,25,3,0,1,5,34
+2025,2,Chinese Grand Prix,bearman,BEA,haas,17,8,23,9,0,1,0,33
+2025,2,Chinese Grand Prix,stroll,STR,aston_martin,14,9,22,5,0,1,5,33
+2025,2,Chinese Grand Prix,sainz,SAI,williams,15,10,20,5,0,1,0,26
+2025,2,Chinese Grand Prix,hadjar,HAD,rb,7,11,17,-4,0,1,5,19
+2025,2,Chinese Grand Prix,lawson,LAW,red_bull,20,12,15,8,0,1,0,24
+2025,2,Chinese Grand Prix,doohan,DOO,alpine,18,13,13,5,0,1,5,24
+2025,2,Chinese Grand Prix,bortoleto,BOR,sauber,19,14,12,5,0,1,5,23
+2025,2,Chinese Grand Prix,hulkenberg,HUL,sauber,12,15,10,-3,0,1,0,8
+2025,2,Chinese Grand Prix,tsunoda,TSU,rb,9,16,7,-7,0,1,0,1
+2025,2,Chinese Grand Prix,alonso,ALO,aston_martin,13,17,5,-4,0,0,0,1
+2025,2,Chinese Grand Prix,leclerc,LEC,ferrari,6,18,4,-12,0,0,5,-3
+2025,2,Chinese Grand Prix,hamilton,HAM,ferrari,5,19,3,-14,0,0,0,-11
+2025,2,Chinese Grand Prix,gasly,GAS,alpine,16,20,2,-4,0,0,0,-2
+2025,3,Japanese Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,0,1,5,46
+2025,3,Japanese Grand Prix,norris,NOR,mclaren,2,2,37,0,0,1,5,43
+2025,3,Japanese Grand Prix,piastri,PIA,mclaren,3,3,35,0,0,1,0,36
+2025,3,Japanese Grand Prix,leclerc,LEC,ferrari,4,4,32,0,0,1,5,38
+2025,3,Japanese Grand Prix,russell,RUS,mercedes,5,5,30,0,0,1,5,36
+2025,3,Japanese Grand Prix,antonelli,ANT,mercedes,6,6,27,0,3,1,0,31
+2025,3,Japanese Grand Prix,hamilton,HAM,ferrari,8,7,25,1,0,1,0,27
+2025,3,Japanese Grand Prix,hadjar,HAD,rb,7,8,23,-1,0,1,5,28
+2025,3,Japanese Grand Prix,albon,ALB,williams,9,9,22,0,0,1,5,28
+2025,3,Japanese Grand Prix,bearman,BEA,haas,10,10,20,0,0,1,5,26
+2025,3,Japanese Grand Prix,alonso,ALO,aston_martin,12,11,17,1,0,1,5,24
+2025,3,Japanese Grand Prix,tsunoda,TSU,red_bull,14,12,15,2,0,1,0,18
+2025,3,Japanese Grand Prix,gasly,GAS,alpine,11,13,13,-2,0,1,5,17
+2025,3,Japanese Grand Prix,sainz,SAI,williams,15,14,12,1,0,1,0,14
+2025,3,Japanese Grand Prix,doohan,DOO,alpine,19,15,10,4,0,1,0,15
+2025,3,Japanese Grand Prix,hulkenberg,HUL,sauber,16,16,7,0,0,1,5,13
+2025,3,Japanese Grand Prix,lawson,LAW,rb,13,17,5,-4,0,1,0,2
+2025,3,Japanese Grand Prix,ocon,OCO,haas,18,18,4,0,0,1,0,5
+2025,3,Japanese Grand Prix,bortoleto,BOR,sauber,17,19,3,-2,0,1,0,2
+2025,3,Japanese Grand Prix,stroll,STR,aston_martin,20,20,2,0,0,1,0,3
+2025,4,Bahrain Grand Prix,piastri,PIA,mclaren,1,1,40,0,3,1,5,49
+2025,4,Bahrain Grand Prix,russell,RUS,mercedes,3,2,37,1,0,1,5,44
+2025,4,Bahrain Grand Prix,norris,NOR,mclaren,6,3,35,3,0,1,0,39
+2025,4,Bahrain Grand Prix,leclerc,LEC,ferrari,2,4,32,-2,0,1,5,36
+2025,4,Bahrain Grand Prix,hamilton,HAM,ferrari,9,5,30,4,0,1,0,35
+2025,4,Bahrain Grand Prix,max_verstappen,VER,red_bull,7,6,27,1,0,1,5,34
+2025,4,Bahrain Grand Prix,gasly,GAS,alpine,4,7,25,-3,0,1,5,28
+2025,4,Bahrain Grand Prix,ocon,OCO,haas,14,8,23,6,0,1,5,35
+2025,4,Bahrain Grand Prix,tsunoda,TSU,red_bull,10,9,22,1,0,1,0,24
+2025,4,Bahrain Grand Prix,bearman,BEA,haas,20,10,20,10,0,1,0,31
+2025,4,Bahrain Grand Prix,antonelli,ANT,mercedes,5,11,17,-6,0,1,0,12
+2025,4,Bahrain Grand Prix,albon,ALB,williams,15,12,15,3,0,1,5,24
+2025,4,Bahrain Grand Prix,hadjar,HAD,rb,12,13,13,-1,0,1,5,18
+2025,4,Bahrain Grand Prix,doohan,DOO,alpine,11,14,12,-3,0,1,0,10
+2025,4,Bahrain Grand Prix,alonso,ALO,aston_martin,13,15,10,-2,0,1,5,14
+2025,4,Bahrain Grand Prix,lawson,LAW,rb,17,16,7,1,0,1,0,9
+2025,4,Bahrain Grand Prix,stroll,STR,aston_martin,19,17,5,2,0,1,0,8
+2025,4,Bahrain Grand Prix,bortoleto,BOR,sauber,18,18,4,0,0,1,5,10
+2025,4,Bahrain Grand Prix,sainz,SAI,williams,8,19,3,-11,0,0,0,-8
+2025,4,Bahrain Grand Prix,hulkenberg,HUL,sauber,16,20,2,-4,0,0,0,-2
+2025,5,Saudi Arabian Grand Prix,piastri,PIA,mclaren,2,1,40,1,0,1,5,47
+2025,5,Saudi Arabian Grand Prix,max_verstappen,VER,red_bull,1,2,37,-1,0,1,5,42
+2025,5,Saudi Arabian Grand Prix,leclerc,LEC,ferrari,4,3,35,1,0,1,5,42
+2025,5,Saudi Arabian Grand Prix,norris,NOR,mclaren,10,4,32,6,3,1,0,42
+2025,5,Saudi Arabian Grand Prix,russell,RUS,mercedes,3,5,30,-2,0,1,5,34
+2025,5,Saudi Arabian Grand Prix,antonelli,ANT,mercedes,5,6,27,-1,0,1,0,27
+2025,5,Saudi Arabian Grand Prix,hamilton,HAM,ferrari,7,7,25,0,0,1,0,26
+2025,5,Saudi Arabian Grand Prix,sainz,SAI,williams,6,8,23,-2,0,1,5,27
+2025,5,Saudi Arabian Grand Prix,albon,ALB,williams,11,9,22,2,0,1,0,25
+2025,5,Saudi Arabian Grand Prix,hadjar,HAD,rb,14,10,20,4,0,1,5,30
+2025,5,Saudi Arabian Grand Prix,alonso,ALO,aston_martin,13,11,17,2,0,1,5,25
+2025,5,Saudi Arabian Grand Prix,lawson,LAW,rb,12,12,15,0,0,1,0,16
+2025,5,Saudi Arabian Grand Prix,bearman,BEA,haas,15,13,13,2,0,1,5,21
+2025,5,Saudi Arabian Grand Prix,ocon,OCO,haas,19,14,12,5,0,1,0,18
+2025,5,Saudi Arabian Grand Prix,hulkenberg,HUL,sauber,18,15,10,3,0,1,5,19
+2025,5,Saudi Arabian Grand Prix,stroll,STR,aston_martin,16,16,7,0,0,1,0,8
+2025,5,Saudi Arabian Grand Prix,doohan,DOO,alpine,17,17,5,0,0,1,5,11
+2025,5,Saudi Arabian Grand Prix,bortoleto,BOR,sauber,20,18,4,2,0,1,0,7
+2025,5,Saudi Arabian Grand Prix,tsunoda,TSU,red_bull,8,19,3,-11,0,0,0,-8
+2025,5,Saudi Arabian Grand Prix,gasly,GAS,alpine,9,20,2,-11,0,0,0,-9
+2025,6,Miami Grand Prix,piastri,PIA,mclaren,4,1,40,3,0,1,5,49
+2025,6,Miami Grand Prix,norris,NOR,mclaren,2,2,37,0,3,1,0,41
+2025,6,Miami Grand Prix,russell,RUS,mercedes,5,3,35,2,0,1,5,43
+2025,6,Miami Grand Prix,max_verstappen,VER,red_bull,1,4,32,-3,0,1,5,35
+2025,6,Miami Grand Prix,albon,ALB,williams,7,5,30,2,0,1,5,38
+2025,6,Miami Grand Prix,antonelli,ANT,mercedes,3,6,27,-3,0,1,0,25
+2025,6,Miami Grand Prix,leclerc,LEC,ferrari,8,7,25,1,0,1,5,32
+2025,6,Miami Grand Prix,hamilton,HAM,ferrari,12,8,23,4,0,1,0,28
+2025,6,Miami Grand Prix,sainz,SAI,williams,6,9,22,-3,0,1,0,20
+2025,6,Miami Grand Prix,tsunoda,TSU,red_bull,10,10,20,0,0,1,0,21
+2025,6,Miami Grand Prix,hadjar,HAD,rb,11,11,17,0,0,1,5,23
+2025,6,Miami Grand Prix,ocon,OCO,haas,9,12,15,-3,0,1,5,18
+2025,6,Miami Grand Prix,gasly,GAS,alpine,20,13,13,7,0,1,5,26
+2025,6,Miami Grand Prix,hulkenberg,HUL,sauber,16,14,12,2,0,1,5,20
+2025,6,Miami Grand Prix,alonso,ALO,aston_martin,17,15,10,2,0,1,5,18
+2025,6,Miami Grand Prix,stroll,STR,aston_martin,18,16,7,2,0,1,0,10
+2025,6,Miami Grand Prix,lawson,LAW,rb,15,17,5,-2,0,0,0,3
+2025,6,Miami Grand Prix,bortoleto,BOR,sauber,13,18,4,-5,0,0,0,-1
+2025,6,Miami Grand Prix,bearman,BEA,haas,19,19,3,0,0,0,0,3
+2025,6,Miami Grand Prix,doohan,DOO,alpine,14,20,2,-6,0,0,0,-4
+2025,7,Emilia Romagna Grand Prix,max_verstappen,VER,red_bull,2,1,40,1,3,1,5,50
+2025,7,Emilia Romagna Grand Prix,norris,NOR,mclaren,4,2,37,2,0,1,5,45
+2025,7,Emilia Romagna Grand Prix,piastri,PIA,mclaren,1,3,35,-2,0,1,0,34
+2025,7,Emilia Romagna Grand Prix,hamilton,HAM,ferrari,12,4,32,8,0,1,5,46
+2025,7,Emilia Romagna Grand Prix,albon,ALB,williams,7,5,30,2,0,1,5,38
+2025,7,Emilia Romagna Grand Prix,leclerc,LEC,ferrari,11,6,27,5,0,1,0,33
+2025,7,Emilia Romagna Grand Prix,russell,RUS,mercedes,3,7,25,-4,0,1,5,27
+2025,7,Emilia Romagna Grand Prix,sainz,SAI,williams,6,8,23,-2,0,1,0,22
+2025,7,Emilia Romagna Grand Prix,hadjar,HAD,rb,9,9,22,0,0,1,5,28
+2025,7,Emilia Romagna Grand Prix,tsunoda,TSU,red_bull,20,10,20,10,0,1,0,31
+2025,7,Emilia Romagna Grand Prix,alonso,ALO,aston_martin,5,11,17,-6,0,1,5,17
+2025,7,Emilia Romagna Grand Prix,hulkenberg,HUL,sauber,17,12,15,5,0,1,5,26
+2025,7,Emilia Romagna Grand Prix,gasly,GAS,alpine,10,13,13,-3,0,1,5,16
+2025,7,Emilia Romagna Grand Prix,lawson,LAW,rb,15,14,12,1,0,1,0,14
+2025,7,Emilia Romagna Grand Prix,stroll,STR,aston_martin,8,15,10,-7,0,1,0,4
+2025,7,Emilia Romagna Grand Prix,colapinto,COL,alpine,16,16,7,0,0,1,0,8
+2025,7,Emilia Romagna Grand Prix,bearman,BEA,haas,19,17,5,2,0,1,5,13
+2025,7,Emilia Romagna Grand Prix,bortoleto,BOR,sauber,14,18,4,-4,0,1,0,1
+2025,7,Emilia Romagna Grand Prix,antonelli,ANT,mercedes,13,19,3,-6,0,0,0,-3
+2025,7,Emilia Romagna Grand Prix,ocon,OCO,haas,18,20,2,-2,0,0,0,0
+2025,8,Monaco Grand Prix,norris,NOR,mclaren,1,1,40,0,3,1,5,49
+2025,8,Monaco Grand Prix,leclerc,LEC,ferrari,2,2,37,0,0,1,5,43
+2025,8,Monaco Grand Prix,piastri,PIA,mclaren,3,3,35,0,0,1,0,36
+2025,8,Monaco Grand Prix,max_verstappen,VER,red_bull,4,4,32,0,0,1,5,38
+2025,8,Monaco Grand Prix,hamilton,HAM,ferrari,7,5,30,2,0,1,0,33
+2025,8,Monaco Grand Prix,hadjar,HAD,rb,5,6,27,-1,0,1,5,32
+2025,8,Monaco Grand Prix,ocon,OCO,haas,8,7,25,1,0,1,5,32
+2025,8,Monaco Grand Prix,lawson,LAW,rb,9,8,23,1,0,1,0,25
+2025,8,Monaco Grand Prix,albon,ALB,williams,10,9,22,1,0,1,5,29
+2025,8,Monaco Grand Prix,sainz,SAI,williams,11,10,20,1,0,1,0,22
+2025,8,Monaco Grand Prix,russell,RUS,mercedes,14,11,17,3,0,1,5,26
+2025,8,Monaco Grand Prix,bearman,BEA,haas,20,12,15,8,0,1,0,24
+2025,8,Monaco Grand Prix,colapinto,COL,alpine,18,13,13,5,0,1,5,24
+2025,8,Monaco Grand Prix,bortoleto,BOR,sauber,16,14,12,2,0,1,5,20
+2025,8,Monaco Grand Prix,stroll,STR,aston_martin,19,15,10,4,0,1,5,20
+2025,8,Monaco Grand Prix,hulkenberg,HUL,sauber,13,16,7,-3,0,1,0,5
+2025,8,Monaco Grand Prix,tsunoda,TSU,red_bull,12,17,5,-5,0,1,0,1
+2025,8,Monaco Grand Prix,antonelli,ANT,mercedes,15,18,4,-3,0,1,0,2
+2025,8,Monaco Grand Prix,alonso,ALO,aston_martin,6,19,3,-13,0,0,0,-10
+2025,8,Monaco Grand Prix,gasly,GAS,alpine,17,20,2,-3,0,0,0,-1
+2025,9,Spanish Grand Prix,piastri,PIA,mclaren,1,1,40,0,3,1,5,49
+2025,9,Spanish Grand Prix,norris,NOR,mclaren,2,2,37,0,0,1,0,38
+2025,9,Spanish Grand Prix,leclerc,LEC,ferrari,7,3,35,4,0,1,5,45
+2025,9,Spanish Grand Prix,russell,RUS,mercedes,4,4,32,0,0,1,5,38
+2025,9,Spanish Grand Prix,hulkenberg,HUL,sauber,15,5,30,10,0,1,5,46
+2025,9,Spanish Grand Prix,hamilton,HAM,ferrari,5,6,27,-1,0,1,0,27
+2025,9,Spanish Grand Prix,hadjar,HAD,rb,9,7,25,2,0,1,5,33
+2025,9,Spanish Grand Prix,gasly,GAS,alpine,8,8,23,0,0,1,5,29
+2025,9,Spanish Grand Prix,alonso,ALO,aston_martin,10,9,22,1,0,1,0,24
+2025,9,Spanish Grand Prix,max_verstappen,VER,red_bull,3,10,20,-7,0,1,5,19
+2025,9,Spanish Grand Prix,lawson,LAW,rb,13,11,17,2,0,1,0,20
+2025,9,Spanish Grand Prix,bortoleto,BOR,sauber,12,12,15,0,0,1,0,16
+2025,9,Spanish Grand Prix,tsunoda,TSU,red_bull,19,13,13,6,0,1,0,20
+2025,9,Spanish Grand Prix,sainz,SAI,williams,17,14,12,3,0,1,5,21
+2025,9,Spanish Grand Prix,colapinto,COL,alpine,18,15,10,3,0,1,0,14
+2025,9,Spanish Grand Prix,ocon,OCO,haas,16,16,7,0,0,1,5,13
+2025,9,Spanish Grand Prix,bearman,BEA,haas,14,17,5,-3,0,1,0,3
+2025,9,Spanish Grand Prix,antonelli,ANT,mercedes,6,18,4,-12,0,0,0,-8
+2025,9,Spanish Grand Prix,albon,ALB,williams,11,19,3,-8,0,0,0,-5
+2025,10,Canadian Grand Prix,russell,RUS,mercedes,1,1,40,0,3,1,5,49
+2025,10,Canadian Grand Prix,max_verstappen,VER,red_bull,2,2,37,0,0,1,5,43
+2025,10,Canadian Grand Prix,antonelli,ANT,mercedes,4,3,35,1,0,1,0,37
+2025,10,Canadian Grand Prix,piastri,PIA,mclaren,3,4,32,-1,0,1,5,37
+2025,10,Canadian Grand Prix,leclerc,LEC,ferrari,8,5,30,3,0,1,5,39
+2025,10,Canadian Grand Prix,hamilton,HAM,ferrari,5,6,27,-1,0,1,0,27
+2025,10,Canadian Grand Prix,alonso,ALO,aston_martin,6,7,25,-1,0,1,5,30
+2025,10,Canadian Grand Prix,hulkenberg,HUL,sauber,11,8,23,3,0,1,5,32
+2025,10,Canadian Grand Prix,ocon,OCO,haas,14,9,22,5,0,1,5,33
+2025,10,Canadian Grand Prix,sainz,SAI,williams,16,10,20,6,0,1,5,32
+2025,10,Canadian Grand Prix,bearman,BEA,haas,13,11,17,2,0,1,0,20
+2025,10,Canadian Grand Prix,tsunoda,TSU,red_bull,18,12,15,6,0,1,0,22
+2025,10,Canadian Grand Prix,colapinto,COL,alpine,10,13,13,-3,0,1,5,16
+2025,10,Canadian Grand Prix,bortoleto,BOR,sauber,15,14,12,1,0,1,0,14
+2025,10,Canadian Grand Prix,gasly,GAS,alpine,20,15,10,5,0,1,0,16
+2025,10,Canadian Grand Prix,hadjar,HAD,rb,12,16,7,-4,0,1,5,9
+2025,10,Canadian Grand Prix,stroll,STR,aston_martin,17,17,5,0,0,1,0,6
+2025,10,Canadian Grand Prix,norris,NOR,mclaren,7,18,4,-11,0,1,0,-6
+2025,10,Canadian Grand Prix,lawson,LAW,rb,19,19,3,0,0,0,0,3
+2025,10,Canadian Grand Prix,albon,ALB,williams,9,20,2,-11,0,0,0,-9
+2025,11,Austrian Grand Prix,norris,NOR,mclaren,1,1,40,0,0,1,5,46
+2025,11,Austrian Grand Prix,piastri,PIA,mclaren,3,2,37,1,3,1,0,42
+2025,11,Austrian Grand Prix,leclerc,LEC,ferrari,2,3,35,-1,0,1,5,40
+2025,11,Austrian Grand Prix,hamilton,HAM,ferrari,4,4,32,0,0,1,0,33
+2025,11,Austrian Grand Prix,russell,RUS,mercedes,5,5,30,0,0,1,5,36
+2025,11,Austrian Grand Prix,lawson,LAW,rb,6,6,27,0,0,1,5,33
+2025,11,Austrian Grand Prix,alonso,ALO,aston_martin,11,7,25,4,0,1,5,35
+2025,11,Austrian Grand Prix,bortoleto,BOR,sauber,8,8,23,0,0,1,5,29
+2025,11,Austrian Grand Prix,hulkenberg,HUL,sauber,20,9,22,11,0,1,0,34
+2025,11,Austrian Grand Prix,ocon,OCO,haas,17,10,20,7,0,1,5,33
+2025,11,Austrian Grand Prix,bearman,BEA,haas,15,11,17,4,0,1,0,22
+2025,11,Austrian Grand Prix,hadjar,HAD,rb,13,12,15,1,0,1,0,17
+2025,11,Austrian Grand Prix,gasly,GAS,alpine,10,13,13,-3,0,1,5,16
+2025,11,Austrian Grand Prix,stroll,STR,aston_martin,16,14,12,2,0,1,0,15
+2025,11,Austrian Grand Prix,colapinto,COL,alpine,14,15,10,-1,0,1,0,10
+2025,11,Austrian Grand Prix,tsunoda,TSU,red_bull,18,16,7,2,0,1,5,15
+2025,11,Austrian Grand Prix,albon,ALB,williams,12,17,5,-5,0,0,5,5
+2025,11,Austrian Grand Prix,max_verstappen,VER,red_bull,7,18,4,-11,0,0,0,-7
+2025,11,Austrian Grand Prix,antonelli,ANT,mercedes,9,19,3,-10,0,0,0,-7
+2025,11,Austrian Grand Prix,sainz,SAI,williams,19,20,2,-1,0,0,0,1
+2025,12,British Grand Prix,norris,NOR,mclaren,3,1,40,2,0,1,5,48
+2025,12,British Grand Prix,piastri,PIA,mclaren,2,2,37,0,3,1,0,41
+2025,12,British Grand Prix,hulkenberg,HUL,sauber,19,3,35,16,0,1,5,57
+2025,12,British Grand Prix,hamilton,HAM,ferrari,5,4,32,1,0,1,5,39
+2025,12,British Grand Prix,max_verstappen,VER,red_bull,1,5,30,-4,0,1,5,32
+2025,12,British Grand Prix,gasly,GAS,alpine,8,6,27,2,0,1,5,35
+2025,12,British Grand Prix,stroll,STR,aston_martin,17,7,25,10,0,1,5,41
+2025,12,British Grand Prix,albon,ALB,williams,13,8,23,5,0,1,5,34
+2025,12,British Grand Prix,alonso,ALO,aston_martin,7,9,22,-2,0,1,0,21
+2025,12,British Grand Prix,russell,RUS,mercedes,4,10,20,-6,0,1,5,20
+2025,12,British Grand Prix,bearman,BEA,haas,18,11,17,7,0,1,5,30
+2025,12,British Grand Prix,sainz,SAI,williams,9,12,15,-3,0,1,0,13
+2025,12,British Grand Prix,ocon,OCO,haas,14,13,13,1,0,1,0,15
+2025,12,British Grand Prix,leclerc,LEC,ferrari,6,14,12,-8,0,1,0,5
+2025,12,British Grand Prix,tsunoda,TSU,red_bull,11,15,10,-4,0,1,0,7
+2025,12,British Grand Prix,antonelli,ANT,mercedes,10,16,7,-6,0,0,0,1
+2025,12,British Grand Prix,hadjar,HAD,rb,12,17,5,-5,0,0,5,5
+2025,12,British Grand Prix,bortoleto,BOR,sauber,16,18,4,-2,0,0,0,2
+2025,12,British Grand Prix,lawson,LAW,rb,15,19,3,-4,0,0,0,-1
+2025,12,British Grand Prix,colapinto,COL,alpine,20,20,2,0,0,0,0,2
+2025,13,Belgian Grand Prix,piastri,PIA,mclaren,2,1,40,1,0,1,5,47
+2025,13,Belgian Grand Prix,norris,NOR,mclaren,1,2,37,-1,0,1,0,37
+2025,13,Belgian Grand Prix,leclerc,LEC,ferrari,3,3,35,0,0,1,5,41
+2025,13,Belgian Grand Prix,max_verstappen,VER,red_bull,4,4,32,0,0,1,5,38
+2025,13,Belgian Grand Prix,russell,RUS,mercedes,6,5,30,1,0,1,5,37
+2025,13,Belgian Grand Prix,albon,ALB,williams,5,6,27,-1,0,1,5,32
+2025,13,Belgian Grand Prix,hamilton,HAM,ferrari,18,7,25,11,0,1,0,37
+2025,13,Belgian Grand Prix,lawson,LAW,rb,9,8,23,1,0,1,5,30
+2025,13,Belgian Grand Prix,bortoleto,BOR,sauber,10,9,22,1,0,1,5,29
+2025,13,Belgian Grand Prix,gasly,GAS,alpine,13,10,20,3,0,1,5,29
+2025,13,Belgian Grand Prix,bearman,BEA,haas,12,11,17,1,0,1,5,24
+2025,13,Belgian Grand Prix,hulkenberg,HUL,sauber,14,12,15,2,0,1,0,18
+2025,13,Belgian Grand Prix,tsunoda,TSU,red_bull,7,13,13,-6,0,1,0,8
+2025,13,Belgian Grand Prix,stroll,STR,aston_martin,16,14,12,2,0,1,5,20
+2025,13,Belgian Grand Prix,ocon,OCO,haas,11,15,10,-4,0,1,0,7
+2025,13,Belgian Grand Prix,antonelli,ANT,mercedes,19,16,7,3,3,1,0,14
+2025,13,Belgian Grand Prix,alonso,ALO,aston_martin,20,17,5,3,0,1,0,9
+2025,13,Belgian Grand Prix,sainz,SAI,williams,17,18,4,-1,0,1,0,4
+2025,13,Belgian Grand Prix,colapinto,COL,alpine,15,19,3,-4,0,1,0,0
+2025,13,Belgian Grand Prix,hadjar,HAD,rb,8,20,2,-12,0,1,0,-9
+2025,14,Hungarian Grand Prix,norris,NOR,mclaren,3,1,40,2,0,1,5,48
+2025,14,Hungarian Grand Prix,piastri,PIA,mclaren,2,2,37,0,0,1,0,38
+2025,14,Hungarian Grand Prix,russell,RUS,mercedes,4,3,35,1,3,1,5,45
+2025,14,Hungarian Grand Prix,leclerc,LEC,ferrari,1,4,32,-3,0,1,5,35
+2025,14,Hungarian Grand Prix,alonso,ALO,aston_martin,5,5,30,0,0,1,5,36
+2025,14,Hungarian Grand Prix,bortoleto,BOR,sauber,7,6,27,1,0,1,5,34
+2025,14,Hungarian Grand Prix,stroll,STR,aston_martin,6,7,25,-1,0,1,0,25
+2025,14,Hungarian Grand Prix,lawson,LAW,rb,9,8,23,1,0,1,5,30
+2025,14,Hungarian Grand Prix,max_verstappen,VER,red_bull,8,9,22,-1,0,1,5,27
+2025,14,Hungarian Grand Prix,antonelli,ANT,mercedes,15,10,20,5,0,1,0,26
+2025,14,Hungarian Grand Prix,hadjar,HAD,rb,10,11,17,-1,0,1,0,17
+2025,14,Hungarian Grand Prix,hamilton,HAM,ferrari,12,12,15,0,0,1,0,16
+2025,14,Hungarian Grand Prix,hulkenberg,HUL,sauber,18,13,13,5,0,1,0,19
+2025,14,Hungarian Grand Prix,sainz,SAI,williams,13,14,12,-1,0,1,5,17
+2025,14,Hungarian Grand Prix,albon,ALB,williams,19,15,10,4,0,1,0,15
+2025,14,Hungarian Grand Prix,ocon,OCO,haas,17,16,7,1,0,1,5,14
+2025,14,Hungarian Grand Prix,tsunoda,TSU,red_bull,20,17,5,3,0,1,0,9
+2025,14,Hungarian Grand Prix,colapinto,COL,alpine,14,18,4,-4,0,1,5,6
+2025,14,Hungarian Grand Prix,gasly,GAS,alpine,16,19,3,-3,0,1,0,1
+2025,14,Hungarian Grand Prix,bearman,BEA,haas,11,20,2,-9,0,0,0,-7
+2025,15,Dutch Grand Prix,piastri,PIA,mclaren,1,1,40,0,3,1,5,49
+2025,15,Dutch Grand Prix,max_verstappen,VER,red_bull,3,2,37,1,0,1,5,44
+2025,15,Dutch Grand Prix,hadjar,HAD,rb,4,3,35,1,0,1,5,42
+2025,15,Dutch Grand Prix,russell,RUS,mercedes,5,4,32,1,0,1,5,39
+2025,15,Dutch Grand Prix,albon,ALB,williams,15,5,30,10,0,1,5,46
+2025,15,Dutch Grand Prix,bearman,BEA,haas,20,6,27,14,0,1,5,47
+2025,15,Dutch Grand Prix,stroll,STR,aston_martin,19,7,25,12,0,1,5,43
+2025,15,Dutch Grand Prix,alonso,ALO,aston_martin,10,8,23,2,0,1,0,26
+2025,15,Dutch Grand Prix,tsunoda,TSU,red_bull,12,9,22,3,0,1,0,26
+2025,15,Dutch Grand Prix,ocon,OCO,haas,18,10,20,8,0,1,0,29
+2025,15,Dutch Grand Prix,colapinto,COL,alpine,16,11,17,5,0,1,5,28
+2025,15,Dutch Grand Prix,lawson,LAW,rb,8,12,15,-4,0,1,0,12
+2025,15,Dutch Grand Prix,sainz,SAI,williams,9,13,13,-4,0,1,0,10
+2025,15,Dutch Grand Prix,hulkenberg,HUL,sauber,17,14,12,3,0,1,5,21
+2025,15,Dutch Grand Prix,bortoleto,BOR,sauber,13,15,10,-2,0,1,0,9
+2025,15,Dutch Grand Prix,antonelli,ANT,mercedes,11,16,7,-5,0,1,0,3
+2025,15,Dutch Grand Prix,gasly,GAS,alpine,14,17,5,-3,0,1,0,3
+2025,15,Dutch Grand Prix,norris,NOR,mclaren,2,18,4,-16,0,0,0,-12
+2025,15,Dutch Grand Prix,leclerc,LEC,ferrari,6,19,3,-13,0,0,5,-5
+2025,15,Dutch Grand Prix,hamilton,HAM,ferrari,7,20,2,-13,0,0,0,-11
+2025,16,Italian Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,0,1,5,46
+2025,16,Italian Grand Prix,norris,NOR,mclaren,2,2,37,0,3,1,5,46
+2025,16,Italian Grand Prix,piastri,PIA,mclaren,3,3,35,0,0,1,0,36
+2025,16,Italian Grand Prix,leclerc,LEC,ferrari,4,4,32,0,0,1,5,38
+2025,16,Italian Grand Prix,russell,RUS,mercedes,5,5,30,0,0,1,5,36
+2025,16,Italian Grand Prix,hamilton,HAM,ferrari,10,6,27,4,0,1,0,32
+2025,16,Italian Grand Prix,albon,ALB,williams,14,7,25,7,0,1,5,38
+2025,16,Italian Grand Prix,bortoleto,BOR,sauber,7,8,23,-1,0,1,5,28
+2025,16,Italian Grand Prix,antonelli,ANT,mercedes,6,9,22,-3,0,1,0,20
+2025,16,Italian Grand Prix,hadjar,HAD,rb,19,10,20,9,0,1,5,35
+2025,16,Italian Grand Prix,sainz,SAI,williams,13,11,17,2,0,1,0,20
+2025,16,Italian Grand Prix,bearman,BEA,haas,11,12,15,-1,0,1,5,20
+2025,16,Italian Grand Prix,tsunoda,TSU,red_bull,9,13,13,-4,0,1,0,10
+2025,16,Italian Grand Prix,lawson,LAW,rb,18,14,12,4,0,1,0,17
+2025,16,Italian Grand Prix,ocon,OCO,haas,15,15,10,0,0,1,0,11
+2025,16,Italian Grand Prix,gasly,GAS,alpine,20,16,7,4,0,1,5,17
+2025,16,Italian Grand Prix,colapinto,COL,alpine,17,17,5,0,0,1,0,6
+2025,16,Italian Grand Prix,stroll,STR,aston_martin,16,18,4,-2,0,1,5,8
+2025,16,Italian Grand Prix,alonso,ALO,aston_martin,8,19,3,-11,0,0,0,-8
+2025,16,Italian Grand Prix,hulkenberg,HUL,sauber,12,20,2,-8,0,0,0,-6
+2025,17,Azerbaijan Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,3,1,5,49
+2025,17,Azerbaijan Grand Prix,russell,RUS,mercedes,5,2,37,3,0,1,5,46
+2025,17,Azerbaijan Grand Prix,sainz,SAI,williams,2,3,35,-1,0,1,5,40
+2025,17,Azerbaijan Grand Prix,antonelli,ANT,mercedes,4,4,32,0,0,1,0,33
+2025,17,Azerbaijan Grand Prix,lawson,LAW,rb,3,5,30,-2,0,1,5,34
+2025,17,Azerbaijan Grand Prix,tsunoda,TSU,red_bull,6,6,27,0,0,1,0,28
+2025,17,Azerbaijan Grand Prix,norris,NOR,mclaren,7,7,25,0,0,1,5,31
+2025,17,Azerbaijan Grand Prix,hamilton,HAM,ferrari,12,8,23,4,0,1,5,33
+2025,17,Azerbaijan Grand Prix,leclerc,LEC,ferrari,10,9,22,1,0,1,0,24
+2025,17,Azerbaijan Grand Prix,hadjar,HAD,rb,8,10,20,-2,0,1,0,19
+2025,17,Azerbaijan Grand Prix,bortoleto,BOR,sauber,13,11,17,2,0,1,5,25
+2025,17,Azerbaijan Grand Prix,bearman,BEA,haas,15,12,15,3,0,1,5,24
+2025,17,Azerbaijan Grand Prix,albon,ALB,williams,19,13,13,6,0,1,0,20
+2025,17,Azerbaijan Grand Prix,ocon,OCO,haas,20,14,12,6,0,1,0,19
+2025,17,Azerbaijan Grand Prix,alonso,ALO,aston_martin,11,15,10,-4,0,1,5,12
+2025,17,Azerbaijan Grand Prix,hulkenberg,HUL,sauber,17,16,7,1,0,1,0,9
+2025,17,Azerbaijan Grand Prix,stroll,STR,aston_martin,14,17,5,-3,0,1,0,3
+2025,17,Azerbaijan Grand Prix,gasly,GAS,alpine,18,18,4,0,0,1,5,10
+2025,17,Azerbaijan Grand Prix,colapinto,COL,alpine,16,19,3,-3,0,1,0,1
+2025,17,Azerbaijan Grand Prix,piastri,PIA,mclaren,9,20,2,-11,0,0,0,-9
+2025,18,Singapore Grand Prix,russell,RUS,mercedes,1,1,40,0,0,1,5,46
+2025,18,Singapore Grand Prix,max_verstappen,VER,red_bull,2,2,37,0,0,1,5,43
+2025,18,Singapore Grand Prix,norris,NOR,mclaren,5,3,35,2,0,1,5,43
+2025,18,Singapore Grand Prix,piastri,PIA,mclaren,3,4,32,-1,0,1,0,32
+2025,18,Singapore Grand Prix,antonelli,ANT,mercedes,4,5,30,-1,0,1,0,30
+2025,18,Singapore Grand Prix,leclerc,LEC,ferrari,7,6,27,1,0,1,5,34
+2025,18,Singapore Grand Prix,alonso,ALO,aston_martin,10,7,25,3,0,1,5,34
+2025,18,Singapore Grand Prix,hamilton,HAM,ferrari,6,8,23,-2,3,1,0,25
+2025,18,Singapore Grand Prix,bearman,BEA,haas,9,9,22,0,0,1,5,28
+2025,18,Singapore Grand Prix,sainz,SAI,williams,18,10,20,8,0,1,5,34
+2025,18,Singapore Grand Prix,hadjar,HAD,rb,8,11,17,-3,0,1,5,20
+2025,18,Singapore Grand Prix,tsunoda,TSU,red_bull,13,12,15,1,0,1,0,17
+2025,18,Singapore Grand Prix,stroll,STR,aston_martin,15,13,13,2,0,1,0,16
+2025,18,Singapore Grand Prix,albon,ALB,williams,20,14,12,6,0,1,0,19
+2025,18,Singapore Grand Prix,lawson,LAW,rb,12,15,10,-3,0,1,0,8
+2025,18,Singapore Grand Prix,colapinto,COL,alpine,16,16,7,0,0,1,5,13
+2025,18,Singapore Grand Prix,bortoleto,BOR,sauber,14,17,5,-3,0,1,5,8
+2025,18,Singapore Grand Prix,ocon,OCO,haas,17,18,4,-1,0,1,0,4
+2025,18,Singapore Grand Prix,gasly,GAS,alpine,19,19,3,0,0,1,0,4
+2025,18,Singapore Grand Prix,hulkenberg,HUL,sauber,11,20,2,-9,0,1,0,-6
+2025,19,United States Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,0,1,5,46
+2025,19,United States Grand Prix,norris,NOR,mclaren,2,2,37,0,0,1,5,43
+2025,19,United States Grand Prix,leclerc,LEC,ferrari,3,3,35,0,0,1,5,41
+2025,19,United States Grand Prix,hamilton,HAM,ferrari,5,4,32,1,0,1,0,34
+2025,19,United States Grand Prix,piastri,PIA,mclaren,6,5,30,1,0,1,0,32
+2025,19,United States Grand Prix,russell,RUS,mercedes,4,6,27,-2,0,1,5,31
+2025,19,United States Grand Prix,tsunoda,TSU,red_bull,13,7,25,6,0,1,0,32
+2025,19,United States Grand Prix,hulkenberg,HUL,sauber,11,8,23,3,0,1,5,32
+2025,19,United States Grand Prix,bearman,BEA,haas,8,9,22,-1,0,1,5,27
+2025,19,United States Grand Prix,alonso,ALO,aston_martin,10,10,20,0,0,1,5,26
+2025,19,United States Grand Prix,lawson,LAW,rb,12,11,17,1,0,1,5,24
+2025,19,United States Grand Prix,stroll,STR,aston_martin,19,12,15,7,0,1,0,23
+2025,19,United States Grand Prix,antonelli,ANT,mercedes,7,13,13,-6,3,1,0,11
+2025,19,United States Grand Prix,albon,ALB,williams,18,14,12,4,0,1,5,22
+2025,19,United States Grand Prix,ocon,OCO,haas,17,15,10,2,0,1,0,13
+2025,19,United States Grand Prix,hadjar,HAD,rb,20,16,7,4,0,1,0,12
+2025,19,United States Grand Prix,colapinto,COL,alpine,15,17,5,-2,0,1,5,9
+2025,19,United States Grand Prix,bortoleto,BOR,sauber,16,18,4,-2,0,1,0,3
+2025,19,United States Grand Prix,gasly,GAS,alpine,14,19,3,-5,0,1,0,-1
+2025,19,United States Grand Prix,sainz,SAI,williams,9,20,2,-11,0,0,0,-9
+2025,20,Mexico City Grand Prix,norris,NOR,mclaren,1,1,40,0,0,1,5,46
+2025,20,Mexico City Grand Prix,leclerc,LEC,ferrari,2,2,37,0,0,1,5,43
+2025,20,Mexico City Grand Prix,max_verstappen,VER,red_bull,5,3,35,2,0,1,5,43
+2025,20,Mexico City Grand Prix,bearman,BEA,haas,9,4,32,5,0,1,5,43
+2025,20,Mexico City Grand Prix,piastri,PIA,mclaren,7,5,30,2,0,1,0,33
+2025,20,Mexico City Grand Prix,antonelli,ANT,mercedes,6,6,27,0,0,1,5,33
+2025,20,Mexico City Grand Prix,russell,RUS,mercedes,4,7,25,-3,3,1,0,26
+2025,20,Mexico City Grand Prix,hamilton,HAM,ferrari,3,8,23,-5,0,1,0,19
+2025,20,Mexico City Grand Prix,ocon,OCO,haas,11,9,22,2,0,1,0,25
+2025,20,Mexico City Grand Prix,bortoleto,BOR,sauber,16,10,20,6,0,1,5,32
+2025,20,Mexico City Grand Prix,tsunoda,TSU,red_bull,10,11,17,-1,0,1,0,17
+2025,20,Mexico City Grand Prix,albon,ALB,williams,17,12,15,5,0,1,5,26
+2025,20,Mexico City Grand Prix,hadjar,HAD,rb,8,13,13,-5,0,1,5,14
+2025,20,Mexico City Grand Prix,stroll,STR,aston_martin,19,14,12,5,0,1,5,23
+2025,20,Mexico City Grand Prix,gasly,GAS,alpine,18,15,10,3,0,1,5,19
+2025,20,Mexico City Grand Prix,colapinto,COL,alpine,20,16,7,4,0,1,0,12
+2025,20,Mexico City Grand Prix,sainz,SAI,williams,12,17,5,-5,0,1,0,1
+2025,20,Mexico City Grand Prix,alonso,ALO,aston_martin,14,18,4,-4,0,0,0,0
+2025,20,Mexico City Grand Prix,hulkenberg,HUL,sauber,13,19,3,-6,0,0,0,-3
+2025,20,Mexico City Grand Prix,lawson,LAW,rb,15,20,2,-5,0,0,0,-3
+2025,21,São Paulo Grand Prix,norris,NOR,mclaren,1,1,40,0,0,1,5,46
+2025,21,São Paulo Grand Prix,antonelli,ANT,mercedes,2,2,37,0,0,1,5,43
+2025,21,São Paulo Grand Prix,max_verstappen,VER,red_bull,19,3,35,16,0,1,5,57
+2025,21,São Paulo Grand Prix,russell,RUS,mercedes,6,4,32,2,0,1,0,35
+2025,21,São Paulo Grand Prix,piastri,PIA,mclaren,4,5,30,-1,0,1,0,30
+2025,21,São Paulo Grand Prix,bearman,BEA,haas,8,6,27,2,0,1,5,35
+2025,21,São Paulo Grand Prix,lawson,LAW,rb,7,7,25,0,0,1,5,31
+2025,21,São Paulo Grand Prix,hadjar,HAD,rb,5,8,23,-3,0,1,0,21
+2025,21,São Paulo Grand Prix,hulkenberg,HUL,sauber,10,9,22,1,0,1,5,29
+2025,21,São Paulo Grand Prix,gasly,GAS,alpine,9,10,20,-1,0,1,5,25
+2025,21,São Paulo Grand Prix,albon,ALB,williams,12,11,17,1,3,1,5,27
+2025,21,São Paulo Grand Prix,ocon,OCO,haas,20,12,15,8,0,1,0,24
+2025,21,São Paulo Grand Prix,sainz,SAI,williams,15,13,13,2,0,1,0,16
+2025,21,São Paulo Grand Prix,alonso,ALO,aston_martin,11,14,12,-3,0,1,5,15
+2025,21,São Paulo Grand Prix,colapinto,COL,alpine,16,15,10,1,0,1,0,12
+2025,21,São Paulo Grand Prix,stroll,STR,aston_martin,14,16,7,-2,0,1,0,6
+2025,21,São Paulo Grand Prix,tsunoda,TSU,red_bull,17,17,5,0,0,1,0,6
+2025,21,São Paulo Grand Prix,hamilton,HAM,ferrari,13,18,4,-5,0,0,5,4
+2025,21,São Paulo Grand Prix,leclerc,LEC,ferrari,3,19,3,-16,0,0,0,-13
+2025,21,São Paulo Grand Prix,bortoleto,BOR,sauber,18,20,2,-2,0,0,0,0
+2025,22,Las Vegas Grand Prix,max_verstappen,VER,red_bull,2,1,40,1,3,1,5,50
+2025,22,Las Vegas Grand Prix,russell,RUS,mercedes,4,2,37,2,0,1,5,45
+2025,22,Las Vegas Grand Prix,antonelli,ANT,mercedes,17,3,35,14,0,1,0,50
+2025,22,Las Vegas Grand Prix,leclerc,LEC,ferrari,9,4,32,5,0,1,5,43
+2025,22,Las Vegas Grand Prix,sainz,SAI,williams,3,5,30,-2,0,1,5,34
+2025,22,Las Vegas Grand Prix,hadjar,HAD,rb,8,6,27,2,0,1,5,35
+2025,22,Las Vegas Grand Prix,hulkenberg,HUL,sauber,11,7,25,4,0,1,5,35
+2025,22,Las Vegas Grand Prix,hamilton,HAM,ferrari,19,8,23,11,0,1,0,35
+2025,22,Las Vegas Grand Prix,ocon,OCO,haas,13,9,22,4,0,1,5,32
+2025,22,Las Vegas Grand Prix,bearman,BEA,haas,14,10,20,4,0,1,0,25
+2025,22,Las Vegas Grand Prix,alonso,ALO,aston_martin,7,11,17,-4,0,1,5,19
+2025,22,Las Vegas Grand Prix,tsunoda,TSU,red_bull,20,12,15,8,0,1,0,24
+2025,22,Las Vegas Grand Prix,gasly,GAS,alpine,10,13,13,-3,0,1,5,16
+2025,22,Las Vegas Grand Prix,lawson,LAW,rb,6,14,12,-8,0,1,0,5
+2025,22,Las Vegas Grand Prix,colapinto,COL,alpine,15,15,10,0,0,1,0,11
+2025,22,Las Vegas Grand Prix,albon,ALB,williams,16,16,7,0,0,0,0,7
+2025,22,Las Vegas Grand Prix,bortoleto,BOR,sauber,18,17,5,1,0,0,0,6
+2025,22,Las Vegas Grand Prix,stroll,STR,aston_martin,12,18,4,-6,0,0,0,-2
+2025,22,Las Vegas Grand Prix,norris,NOR,mclaren,1,19,3,-18,0,1,5,-9
+2025,22,Las Vegas Grand Prix,piastri,PIA,mclaren,5,20,2,-15,0,1,0,-12
+2025,23,Qatar Grand Prix,max_verstappen,VER,red_bull,3,1,40,2,0,1,5,48
+2025,23,Qatar Grand Prix,piastri,PIA,mclaren,1,2,37,-1,3,1,5,45
+2025,23,Qatar Grand Prix,sainz,SAI,williams,7,3,35,4,0,1,5,45
+2025,23,Qatar Grand Prix,norris,NOR,mclaren,2,4,32,-2,0,1,0,31
+2025,23,Qatar Grand Prix,antonelli,ANT,mercedes,5,5,30,0,0,1,5,36
+2025,23,Qatar Grand Prix,russell,RUS,mercedes,4,6,27,-2,0,1,0,26
+2025,23,Qatar Grand Prix,alonso,ALO,aston_martin,8,7,25,1,0,1,5,32
+2025,23,Qatar Grand Prix,leclerc,LEC,ferrari,10,8,23,2,0,1,5,31
+2025,23,Qatar Grand Prix,lawson,LAW,rb,12,9,22,3,0,1,5,31
+2025,23,Qatar Grand Prix,tsunoda,TSU,red_bull,15,10,20,5,0,1,0,26
+2025,23,Qatar Grand Prix,albon,ALB,williams,14,11,17,3,0,1,0,21
+2025,23,Qatar Grand Prix,hamilton,HAM,ferrari,17,12,15,5,0,1,0,21
+2025,23,Qatar Grand Prix,bortoleto,BOR,sauber,19,13,13,6,0,1,5,25
+2025,23,Qatar Grand Prix,colapinto,COL,alpine,20,14,12,6,0,1,5,24
+2025,23,Qatar Grand Prix,ocon,OCO,haas,16,15,10,1,0,1,5,17
+2025,23,Qatar Grand Prix,gasly,GAS,alpine,9,16,7,-7,0,1,0,1
+2025,23,Qatar Grand Prix,stroll,STR,aston_martin,18,17,5,1,0,1,0,7
+2025,23,Qatar Grand Prix,hadjar,HAD,rb,6,18,4,-12,0,1,0,-7
+2025,23,Qatar Grand Prix,bearman,BEA,haas,13,19,3,-6,0,0,0,-3
+2025,23,Qatar Grand Prix,hulkenberg,HUL,sauber,11,20,2,-9,0,0,0,-7
+2025,24,Abu Dhabi Grand Prix,max_verstappen,VER,red_bull,1,1,40,0,0,1,5,46
+2025,24,Abu Dhabi Grand Prix,piastri,PIA,mclaren,3,2,37,1,0,1,5,44
+2025,24,Abu Dhabi Grand Prix,norris,NOR,mclaren,2,3,35,-1,0,1,0,35
+2025,24,Abu Dhabi Grand Prix,leclerc,LEC,ferrari,5,4,32,1,3,1,5,42
+2025,24,Abu Dhabi Grand Prix,russell,RUS,mercedes,4,5,30,-1,0,1,5,35
+2025,24,Abu Dhabi Grand Prix,alonso,ALO,aston_martin,6,6,27,0,0,1,5,33
+2025,24,Abu Dhabi Grand Prix,ocon,OCO,haas,8,7,25,1,0,1,5,32
+2025,24,Abu Dhabi Grand Prix,hamilton,HAM,ferrari,16,8,23,8,0,1,0,32
+2025,24,Abu Dhabi Grand Prix,hulkenberg,HUL,sauber,18,9,22,9,0,1,5,37
+2025,24,Abu Dhabi Grand Prix,stroll,STR,aston_martin,15,10,20,5,0,1,0,26
+2025,24,Abu Dhabi Grand Prix,bortoleto,BOR,sauber,7,11,17,-4,0,1,0,14
+2025,24,Abu Dhabi Grand Prix,bearman,BEA,haas,11,12,15,-1,0,1,0,15
+2025,24,Abu Dhabi Grand Prix,sainz,SAI,williams,12,13,13,-1,0,1,5,18
+2025,24,Abu Dhabi Grand Prix,tsunoda,TSU,red_bull,10,14,12,-4,0,1,0,9
+2025,24,Abu Dhabi Grand Prix,antonelli,ANT,mercedes,14,15,10,-1,0,1,0,10
+2025,24,Abu Dhabi Grand Prix,albon,ALB,williams,17,16,7,1,0,1,0,9
+2025,24,Abu Dhabi Grand Prix,hadjar,HAD,rb,9,17,5,-8,0,1,5,3
+2025,24,Abu Dhabi Grand Prix,lawson,LAW,rb,13,18,4,-5,0,1,0,0
+2025,24,Abu Dhabi Grand Prix,gasly,GAS,alpine,19,19,3,0,0,1,5,9
+2025,24,Abu Dhabi Grand Prix,colapinto,COL,alpine,20,20,2,0,0,1,0,3
+2026,1,Australian Grand Prix,russell,RUS,mercedes,1,1,40,0,0,1,5,46
+2026,1,Australian Grand Prix,antonelli,ANT,mercedes,2,2,37,0,0,1,0,38
+2026,1,Australian Grand Prix,leclerc,LEC,ferrari,4,3,35,1,0,1,5,42
+2026,1,Australian Grand Prix,hamilton,HAM,ferrari,7,4,32,3,0,1,0,36
+2026,1,Australian Grand Prix,norris,NOR,mclaren,6,5,30,1,0,1,5,37
+2026,1,Australian Grand Prix,max_verstappen,VER,red_bull,20,6,27,14,3,1,5,50
+2026,1,Australian Grand Prix,bearman,BEA,haas,12,7,25,5,0,1,5,36
+2026,1,Australian Grand Prix,arvid_lindblad,LIN,rb,9,8,23,1,0,1,5,30
+2026,1,Australian Grand Prix,bortoleto,BOR,audi,10,9,22,1,0,1,5,29
+2026,1,Australian Grand Prix,gasly,GAS,alpine,14,10,20,4,0,1,5,30
+2026,1,Australian Grand Prix,ocon,OCO,haas,13,11,17,2,0,1,0,20
+2026,1,Australian Grand Prix,albon,ALB,williams,15,12,15,3,0,1,5,24
+2026,1,Australian Grand Prix,lawson,LAW,rb,8,13,13,-5,0,1,0,9
+2026,1,Australian Grand Prix,colapinto,COL,alpine,16,14,12,2,0,1,0,15
+2026,1,Australian Grand Prix,sainz,SAI,williams,21,15,10,6,0,1,0,17
+2026,1,Australian Grand Prix,perez,PER,cadillac,18,16,7,2,0,1,5,15
+2026,1,Australian Grand Prix,stroll,STR,aston_martin,22,17,5,5,0,0,5,15
+2026,1,Australian Grand Prix,alonso,ALO,aston_martin,17,18,4,-1,0,0,0,3
+2026,1,Australian Grand Prix,bottas,BOT,cadillac,19,19,3,0,0,0,0,3
+2026,1,Australian Grand Prix,hadjar,HAD,red_bull,3,20,2,-17,0,0,0,-15
+2026,1,Australian Grand Prix,piastri,PIA,mclaren,5,21,1,-16,0,0,0,-15
+2026,1,Australian Grand Prix,hulkenberg,HUL,audi,11,22,0,-11,0,0,0,-11
+2026,2,Chinese Grand Prix,antonelli,ANT,mercedes,1,1,40,0,3,1,5,49
+2026,2,Chinese Grand Prix,russell,RUS,mercedes,2,2,37,0,0,1,0,38
+2026,2,Chinese Grand Prix,hamilton,HAM,ferrari,3,3,35,0,0,1,5,41
+2026,2,Chinese Grand Prix,leclerc,LEC,ferrari,4,4,32,0,0,1,0,33
+2026,2,Chinese Grand Prix,bearman,BEA,haas,10,5,30,5,0,1,5,41
+2026,2,Chinese Grand Prix,gasly,GAS,alpine,7,6,27,1,0,1,5,34
+2026,2,Chinese Grand Prix,lawson,LAW,rb,14,7,25,7,0,1,5,38
+2026,2,Chinese Grand Prix,hadjar,HAD,red_bull,9,8,23,1,0,1,5,30
+2026,2,Chinese Grand Prix,sainz,SAI,williams,17,9,22,8,0,1,5,36
+2026,2,Chinese Grand Prix,colapinto,COL,alpine,12,10,20,2,0,1,0,23
+2026,2,Chinese Grand Prix,hulkenberg,HUL,audi,11,11,17,0,0,1,5,23
+2026,2,Chinese Grand Prix,arvid_lindblad,LIN,rb,15,12,15,3,0,1,0,19
+2026,2,Chinese Grand Prix,bottas,BOT,cadillac,19,13,13,6,0,1,5,25
+2026,2,Chinese Grand Prix,ocon,OCO,haas,13,14,12,-1,0,1,0,12
+2026,2,Chinese Grand Prix,perez,PER,cadillac,21,15,10,6,0,1,0,17
+2026,2,Chinese Grand Prix,max_verstappen,VER,red_bull,8,16,7,-8,0,0,0,-1
+2026,2,Chinese Grand Prix,alonso,ALO,aston_martin,18,17,5,1,0,0,5,11
+2026,2,Chinese Grand Prix,stroll,STR,aston_martin,20,18,4,2,0,0,0,6
+2026,2,Chinese Grand Prix,piastri,PIA,mclaren,5,19,3,-14,0,0,5,-6
+2026,2,Chinese Grand Prix,norris,NOR,mclaren,6,20,2,-14,0,0,0,-12
+2026,2,Chinese Grand Prix,bortoleto,BOR,audi,16,21,1,-5,0,0,0,-4
+2026,2,Chinese Grand Prix,albon,ALB,williams,22,22,0,0,0,0,0,0
+2026,3,Japanese Grand Prix,antonelli,ANT,mercedes,1,1,40,0,3,1,5,49
+2026,3,Japanese Grand Prix,piastri,PIA,mclaren,3,2,37,1,0,1,5,44
+2026,3,Japanese Grand Prix,leclerc,LEC,ferrari,4,3,35,1,0,1,5,42
+2026,3,Japanese Grand Prix,russell,RUS,mercedes,2,4,32,-2,0,1,0,31
+2026,3,Japanese Grand Prix,norris,NOR,mclaren,5,5,30,0,0,1,0,31
+2026,3,Japanese Grand Prix,hamilton,HAM,ferrari,6,6,27,0,0,1,0,28
+2026,3,Japanese Grand Prix,gasly,GAS,alpine,7,7,25,0,0,1,5,31
+2026,3,Japanese Grand Prix,max_verstappen,VER,red_bull,11,8,23,3,0,1,5,32
+2026,3,Japanese Grand Prix,lawson,LAW,rb,14,9,22,5,0,1,5,33
+2026,3,Japanese Grand Prix,ocon,OCO,haas,12,10,20,2,0,1,5,28
+2026,3,Japanese Grand Prix,hulkenberg,HUL,audi,13,11,17,2,0,1,5,25
+2026,3,Japanese Grand Prix,hadjar,HAD,red_bull,8,12,15,-4,0,1,0,12
+2026,3,Japanese Grand Prix,bortoleto,BOR,audi,9,13,13,-4,0,1,0,10
+2026,3,Japanese Grand Prix,arvid_lindblad,LIN,rb,10,14,12,-4,0,1,0,9
+2026,3,Japanese Grand Prix,sainz,SAI,williams,16,15,10,1,0,1,5,17
+2026,3,Japanese Grand Prix,colapinto,COL,alpine,15,16,7,-1,0,1,0,7
+2026,3,Japanese Grand Prix,perez,PER,cadillac,19,17,5,2,0,1,5,13
+2026,3,Japanese Grand Prix,alonso,ALO,aston_martin,21,18,4,3,0,1,5,13
+2026,3,Japanese Grand Prix,bottas,BOT,cadillac,20,19,3,1,0,1,0,5
+2026,3,Japanese Grand Prix,albon,ALB,williams,17,20,2,-3,0,1,0,0
+2026,3,Japanese Grand Prix,stroll,STR,aston_martin,22,21,1,1,0,0,0,2
+2026,3,Japanese Grand Prix,bearman,BEA,haas,18,22,0,-4,0,0,0,-4
+2026,4,Miami Grand Prix,antonelli,ANT,mercedes,1,1,40,0,0,1,5,46
+2026,4,Miami Grand Prix,norris,NOR,mclaren,4,2,37,2,3,1,5,48
+2026,4,Miami Grand Prix,piastri,PIA,mclaren,7,3,35,4,0,1,0,40
+2026,4,Miami Grand Prix,russell,RUS,mercedes,5,4,32,1,0,1,0,34
+2026,4,Miami Grand Prix,max_verstappen,VER,red_bull,2,5,30,-3,0,1,5,33
+2026,4,Miami Grand Prix,hamilton,HAM,ferrari,6,6,27,0,0,1,5,33
+2026,4,Miami Grand Prix,colapinto,COL,alpine,8,7,25,1,0,1,5,32
+2026,4,Miami Grand Prix,leclerc,LEC,ferrari,3,8,23,-5,0,1,0,19
+2026,4,Miami Grand Prix,sainz,SAI,williams,13,9,22,4,0,1,5,32
+2026,4,Miami Grand Prix,albon,ALB,williams,15,10,20,5,0,1,0,26
+2026,4,Miami Grand Prix,bearman,BEA,haas,12,11,17,1,0,1,5,24
+2026,4,Miami Grand Prix,bortoleto,BOR,audi,21,12,15,9,0,1,5,30
+2026,4,Miami Grand Prix,ocon,OCO,haas,14,13,13,1,0,1,0,15
+2026,4,Miami Grand Prix,arvid_lindblad,LIN,rb,16,14,12,2,0,1,5,20
+2026,4,Miami Grand Prix,alonso,ALO,aston_martin,17,15,10,2,0,1,5,18
+2026,4,Miami Grand Prix,perez,PER,cadillac,20,16,7,4,0,1,5,17
+2026,4,Miami Grand Prix,stroll,STR,aston_martin,18,17,5,1,0,1,0,7
+2026,4,Miami Grand Prix,bottas,BOT,cadillac,19,18,4,1,0,1,0,6
+2026,4,Miami Grand Prix,hulkenberg,HUL,audi,10,19,3,-9,0,0,0,-6
+2026,4,Miami Grand Prix,lawson,LAW,rb,11,20,2,-9,0,0,0,-7
+2026,4,Miami Grand Prix,gasly,GAS,alpine,9,21,1,-12,0,0,0,-11
+2026,4,Miami Grand Prix,hadjar,HAD,red_bull,22,22,0,0,0,0,0,0
+2026,5,Canadian Grand Prix,antonelli,ANT,mercedes,2,1,40,1,3,1,5,50
+2026,5,Canadian Grand Prix,hamilton,HAM,ferrari,5,2,37,3,0,1,5,46
+2026,5,Canadian Grand Prix,max_verstappen,VER,red_bull,6,3,35,3,0,1,5,44
+2026,5,Canadian Grand Prix,leclerc,LEC,ferrari,8,4,32,4,0,1,0,37
+2026,5,Canadian Grand Prix,hadjar,HAD,red_bull,7,5,30,2,0,1,0,33
+2026,5,Canadian Grand Prix,colapinto,COL,alpine,10,6,27,4,0,1,5,37
+2026,5,Canadian Grand Prix,lawson,LAW,rb,12,7,25,5,0,1,5,36
+2026,5,Canadian Grand Prix,gasly,GAS,alpine,14,8,23,6,0,1,0,30
+2026,5,Canadian Grand Prix,sainz,SAI,williams,15,9,22,6,0,1,5,34
+2026,5,Canadian Grand Prix,bearman,BEA,haas,16,10,20,6,0,1,5,32
+2026,5,Canadian Grand Prix,piastri,PIA,mclaren,4,11,17,-7,0,1,5,16
+2026,5,Canadian Grand Prix,hulkenberg,HUL,audi,11,12,15,-1,0,1,5,20
+2026,5,Canadian Grand Prix,bortoleto,BOR,audi,13,13,13,0,0,1,0,14
+2026,5,Canadian Grand Prix,ocon,OCO,haas,17,14,12,3,0,1,0,16
+2026,5,Canadian Grand Prix,stroll,STR,aston_martin,22,15,10,7,0,1,5,23
+2026,5,Canadian Grand Prix,bottas,BOT,cadillac,21,16,7,5,0,1,5,18
+2026,5,Canadian Grand Prix,perez,PER,cadillac,20,17,5,3,0,0,0,8
+2026,5,Canadian Grand Prix,norris,NOR,mclaren,3,18,4,-15,0,0,0,-11
+2026,5,Canadian Grand Prix,russell,RUS,mercedes,1,19,3,-18,0,0,0,-15
+2026,5,Canadian Grand Prix,alonso,ALO,aston_martin,19,20,2,-1,0,0,0,1
+2026,5,Canadian Grand Prix,albon,ALB,williams,18,21,1,-3,0,0,0,-2
+2026,5,Canadian Grand Prix,arvid_lindblad,LIN,rb,9,22,0,-13,0,0,0,-13
+2026,6,Monaco Grand Prix,antonelli,ANT,mercedes,1,1,40,0,3,1,5,49
+2026,6,Monaco Grand Prix,hamilton,HAM,ferrari,3,2,37,1,0,1,5,44
+2026,6,Monaco Grand Prix,gasly,GAS,alpine,9,3,35,6,0,1,5,47
+2026,6,Monaco Grand Prix,hadjar,HAD,red_bull,5,4,32,1,0,1,5,39
+2026,6,Monaco Grand Prix,piastri,PIA,mclaren,7,5,30,2,0,1,5,38
+2026,6,Monaco Grand Prix,lawson,LAW,rb,10,6,27,4,0,1,5,37
+2026,6,Monaco Grand Prix,arvid_lindblad,LIN,rb,15,7,25,8,0,1,0,34
+2026,6,Monaco Grand Prix,albon,ALB,williams,11,8,23,3,0,1,5,32
+2026,6,Monaco Grand Prix,ocon,OCO,haas,17,9,22,8,0,1,5,36
+2026,6,Monaco Grand Prix,alonso,ALO,aston_martin,21,10,20,11,0,1,5,37
+2026,6,Monaco Grand Prix,bortoleto,BOR,audi,16,11,17,5,0,1,5,28
+2026,6,Monaco Grand Prix,russell,RUS,mercedes,6,12,15,-6,0,1,0,10
+2026,6,Monaco Grand Prix,hulkenberg,HUL,audi,13,13,13,0,0,1,0,14
+2026,6,Monaco Grand Prix,colapinto,COL,alpine,14,14,12,0,0,1,0,13
+2026,6,Monaco Grand Prix,perez,PER,cadillac,18,15,10,3,0,1,5,19
+2026,6,Monaco Grand Prix,sainz,SAI,williams,12,16,7,-4,0,0,0,3
+2026,6,Monaco Grand Prix,leclerc,LEC,ferrari,4,17,5,-13,0,0,0,-8
+2026,6,Monaco Grand Prix,stroll,STR,aston_martin,22,18,4,4,0,0,0,8
+2026,6,Monaco Grand Prix,norris,NOR,mclaren,8,19,3,-11,0,0,0,-8
+2026,6,Monaco Grand Prix,bearman,BEA,haas,19,20,2,-1,0,0,0,1
+2026,6,Monaco Grand Prix,bottas,BOT,cadillac,20,21,1,-1,0,0,0,0
+2026,6,Monaco Grand Prix,max_verstappen,VER,red_bull,2,22,0,-20,0,0,0,-20
+2026,7,Barcelona Grand Prix,hamilton,HAM,ferrari,2,1,40,1,3,1,5,50
+2026,7,Barcelona Grand Prix,russell,RUS,mercedes,1,2,37,-1,0,1,5,42
+2026,7,Barcelona Grand Prix,norris,NOR,mclaren,4,3,35,1,0,1,5,42
+2026,7,Barcelona Grand Prix,max_verstappen,VER,red_bull,5,4,32,1,0,1,5,39
+2026,7,Barcelona Grand Prix,piastri,PIA,mclaren,7,5,30,2,0,1,0,33
+2026,7,Barcelona Grand Prix,hadjar,HAD,red_bull,6,6,27,0,0,1,0,28
+2026,7,Barcelona Grand Prix,gasly,GAS,alpine,14,7,25,7,0,1,5,38
+2026,7,Barcelona Grand Prix,lawson,LAW,rb,8,8,23,0,0,1,5,29
+2026,7,Barcelona Grand Prix,arvid_lindblad,LIN,rb,11,9,22,2,0,1,0,25
+2026,7,Barcelona Grand Prix,colapinto,COL,alpine,13,10,20,3,0,1,0,24
+2026,7,Barcelona Grand Prix,bortoleto,BOR,audi,12,11,17,1,0,1,5,24
+2026,7,Barcelona Grand Prix,sainz,SAI,williams,16,12,15,4,0,1,5,25
+2026,7,Barcelona Grand Prix,ocon,OCO,haas,17,13,13,4,0,1,5,23
+2026,7,Barcelona Grand Prix,perez,PER,cadillac,19,14,12,5,0,1,5,23
+2026,7,Barcelona Grand Prix,leclerc,LEC,ferrari,10,15,10,-5,0,1,0,6
+2026,7,Barcelona Grand Prix,antonelli,ANT,mercedes,3,16,7,-13,0,1,0,-5
+2026,7,Barcelona Grand Prix,bearman,BEA,haas,15,17,5,-2,0,1,0,4
+2026,7,Barcelona Grand Prix,albon,ALB,williams,18,18,4,0,0,0,0,4
+2026,7,Barcelona Grand Prix,alonso,ALO,aston_martin,22,19,3,3,0,0,5,11
+2026,7,Barcelona Grand Prix,hulkenberg,HUL,audi,9,20,2,-11,0,0,0,-9
+2026,7,Barcelona Grand Prix,bottas,BOT,cadillac,20,21,1,-1,0,0,0,0
+2026,7,Barcelona Grand Prix,stroll,STR,aston_martin,21,22,0,-1,0,0,0,-1
+2026,8,Austrian Grand Prix,russell,RUS,mercedes,1,1,40,0,0,1,5,46
+2026,8,Austrian Grand Prix,max_verstappen,VER,red_bull,5,2,37,3,0,1,5,46
+2026,8,Austrian Grand Prix,antonelli,ANT,mercedes,4,3,35,1,3,1,0,40
+2026,8,Austrian Grand Prix,piastri,PIA,mclaren,7,4,32,3,0,1,5,41
+2026,8,Austrian Grand Prix,hamilton,HAM,ferrari,3,5,30,-2,0,1,5,34
+2026,8,Austrian Grand Prix,hadjar,HAD,red_bull,8,6,27,2,0,1,0,30
+2026,8,Austrian Grand Prix,norris,NOR,mclaren,6,7,25,-1,0,1,0,25
+2026,8,Austrian Grand Prix,leclerc,LEC,ferrari,2,8,23,-6,0,1,0,18
+2026,8,Austrian Grand Prix,lawson,LAW,rb,9,9,22,0,0,1,5,28
+2026,8,Austrian Grand Prix,arvid_lindblad,LIN,rb,10,10,20,0,0,1,0,21
+2026,8,Austrian Grand Prix,bortoleto,BOR,audi,12,11,17,1,0,1,5,24
+2026,8,Austrian Grand Prix,hulkenberg,HUL,audi,14,12,15,2,0,1,0,18
+2026,8,Austrian Grand Prix,gasly,GAS,alpine,11,13,13,-2,0,1,5,17
+2026,8,Austrian Grand Prix,bearman,BEA,haas,13,14,12,-1,0,1,5,17
+2026,8,Austrian Grand Prix,colapinto,COL,alpine,16,15,10,1,0,1,0,12
+2026,8,Austrian Grand Prix,ocon,OCO,haas,15,16,7,-1,0,1,0,7
+2026,8,Austrian Grand Prix,albon,ALB,williams,18,17,5,1,0,1,5,12
+2026,8,Austrian Grand Prix,alonso,ALO,aston_martin,21,18,4,3,0,1,5,13
+2026,8,Austrian Grand Prix,stroll,STR,aston_martin,22,19,3,3,0,0,0,6
+2026,8,Austrian Grand Prix,sainz,SAI,williams,17,20,2,-3,0,0,0,-1
+2026,8,Austrian Grand Prix,perez,PER,cadillac,19,21,1,-2,0,0,5,4
+2026,8,Austrian Grand Prix,bottas,BOT,cadillac,20,22,0,-2,0,0,0,-2
+2026,9,British Grand Prix,leclerc,LEC,ferrari,2,1,40,1,0,1,5,47
+2026,9,British Grand Prix,russell,RUS,mercedes,4,2,37,2,0,1,5,45
+2026,9,British Grand Prix,hamilton,HAM,ferrari,3,3,35,0,0,1,0,36
+2026,9,British Grand Prix,norris,NOR,mclaren,6,4,32,2,0,1,5,40
+2026,9,British Grand Prix,hadjar,HAD,red_bull,5,5,30,0,0,1,5,36
+2026,9,British Grand Prix,lawson,LAW,rb,10,6,27,4,0,1,5,37
+2026,9,British Grand Prix,arvid_lindblad,LIN,rb,9,7,25,2,0,1,0,28
+2026,9,British Grand Prix,bortoleto,BOR,audi,11,8,23,3,0,1,5,32
+2026,9,British Grand Prix,colapinto,COL,alpine,19,9,22,10,0,1,5,38
+2026,9,British Grand Prix,gasly,GAS,alpine,15,10,20,5,0,1,0,26
+2026,9,British Grand Prix,piastri,PIA,mclaren,8,11,17,-3,0,1,0,15
+2026,9,British Grand Prix,bearman,BEA,haas,13,12,15,1,0,1,5,22
+2026,9,British Grand Prix,ocon,OCO,haas,17,13,13,4,0,1,0,18
+2026,9,British Grand Prix,perez,PER,cadillac,20,14,12,6,0,1,5,24
+2026,9,British Grand Prix,antonelli,ANT,mercedes,1,15,10,-14,3,1,0,0
+2026,9,British Grand Prix,bottas,BOT,cadillac,18,16,7,2,0,1,0,10
+2026,9,British Grand Prix,sainz,SAI,williams,14,17,5,-3,0,1,5,8
+2026,9,British Grand Prix,alonso,ALO,aston_martin,21,18,4,3,0,1,5,13
+2026,9,British Grand Prix,stroll,STR,aston_martin,22,19,3,3,0,1,0,7
+2026,9,British Grand Prix,max_verstappen,VER,red_bull,7,20,2,-13,0,0,0,-11
+2026,9,British Grand Prix,albon,ALB,williams,16,21,1,-5,0,0,0,-4
+2026,9,British Grand Prix,hulkenberg,HUL,audi,12,22,0,-10,0,0,0,-10
