@@ -36,12 +36,14 @@ change anything visible today.
 
 ## Tabs
 
-Three tabs, toggled via `switchTab('builder' | 'auto' | 'chances')` (generic — loops the
+Four tabs, toggled via `switchTab('builder' | 'auto' | 'chances' | 'ai')` (generic — loops the
 `TABS` array, toggling `#tab-<name>` display and `#tab-<name>-btn` active class): **Lineup
-Builder** (default), **Auto Simulation**, and **The Chances**. Only one tab's container is
-visible at a time; state in all three (current lineup, last auto-sim results, last chances
-breakdown) is preserved when switching. Running auto simulation automatically switches to
-The Chances tab once it finishes (see below).
+Builder** (default), **Auto Simulation**, **The Chances**, and **AI Simulation**. Only one
+tab's container is visible at a time; state in all of them (current lineup, last auto-sim
+results, last chances breakdown, AI simulation's running totals) is preserved when switching —
+switching away from AI Simulation does **not** stop it; it keeps running in the background via
+`setInterval` regardless of which tab is active. Running auto simulation automatically switches
+to The Chances tab once it finishes (see below).
 
 ## Layout — Lineup Builder tab
 
@@ -205,6 +207,66 @@ simulation:
   "a real stretch" — based on how high the solo probability actually is. This directly answers
   "why does pick X show Y%": the number always comes from `byCode[code]`'s actual season stats,
   not a canned explanation.
+
+## AI Simulation tab (continuous background loop)
+
+Same underlying math-based engine as Auto Simulation — no external AI/LLM call, no network
+request, nothing server-side. "AI" here means "runs on its own without you clicking Simulate,"
+not an LLM reasoning about picks.
+
+- **Start** (`startAiSimulation()`) — shortlists 20 candidates via the same
+  `findTopCandidatesByProjection()` used by Auto Simulation (squad-deduped, captain/constructor
+  capped), zeroes out a per-candidate accumulator (`{n, sum, min, max}`), then immediately runs
+  one batch and arms a `setInterval` (`aiTick()`, every 400ms) to keep running batches
+  indefinitely. Each tick simulates 150 more races per candidate (20 × 150 = 3000 sims/tick,
+  ~50ms of work — cheap enough to keep the tab responsive) and folds them into the running
+  avg/min/max, then `renderAiResults()` re-sorts and redraws the table live.
+- **Stop** (`stopAiSimulation()`) — clears the interval; whatever averages had accumulated stay
+  on screen, frozen, with a "Stopped after N total simulations" status.
+- Clicking **Start** again always starts a fresh shortlist and resets all counters to zero —
+  it's a restart, not a resume.
+- The table looks like Auto Simulation's (same columns plus a running **Sims** count per
+  candidate) with its own scrollable/sticky-header wrapper (`#ai-results-wrap`) and its own
+  **Load** button per row (`loadAiCandidate()`) that copies that lineup into `lineup` and
+  switches to the Lineup Builder tab — same behavior as Auto Simulation's Load, just against
+  the `aiCandidates` array instead of `autoCandidates`.
+- Because averages only get more precise the longer it runs (standard error shrinks with more
+  samples), leaving it running and checking back later gives a tighter estimate of each
+  candidate's true average than Auto Simulation's one-shot 1000-sim pass — the tradeoff is it
+  doesn't run The Chances analysis or explain anything, it just ranks by average score.
+
+The AI Simulation tab uses a `.layout` two-column grid (same pattern as the Lineup Builder tab)
+so the AI Simulation card sits next to a second card, **Driver's Qualifying** — see below.
+
+## Driver's Qualifying (real grid entry)
+
+Every simulation in the dashboard (`simulateRace()`) normally samples each driver's grid
+position randomly from their historical `avgGrid`/`stdGrid`. Once real qualifying happens,
+that guesswork becomes unnecessary — this box lets you enter the actual grid and have every
+simulation (Simulate race, Auto Simulation, AI Simulation, The Chances) use it instead.
+
+- **State**: `qualiOrder` (array of driver codes, defaults to predicted order sorted by
+  `avgGrid`), `qualiPenalties` (`{code: places}`, all zero until set), and `fixedGrid`
+  (`null` by default — simulated qualifying; once populated, `simulateRace()` reads grid
+  positions straight from it instead of sampling).
+- **Reordering** (`moveQualiRow`) — ▲/▼ per row swap that driver with its neighbor, for
+  dragging the list from the predicted order into the real qualifying classification.
+- **Penalties** (`setQualiPenalty`) — a number input per row (places to drop). The **Grid**
+  column previews the result live via `computeGrid()`, which mimics real F1 penalty
+  application: a penalized driver's sort key is `qualifying position + penalty places`;
+  everyone else sorts by their plain qualifying position; ties (a penalized driver landing on
+  the same target rank as someone else) are broken by original qualifying order, relying on
+  `Array.sort`'s stability. This is an approximation of the FIA's actual (more intricate)
+  penalty-application process, but matches typical single/double-penalty scenarios described in
+  `config/race_notes.yaml`'s `penalties` notes.
+- **Apply grid** (`applyQualiGrid`) — sets `fixedGrid = computeGrid(qualiOrder, qualiPenalties)`.
+  From that point on, `simulateRace()`'s qualifying step is deterministic (same grid every
+  single simulated race) instead of randomized — the race itself (DNFs, pace, laps led, fastest
+  lap) is still random, only the starting grid becomes fixed.
+- **Use simulated grid** (`resetQualiGrid`) — sets `fixedGrid = null`, reverting to the default
+  randomized qualifying. The status line under the buttons always says which mode is active.
+- Nothing here is persisted to `data.js` or any file — it's in-memory browser state only, reset
+  on page reload. Re-enter it each session (or each race week) after real qualifying happens.
 
 ## Refreshing for a new race week
 

@@ -149,7 +149,7 @@
   .tab-btn { border-radius: 20px; padding: 6px 16px; }
   .tab-btn.active { background: var(--series-1); color: #fff; border-color: var(--series-1); }
   .tab-btn.active:hover { color: #fff; }
-  #auto-results-wrap thead th { position: sticky; top: 0; background: var(--surface-1); }
+  #auto-results-wrap thead th, #ai-results-wrap thead th { position: sticky; top: 0; background: var(--surface-1); }
   /* driver stats modal */
   .driver-name { cursor: pointer; }
   .driver-name:hover { color: var(--series-1); text-decoration: underline; }
@@ -187,6 +187,7 @@
   <button class="tab-btn active" id="tab-builder-btn" onclick="switchTab('builder')">Lineup Builder</button>
   <button class="tab-btn" id="tab-auto-btn" onclick="switchTab('auto')">Auto Simulation</button>
   <button class="tab-btn" id="tab-chances-btn" onclick="switchTab('chances')">The Chances</button>
+  <button class="tab-btn" id="tab-ai-btn" onclick="switchTab('ai')">AI Simulation</button>
 </div>
 
 <div id="tab-builder">
@@ -327,6 +328,56 @@
   </div>
 </div>
 
+<div id="tab-ai" style="display:none">
+<div class="layout">
+  <div class="card">
+    <h2>AI Simulation</h2>
+    <div class="sub" style="margin-bottom:12px">
+      Shortlists strong candidate lineups (same search as Auto Simulation), then keeps
+      simulating them continuously in the background — no need to click Simulate. Averages
+      refine live as more simulations pile up; leave it running and check back later, or
+      click Stop whenever you've seen enough.
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="primary" id="ai-start-btn" style="max-width:160px">Start</button>
+      <button id="ai-stop-btn" style="max-width:160px" disabled>Stop</button>
+    </div>
+    <div class="sub" id="ai-status" style="margin-top:8px"></div>
+    <div id="ai-results-wrap" style="margin-top:14px;max-height:640px;overflow-y:auto;display:none">
+      <table id="ai-results">
+        <thead><tr>
+          <th class="num">#</th><th>Captain</th><th>Drivers</th><th>Constructor</th>
+          <th class="num">Salary</th><th class="num">Avg score</th><th class="num">Range</th>
+          <th class="num">Sims</th><th></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Driver's Qualifying</h2>
+    <div class="sub" style="margin-bottom:10px">
+      After qualifying, reorder drivers (▲/▼) into the real classification and enter any grid
+      penalties, then Apply grid — every simulation (Simulate race, Auto/AI Simulation, The
+      Chances) will use this real grid instead of a randomly simulated one.
+    </div>
+    <table id="quali-table">
+      <thead><tr>
+        <th class="num">Pos</th><th>Driver</th><th class="num">Penalty</th>
+        <th class="num">Grid</th><th></th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="primary" id="quali-apply-btn" style="max-width:160px">Apply grid</button>
+      <button id="quali-reset-btn" style="max-width:200px">Use simulated grid</button>
+    </div>
+    <div class="sub" id="quali-status" style="margin-top:8px"></div>
+  </div>
+</div>
+</div>
+
 <div class="modal-backdrop" id="driver-modal">
   <div class="modal-card">
     <div class="modal-head">
@@ -363,6 +414,13 @@ const sortState = {
 
 const byCode = Object.fromEntries(D.drivers.map(d => [d.code, d]));
 const byCid = Object.fromEntries(D.constructors.map(c => [c.id, c]));
+
+// Driver's Qualifying: manually-entered real grid, overriding simulated
+// qualifying everywhere once applied. qualiOrder defaults to the predicted
+// order (by avgGrid) until the real classification is entered.
+let qualiOrder = [...D.drivers].sort((a, b) => a.avgGrid - b.avgGrid).map(d => d.code);
+const qualiPenalties = {}; // code -> penalty places
+let fixedGrid = null; // null = simulated qualifying; else {code: gridPos}
 
 // ---------- lineup logic ----------
 function salaryUsed() {
@@ -629,13 +687,17 @@ function gauss() { // Box-Muller
 }
 
 function simulateRace() {
-  // 1) qualifying: sample grid score per driver, rank -> grid 1..22
-  const field = D.drivers.map(d => ({
-    ...d,
-    gridScore: d.avgGrid + gauss() * d.stdGrid,
-  }));
-  field.sort((a, b) => a.gridScore - b.gridScore);
-  field.forEach((d, i) => d.grid = i + 1);
+  // 1) qualifying: use the manually entered real grid (Driver's Qualifying box)
+  // if one has been applied, otherwise sample a grid score per driver from
+  // their historical avgGrid/stdGrid and rank -> grid 1..22.
+  let field;
+  if (fixedGrid) {
+    field = D.drivers.map(d => ({ ...d, grid: fixedGrid[d.code] }));
+  } else {
+    field = D.drivers.map(d => ({ ...d, gridScore: d.avgGrid + gauss() * d.stdGrid }));
+    field.sort((a, b) => a.gridScore - b.gridScore);
+    field.forEach((d, i) => d.grid = i + 1);
+  }
 
   // 2) race: DNF rolls, then pace score correlated with grid + form
   for (const d of field) {
@@ -1026,7 +1088,149 @@ function runAutoSim() {
   }, 10);
 }
 
-const TABS = ["builder", "auto", "chances"];
+// ---------- AI simulation (continuous background loop) ----------
+const AI = {
+  running: false, timer: null, shortlist: [], stats: [], totalSims: 0,
+};
+let aiCandidates = [];
+
+function aiTick() {
+  const BATCH_PER_CANDIDATE = 150;
+  for (let i = 0; i < AI.shortlist.length; i++) {
+    const c = AI.shortlist[i];
+    const s = AI.stats[i];
+    for (let j = 0; j < BATCH_PER_CANDIDATE; j++) {
+      const score = simulateCandidateScore(c, simulateRace());
+      s.n++;
+      s.sum += score;
+      if (score < s.min) s.min = score;
+      if (score > s.max) s.max = score;
+    }
+  }
+  AI.totalSims += AI.shortlist.length * BATCH_PER_CANDIDATE;
+  renderAiResults();
+}
+
+function renderAiResults() {
+  const ranked = AI.shortlist
+    .map((c, i) => ({ ...c, avg: AI.stats[i].sum / AI.stats[i].n, min: AI.stats[i].min,
+      max: AI.stats[i].max, n: AI.stats[i].n }))
+    .sort((a, b) => b.avg - a.avg);
+  aiCandidates = ranked;
+  document.getElementById("ai-results-wrap").style.display = "";
+  document.querySelector("#ai-results tbody").innerHTML = ranked.map((c, i) => `<tr>
+    <td class="num">${i + 1}</td>
+    <td>${byCode[c.cpt].name}</td>
+    <td>${c.drivers.map(code => byCode[code].name).join(", ")}</td>
+    <td>${byCid[c.constructor].name}</td>
+    <td class="num">${fmt$(c.salaryUsed)}</td>
+    <td class="num" style="font-weight:600">${c.avg.toFixed(1)}</td>
+    <td class="num">${c.min.toFixed(0)}–${c.max.toFixed(0)}</td>
+    <td class="num">${c.n.toLocaleString()}</td>
+    <td><button onclick="loadAiCandidate(${i})">Load</button></td>
+  </tr>`).join("");
+  document.getElementById("ai-status").textContent = AI.running
+    ? `Simulating ${AI.shortlist.length} candidate lineups continuously — ` +
+      `${AI.totalSims.toLocaleString()} total simulations so far. Click Stop when you've seen enough.`
+    : `Stopped after ${AI.totalSims.toLocaleString()} total simulations.`;
+}
+
+function loadAiCandidate(i) {
+  const c = aiCandidates[i];
+  lineup.cpt = c.cpt;
+  lineup.drivers = [...c.drivers];
+  lineup.constructor = c.constructor;
+  render();
+  switchTab("builder");
+}
+
+function startAiSimulation() {
+  if (AI.running) return;
+  AI.running = true;
+  document.getElementById("ai-start-btn").disabled = true;
+  document.getElementById("ai-stop-btn").disabled = false;
+  document.getElementById("ai-status").textContent = "Searching legal combinations…";
+  setTimeout(() => {
+    const SHORTLIST = 20;
+    AI.shortlist = findTopCandidatesByProjection(SHORTLIST);
+    AI.stats = AI.shortlist.map(() => ({ n: 0, sum: 0, min: Infinity, max: -Infinity }));
+    AI.totalSims = 0;
+    aiTick();
+    AI.timer = setInterval(aiTick, 400);
+  }, 10);
+}
+
+function stopAiSimulation() {
+  if (!AI.running) return;
+  AI.running = false;
+  clearInterval(AI.timer);
+  AI.timer = null;
+  document.getElementById("ai-start-btn").disabled = false;
+  document.getElementById("ai-stop-btn").disabled = true;
+  document.getElementById("ai-status").textContent =
+    `Stopped after ${AI.totalSims.toLocaleString()} total simulations.`;
+}
+
+// ---------- Driver's Qualifying (real grid entry) ----------
+// Applies grid penalties on top of a qualifying order the same way real F1
+// penalties work: a penalized driver's target rank is qualPos + penalty
+// places; ties (including a non-penalized driver landing on the same target
+// rank as a penalized one) are broken by original qualifying order via
+// Array.sort's stability.
+function computeGrid(order, penalties) {
+  const ranked = order.map((code, i) => ({ code, key: (i + 1) + (penalties[code] || 0) }));
+  ranked.sort((a, b) => a.key - b.key);
+  const grid = {};
+  ranked.forEach((r, i) => grid[r.code] = i + 1);
+  return grid;
+}
+
+function renderQualiTable() {
+  const preview = computeGrid(qualiOrder, qualiPenalties);
+  document.querySelector("#quali-table tbody").innerHTML = qualiOrder.map((code, i) => {
+    const d = byCode[code];
+    const penalty = qualiPenalties[code] || 0;
+    return `<tr>
+      <td class="num">${i + 1}</td>
+      <td>${teamDot(d.team)}${d.name}</td>
+      <td class="num"><input type="number" min="0" max="30" value="${penalty}"
+        style="width:48px" onchange="setQualiPenalty('${code}', this.value)"></td>
+      <td class="num">${preview[code]}</td>
+      <td style="white-space:nowrap">
+        <button ${i === 0 ? "disabled" : ""} onclick="moveQualiRow('${code}',-1)">▲</button>
+        <button ${i === qualiOrder.length - 1 ? "disabled" : ""} onclick="moveQualiRow('${code}',1)">▼</button>
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+function moveQualiRow(code, dir) {
+  const i = qualiOrder.indexOf(code);
+  const j = i + dir;
+  if (j < 0 || j >= qualiOrder.length) return;
+  [qualiOrder[i], qualiOrder[j]] = [qualiOrder[j], qualiOrder[i]];
+  renderQualiTable();
+}
+
+function setQualiPenalty(code, value) {
+  qualiPenalties[code] = Math.max(0, parseInt(value, 10) || 0);
+  renderQualiTable();
+}
+
+function applyQualiGrid() {
+  fixedGrid = computeGrid(qualiOrder, qualiPenalties);
+  document.getElementById("quali-status").textContent =
+    "Applied — every simulation (Simulate race, Auto/AI Simulation, The Chances) now uses " +
+    "this real grid instead of a randomly simulated one.";
+}
+
+function resetQualiGrid() {
+  fixedGrid = null;
+  document.getElementById("quali-status").textContent =
+    "Using simulated qualifying (randomized each run) — the default, until you Apply a real grid.";
+}
+
+const TABS = ["builder", "auto", "chances", "ai"];
 function switchTab(name) {
   for (const t of TABS) {
     document.getElementById(`tab-${t}`).style.display = t === name ? "" : "none";
@@ -1095,6 +1299,10 @@ document.getElementById("sim-btn").onclick = runSim;
 document.getElementById("resim-btn").onclick = runSim;
 document.getElementById("clear-btn").onclick = clearLineup;
 document.getElementById("auto-run-btn").onclick = runAutoSim;
+document.getElementById("ai-start-btn").onclick = startAiSimulation;
+document.getElementById("ai-stop-btn").onclick = stopAiSimulation;
+document.getElementById("quali-apply-btn").onclick = applyQualiGrid;
+document.getElementById("quali-reset-btn").onclick = resetQualiGrid;
 function bindSort(selector, stateKey) {
   document.querySelectorAll(selector).forEach(th => {
     th.onclick = () => {
@@ -1116,6 +1324,8 @@ document.addEventListener("keydown", (e) => {
 render();
 renderTyrePlans();
 renderDriverPerformance();
+renderQualiTable();
+resetQualiGrid();
 </script>
 </body>
 </html>
