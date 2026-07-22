@@ -3,4 +3,5 @@ __pycache__/
 *.pyc
 .env
 data/
-dashboard/data.js
+# dashboard/data.js is committed so the dashboard works from a fresh clone
+# (data/ is ignored, so it can't be regenerated after cloning)
