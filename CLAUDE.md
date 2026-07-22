@@ -9,6 +9,9 @@ Before working on this project, read the relevant skill in `skill/`:
 - `skill/data-process.md` — how and when to pull all data (weekly refresh commands,
   qualifying, penalties/news checking, pre-lock signals, API reference, data inventory).
   Follow it step by step for any race-week data work.
+- `skill/dashboard.md` — how to build/rebuild/troubleshoot `dashboard/index.html` and
+  `dashboard/data.js` (rebuild workflow, verification, known pitfalls). See also
+  `doc/dashboard.md` for what the dashboard actually does.
 
 Add new skills here as recurring workflows emerge (e.g. lineup-optimization.md,
 post-race-review.md).

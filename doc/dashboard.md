@@ -1,0 +1,220 @@
+# Dashboard
+
+`dashboard/index.html` — a single static HTML file (no server, no build step) that lets you
+build a DraftKings F1 classic lineup and simulate a race outcome against it. Open it directly
+in a browser (or serve it over HTTP — see [skill/dashboard.md](../skill/dashboard.md) for why
+that matters when testing).
+
+## Data dependency
+
+The page loads `dashboard/data.js` via `<script src="data.js">`. That file is **generated**,
+not hand-edited — regenerate it after refreshing race/salary data or editing race notes:
+
+```bash
+python3 dashboard/build_data.py
+```
+
+`build_data.py` reads:
+
+- `data/processed/results.csv`, `dk_driver_points.csv`, `dk_constructor_points.csv`
+  (from `src/fetch_jolpica.py` + `src/dk_points.py`)
+- the latest file in `data/dk_salaries/` (from `src/fetch_dk_salaries.py`)
+- `config/scoring.yaml` (DK scoring rules)
+- `config/race_notes.yaml` (optional, hand-curated race notes — see below)
+
+and writes a single `const F1DATA = {...}` payload: driver stats (avg finish/grid, std dev,
+DNF rate, avg DK points, both roster-slot salaries), constructor stats, scoring rules, total
+laps, race name, and the raw `race_notes.yaml` contents (`raceNotes`). If `data.js` is missing
+or stale, the driver/constructor tables render empty and the notes boxes show their
+"add info and rebuild" placeholder.
+
+**`config/race_notes.yaml` fields:** `tyre_plans` and `driver_performance` are the two fields
+actually rendered in the dashboard (see below). `pit_strategy`, `penalties`, `weather`, and
+`lineup_angles` also exist in the yaml and ship into `data.raceNotes` but currently have **no
+UI** — they're captured for record-keeping / future use, not dead ends, but editing them won't
+change anything visible today.
+
+## Tabs
+
+Three tabs, toggled via `switchTab('builder' | 'auto' | 'chances')` (generic — loops the
+`TABS` array, toggling `#tab-<name>` display and `#tab-<name>-btn` active class): **Lineup
+Builder** (default), **Auto Simulation**, and **The Chances**. Only one tab's container is
+visible at a time; state in all three (current lineup, last auto-sim results, last chances
+breakdown) is preserved when switching. Running auto simulation automatically switches to
+The Chances tab once it finishes (see below).
+
+## Layout — Lineup Builder tab
+
+- **Driver pool** (left) — one row per driver, teammates grouped and separated by a divider
+  line. Columns: team logo, name, CPT salary, D salary, actions. Column headers are clickable
+  to sort (`th.sortable`); sorting re-groups teams by their best driver on the active column —
+  the underlying sort keys (`avgDk`, `avgFinish`, `dnfRate`) still work even though those stat
+  columns aren't shown in the table. Clicking a driver's **name** opens a stats popup (CPT/D
+  salary, avg DK pts, races, avg finish ± std dev, avg grid ± std dev, DNF rate); close it via
+  the ✕, clicking outside the card, or Escape.
+- **Constructors** (left, below drivers) — salary, avg DK pts, max DK pts, "both top-10 %".
+  Also sortable.
+- **Your lineup** (right) — salary used / remaining / projected avg points tiles, a salary
+  meter bar, and the 6 roster slots (1 CPT + 4 D + 1 CNSTR). A **Remove all** button next to
+  the heading clears the whole lineup in one click; it's disabled whenever the lineup is
+  already empty.
+- **Tyre plans** (right, below Your lineup) — each fielded team's tyre/stint strategy for the
+  race, read from `data.raceNotes.tyre_plans` (sourced from `config/race_notes.yaml` →
+  `tyre_plans`, keyed by constructor id). Teams with no notes yet show "No plan yet"; if
+  nothing at all has been filled in, the box shows a placeholder pointing at the yaml file
+  instead. Purely informational — fill in the yaml and rebuild `data.js` to update it.
+- **Driver Performance** (right, below Tyre plans) — same pattern, per driver instead of per
+  team: a free-text summary of each driver's practice (FP1/FP2/FP3) pace and issues, read from
+  `data.raceNotes.driver_performance` (sourced from `config/race_notes.yaml` →
+  `driver_performance`, keyed by driver code). Same empty/partial-fill behavior as Tyre plans.
+- **Simulate race** button — enabled only once the lineup is legal and complete.
+- **Results panel** (hidden until first simulation) — total score, a per-pick score
+  breakdown table, and the full simulated race classification.
+
+## Lineup rules (enforced client-side)
+
+- Roster = 1 Captain + 4 Drivers + 1 Constructor.
+- Captain scores at 1.5× and costs 1.5× the driver's base salary (both salaries come straight
+  from the DK CSV, not computed from a fixed ratio).
+- $50,000 salary cap (`data.salaryCap`); going over disables the Simulate button and shows a
+  warning.
+- DK rule: can't roster 2 drivers **and** the constructor from the same team — also enforced
+  as a warning.
+- A driver/team's row and buttons grey out once you can no longer afford it (CPT or D slot)
+  given remaining salary.
+
+## Race simulation (`simulateRace()`)
+
+Randomized per click — re-simulate to see outcome variance, not a single deterministic
+prediction:
+
+1. **Qualifying** — each driver's grid position is sampled from `avgGrid ± stdGrid`
+   (Gaussian), then ranked into grid 1..N.
+2. **Race** — each driver independently rolls a DNF against their historical `dnfRate`.
+   Finishers get a pace score blended from grid position (45%) and historical finish
+   form (55%, `avgFinish ± stdFinish`), then are ranked; DNFs are appended ordered by laps
+   completed.
+3. **Laps led** — the race winner leads 45–80% of laps; the next few finishers split most of
+   the remainder.
+4. **Fastest lap** — picked at random from the top 10 classified finishers.
+
+## DK scoring (`scoreDriver` / `scoreConstructor`)
+
+Applies `config/scoring.yaml` rules to the simulated outcome:
+
+- **Driver**: finishing-position points + place-differential (grid − finish) + bonuses
+  (fastest lap, laps led, classified finish, beat teammate).
+- **Constructor**: sum of both cars' finishing-position points + bonuses (fastest lap, laps
+  led, both classified, both in points, both on podium).
+- Captain's total is multiplied by 1.5× when summed into the final score.
+
+Results panel shows the full breakdown per pick plus the entire simulated field
+(your picks starred and bolded), so you can see how the lineup would have scored under that
+random outcome.
+
+## Auto Simulation tab (lineup optimizer)
+
+"Run auto simulation" (`runAutoSim()`) searches for the best lineup automatically, in two
+passes so it stays fast in-browser:
+
+1. **Exhaustive projection search** (`findTopCandidatesByProjection`) — enumerates every
+   legal combination of 1 Captain + 4 Drivers + 1 Constructor (5-driver combos via
+   `fiveCombos()`, a plain nested-loop generator — C(22,5) ≈ 26k combos × 5 captain choices ×
+   11 constructors ≈ 1.4M candidates), filtering out anything over the $50,000 cap or that
+   breaks the DK same-team rule, and scores each by **projected** points (`cptAvgDk × 1.5 +
+   sum of other 4 avgDk` — the same fast heuristic as the "Proj. avg pts" tile, no simulation).
+   Candidates are deduped by **driver squad** (the 5 people picked, regardless of who's
+   captain or which constructor) — only the best-projected variant of each unique squad is
+   kept, so the shortlist doesn't fill up with near-duplicates that just swap the captain or
+   constructor. Individual drivers can and will reappear across different squads (that overlap
+   is expected — only the exact same 5-person group is deduped).
+
+   On top of squad dedup, the final 50 are chosen **greedily by projection while capping how
+   many times any one captain or constructor can appear** (`maxPerCpt`/`maxPerCons`, default 5
+   each) — without this, the single highest-avgDk driver tends to be the optimal captain for
+   almost every squad (same for the best-value constructor), so the list would otherwise read
+   as "same captain/constructor, different drivers" rather than genuinely varied picks. If the
+   caps are too tight to fill 50 slots (not enough distinct legal squads under those limits),
+   they're relaxed by 1 for both at a time until there's enough — so counts can end up slightly
+   above 5 (e.g. 6) rather than being dropped entirely; they're never released all at once, so
+   one captain/constructor can't dominate the list by backfilling unchecked. Runs in well under
+   a second.
+2. **Monte Carlo evaluation** (`evaluateCandidate`) — for each of the 50 shortlisted lineups,
+   runs 1000 full `simulateRace()` calls and scores each with the same `scoreDriver` /
+   `scoreConstructor` functions the main Simulate button uses, then reports avg / min / max
+   simulated score. Shortlisted first (rather than simulating all ~1.4M combos) because full
+   Monte Carlo on every legal combo would be far too slow client-side. The full 50×1000 = 50k
+   simulations run in about a second in testing.
+
+Results render as a ranked table (captain, 4 drivers, constructor, salary, avg score, min–max
+range) inside a scrollable container (`#auto-results-wrap`, max-height 640px, sticky header)
+since 50 rows would otherwise make the page very long. Each row has a **Load** button that
+copies that lineup into `lineup`, switches back to the Lineup Builder tab, and re-renders — the
+loaded lineup is always cap-legal and rule-legal by construction, so Simulate is immediately
+enabled.
+
+Runs synchronously but wrapped in `setTimeout(...,10)` between the two passes so the "Searching
+…" / "Simulating …" status text actually paints before the heavy loop blocks the main thread.
+
+## The Chances tab
+
+After ranking finishes, `runAutoSim()` also calls `analyzeTopLineupChances()` on the **#1
+ranked lineup** (2000 dedicated `simulateRace()` runs) and automatically switches to The
+Chances tab to show the result — this is the one part of the flow that "pops up" on its own
+rather than waiting for a click.
+
+What it does, using that single batch of 2000 sims:
+
+- Tracks every run's total score and keeps the **single highest-scoring run** found — that
+  becomes "the outcome": each pick's finish position (and grid), DNF status, and which bonuses
+  fired (fastest lap, laps led, classified, beat teammate, both-in-points, etc.), read straight
+  off `scoreDriver` / `scoreConstructor`'s existing `bonusDetail` output.
+- For each pick, **"Chance (solo)"** = how often, across those same 2000 runs, that pick's own
+  scored total — finish points *and* every bonus combined (fastest lap, laps led, classified,
+  beat teammate, etc.) — was at least as good as it was in the best run. It's driven off the
+  pick's full point total, not just their finish position in isolation, so it lines up with the
+  finish-plus-bonuses actually shown for that pick (constructor's solo chance works the same way
+  off its own point total, since it doesn't have a finish position).
+- **"Chance of this outcome or better"** = how often, across the same 2000 runs, the *whole
+  lineup's total score* was ≥ the best run's score — i.e. the actual empirical probability of
+  the full combined outcome, not a product of the per-pick chances (which aren't independent —
+  grid and race pace are correlated across the field, explained in the box's own footer text).
+  For a genuine single-run maximum this is often ~1/2000 (0.05%), which is expected and
+  correctly conveys how much variance/luck is baked into hitting a ceiling outcome.
+- Nothing here is persisted or configurable yet — every "Run auto simulation" click re-runs
+  the whole thing (new random sims, so the exact best-case shown can shift slightly run to
+  run) against whichever lineup ranks #1 that time.
+
+Below that, a second card ("Why this percent?", `buildChancesExplanation()`) explains the
+combined percentage in plain language, computed from the same `best` result — no extra
+simulation:
+
+- **Bottleneck / easiest pick** — the picks are re-sorted by solo probability; the lowest one
+  is called out as "the toughest single requirement" (the main reason the outcome is rare), and
+  the highest as the easiest part.
+- **Naive-vs-actual comparison** — multiplies every pick's solo probability together (what the
+  combined chance *would* be if picks were independent) and compares it to the real simulated
+  `combinedProb`. Since race outcomes are correlated (grid/pace/DNFs are all drawn relative to
+  the same field each run, not independently per driver), the two numbers are usually quite
+  different — the text calls out whether the actual chance ran notably higher or lower than the
+  naive estimate, and explains why.
+- **Per-pick breakdown** — a line for every pick (drivers + constructor) spelling out exactly
+  why their solo percentage is what it is: what they scored in the best run (finish + bonuses),
+  their real historical numbers pulled from `data.js` (avg finish ± std dev, avg grid, DNF
+  rate), and a qualifier (`qualify()`) — "a fairly ordinary result," "a solidly good day," or
+  "a real stretch" — based on how high the solo probability actually is. This directly answers
+  "why does pick X show Y%": the number always comes from `byCode[code]`'s actual season stats,
+  not a canned explanation.
+
+## Refreshing for a new race week
+
+1. `python3 src/fetch_jolpica.py` — backfill/update race + qualifying results.
+2. `python3 src/dk_points.py` — recompute DK points from results.
+3. `python3 src/fetch_dk_salaries.py` — pull the current week's DK salaries (auto-detects the
+   active F1 draft group).
+4. Edit `config/race_notes.yaml` as intel comes in during the week — `tyre_plans`,
+   `driver_performance`, penalties, weather, etc. (see
+   [skill/data-process.md](../skill/data-process.md) for sources/timing).
+5. `python3 dashboard/build_data.py` — regenerate `dashboard/data.js` (rerun any time the yaml
+   changes, not just on a full data refresh).
+6. Reload `dashboard/index.html`.

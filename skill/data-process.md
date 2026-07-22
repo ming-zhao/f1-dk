@@ -81,9 +81,9 @@ What to look for, and why it matters for DK:
 | Signal | Source | DK relevance |
 |---|---|---|
 | Weather forecast (rain %) | any weather site for the circuit; openf1 `weather` endpoint has live session data | Rain = chaos = DNFs + big differential swings. Favors consistent midfield drivers, hurts chalk lineups |
-| Tyre allocation / strategy notes | F1.com, Pirelli preview | 1-stop vs 2-stop affects overtaking and variance |
+| Tyre allocation / strategy notes | F1.com, Pirelli preview | 1-stop vs 2-stop affects overtaking and variance. Record per-team plans in `config/race_notes.yaml` → `tyre_plans` (keyed by constructor id) — shown in the dashboard's "Tyre plans" box after `dashboard/build_data.py` |
 | Track characteristics | our own data: `analyze.py` per-circuit | Spa/Monza = overtaking = differential points; Monaco = grid ≈ finish, qualifying is everything |
-| FP2 long-run pace | The Race / F1 analysis articles | Better predictor of race pace than qualifying |
+| FP2 long-run pace | The Race / F1 analysis articles | Better predictor of race pace than qualifying. Record per-driver practice summaries (pace, degradation, issues) in `config/race_notes.yaml` → `driver_performance` (keyed by driver code) — shown in the dashboard's "Driver Performance" box after `dashboard/build_data.py` |
 | DK ownership/chalk | not available free pre-lock | In a $0.25 GPP, being contrarian on 1-2 picks helps; don't need data, just don't copy the obvious lineup |
 
 ## ⑤ Post-race (Sunday evening or Monday)

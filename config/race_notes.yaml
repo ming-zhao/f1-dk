@@ -23,3 +23,48 @@ weather:
 lineup_angles:
   - "Norris (fast car, midfield start) is the classic DK differential play"
   - "Drivers promoted by penalties (Russell, Leclerc, Piastri) gain finish odds but lose differential upside"
+
+# Each team's tyre plan for this race (compound allocation, stop count, stint
+# lengths — from Pirelli preview / team pre-race comms). Keyed by constructor
+# id (see src/common.py TEAMS for the id list). Fill in as info comes in;
+# leave a team out (or give it an empty list) if nothing is known yet.
+tyre_plans:
+  red_bull: []
+  ferrari: []
+  mercedes: []
+  mclaren: []
+  rb: []
+  alpine: []
+  aston_martin: []
+  haas: []
+  williams: []
+  audi: []
+  cadillac: []
+
+# Summary of each driver's practice (FP1/FP2/FP3) performance for this race —
+# pace, long-run/tyre degradation, notable issues. Keyed by driver code (see
+# src/common.py NAME_TO_CODE for the code list). Fill in as sessions happen;
+# leave a driver out (or give it an empty list) if nothing is known yet.
+driver_performance:
+  VER: []
+  NOR: []
+  PIA: []
+  LEC: []
+  HAM: []
+  RUS: []
+  ANT: []
+  GAS: []
+  OCO: []
+  ALB: []
+  SAI: []
+  ALO: []
+  STR: []
+  HUL: []
+  BEA: []
+  COL: []
+  BOT: []
+  PER: []
+  LAW: []
+  HAD: []
+  BOR: []
+  LIN: []
