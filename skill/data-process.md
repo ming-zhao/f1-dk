@@ -50,6 +50,12 @@ python3 dashboard/build_data.py            # rebuild dashboard data.js
   Penalties are not applied here. The true penalized grid only appears after
   the race in the results endpoint's `grid` field. For pre-race grid you must
   apply penalties manually (see ③).
+- Once you have the classification + penalties worked out, record the final
+  grid in `config/race_notes.yaml` → `qualifying.order` (driver codes, best to
+  worst) and `qualifying.penalties` (`{code: places}`), then rebuild
+  (`python3 dashboard/build_data.py`) — the dashboard's Driver's Qualifying
+  box picks this up and applies it automatically on load, so every simulation
+  uses the real grid without anyone touching the UI.
 
 ## ③ Penalties & late-breaking news (MANUAL — the highest-value step)
 

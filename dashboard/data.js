@@ -532,6 +532,10 @@ const F1DATA = {
    "audi": [],
    "cadillac": []
   },
+  "qualifying": {
+   "order": [],
+   "penalties": {}
+  },
   "driver_performance": {
    "VER": [],
    "NOR": [],

@@ -316,7 +316,8 @@
   <div class="card" style="max-width:1280px">
     <h2>The Chances</h2>
     <div class="sub" id="chances-intro" style="margin-bottom:12px">
-      Run auto simulation first — this tab explains what has to happen for the #1 ranked
+      Run Auto or AI Simulation and Load a lineup (or let Auto Simulation finish, which does
+      this automatically for its #1 pick) — this tab explains what has to happen for that
       lineup's best-case outcome, and how likely it is.
     </div>
     <div id="chances-body"></div>
@@ -348,7 +349,7 @@
         <thead><tr>
           <th class="num">#</th><th>Captain</th><th>Drivers</th><th>Constructor</th>
           <th class="num">Salary</th><th class="num">Avg score</th><th class="num">Range</th>
-          <th class="num">Sims</th><th></th>
+          <th class="num">Sims</th><th>Chances</th><th></th>
         </tr></thead>
         <tbody></tbody>
       </table>
@@ -993,7 +994,7 @@ function buildChancesExplanation(best) {
 
 function renderChances(candidate, best) {
   document.getElementById("chances-intro").innerHTML =
-    `Based on ${best.n.toLocaleString()} simulations of the #1 ranked lineup — ` +
+    `Based on ${best.n.toLocaleString()} simulations of this lineup — ` +
     `<b>${byCode[candidate.cpt].name}</b> (CPT), ` +
     `${candidate.drivers.map(c => byCode[c].name).join(", ")}, ` +
     `<b>${byCid[candidate.constructor].name}</b> — here's the single highest-scoring outcome ` +
@@ -1054,13 +1055,23 @@ function renderAutoResults(list) {
   </tr>`).join("");
 }
 
+// Shared by both Load buttons (Auto Simulation and AI Simulation): reuses a
+// candidate's already-computed chances (e.g. from computeAiChances() after
+// Stop) if present, otherwise runs a fresh analysis for this specific
+// lineup, then shows it on The Chances tab.
+function showChancesForCandidate(c) {
+  const chances = c.chances || analyzeTopLineupChances(c, 2000);
+  renderChances(c, chances);
+  switchTab("chances");
+}
+
 function loadCandidate(i) {
   const c = autoCandidates[i];
   lineup.cpt = c.cpt;
   lineup.drivers = [...c.drivers];
   lineup.constructor = c.constructor;
   render();
-  switchTab("builder");
+  showChancesForCandidate(c);
 }
 
 function runAutoSim() {
@@ -1090,7 +1101,7 @@ function runAutoSim() {
 
 // ---------- AI simulation (continuous background loop) ----------
 const AI = {
-  running: false, timer: null, shortlist: [], stats: [], totalSims: 0,
+  running: false, timer: null, shortlist: [], stats: [], totalSims: 0, filteredOutCount: 0,
 };
 let aiCandidates = [];
 
@@ -1111,14 +1122,23 @@ function aiTick() {
   renderAiResults();
 }
 
-function renderAiResults() {
-  const ranked = AI.shortlist
-    .map((c, i) => ({ ...c, avg: AI.stats[i].sum / AI.stats[i].n, min: AI.stats[i].min,
-      max: AI.stats[i].max, n: AI.stats[i].n }))
-    .sort((a, b) => b.avg - a.avg);
-  aiCandidates = ranked;
+// Renders whatever's currently in aiCandidates (does not recompute avg/min/max
+// — callers that need fresh numbers from AI.stats do that before calling this).
+function renderAiTable() {
   document.getElementById("ai-results-wrap").style.display = "";
-  document.querySelector("#ai-results tbody").innerHTML = ranked.map((c, i) => `<tr>
+  if (!AI.running && aiCandidates.length === 0) {
+    document.querySelector("#ai-results tbody").innerHTML =
+      `<tr><td colspan="10" class="sub" style="padding:16px 8px">Every shortlisted lineup ` +
+      `needed an almost-impossible (<${(MIN_PICK_CHANCE * 100).toFixed(0)}%) result from some ` +
+      `pick — none are shown. Click Start to try a fresh shortlist.</td></tr>`;
+    return;
+  }
+  document.querySelector("#ai-results tbody").innerHTML = aiCandidates.map((c, i) => {
+    const chancesCell = c.chances
+      ? `${c.chances.total.toFixed(1)} pts best case<br>` +
+        `<span style="color:var(--text-secondary)">${(c.chances.combinedProb * 100).toFixed(2)}% chance of this or better</span>`
+      : `<span class="sub">—</span>`;
+    return `<tr>
     <td class="num">${i + 1}</td>
     <td>${byCode[c.cpt].name}</td>
     <td>${c.drivers.map(code => byCode[code].name).join(", ")}</td>
@@ -1127,12 +1147,43 @@ function renderAiResults() {
     <td class="num" style="font-weight:600">${c.avg.toFixed(1)}</td>
     <td class="num">${c.min.toFixed(0)}–${c.max.toFixed(0)}</td>
     <td class="num">${c.n.toLocaleString()}</td>
-    <td><button onclick="loadAiCandidate(${i})">Load</button></td>
-  </tr>`).join("");
+    <td style="font-size:12px">${chancesCell}</td>
+    <td>${AI.running ? "" : `<button onclick="loadAiCandidate(${i})">Load</button>`}</td>
+  </tr>`;
+  }).join("");
+}
+
+function renderAiResults() {
+  aiCandidates = AI.shortlist
+    .map((c, i) => ({ ...c, avg: AI.stats[i].sum / AI.stats[i].n, min: AI.stats[i].min,
+      max: AI.stats[i].max, n: AI.stats[i].n }))
+    .sort((a, b) => b.avg - a.avg);
+  renderAiTable();
   document.getElementById("ai-status").textContent = AI.running
     ? `Simulating ${AI.shortlist.length} candidate lineups continuously — ` +
       `${AI.totalSims.toLocaleString()} total simulations so far. Click Stop when you've seen enough.`
     : `Stopped after ${AI.totalSims.toLocaleString()} total simulations.`;
+}
+
+// Runs a dedicated chances analysis (same engine as The Chances tab) for
+// every currently-ranked AI candidate, so each row gets its own best-case
+// outcome + probability instead of only the #1 lineup. Then drops any
+// candidate whose best-case outcome needs an almost-impossible (<5% solo
+// chance) result from any individual pick or the constructor — those
+// lineups aren't realistic targets, just noise from the search.
+const MIN_PICK_CHANCE = 0.05;
+function computeAiChances() {
+  const CHANCES_SIMS_PER_CANDIDATE = 1000;
+  for (const c of aiCandidates) {
+    c.chances = analyzeTopLineupChances(c, CHANCES_SIMS_PER_CANDIDATE);
+  }
+  const before = aiCandidates.length;
+  aiCandidates = aiCandidates.filter(c => {
+    const probs = [...c.chances.picks.map(p => p.prob), c.chances.constructor.prob];
+    return probs.every(p => p >= MIN_PICK_CHANCE);
+  });
+  AI.filteredOutCount = before - aiCandidates.length;
+  renderAiTable();
 }
 
 function loadAiCandidate(i) {
@@ -1141,7 +1192,7 @@ function loadAiCandidate(i) {
   lineup.drivers = [...c.drivers];
   lineup.constructor = c.constructor;
   render();
-  switchTab("builder");
+  showChancesForCandidate(c);
 }
 
 function startAiSimulation() {
@@ -1155,6 +1206,7 @@ function startAiSimulation() {
     AI.shortlist = findTopCandidatesByProjection(SHORTLIST);
     AI.stats = AI.shortlist.map(() => ({ n: 0, sum: 0, min: Infinity, max: -Infinity }));
     AI.totalSims = 0;
+    AI.filteredOutCount = 0;
     aiTick();
     AI.timer = setInterval(aiTick, 400);
   }, 10);
@@ -1168,7 +1220,16 @@ function stopAiSimulation() {
   document.getElementById("ai-start-btn").disabled = false;
   document.getElementById("ai-stop-btn").disabled = true;
   document.getElementById("ai-status").textContent =
-    `Stopped after ${AI.totalSims.toLocaleString()} total simulations.`;
+    `Stopped after ${AI.totalSims.toLocaleString()} total simulations — computing chances for each lineup…`;
+  setTimeout(() => {
+    computeAiChances();
+    const filterNote = AI.filteredOutCount
+      ? ` Hid ${AI.filteredOutCount} lineup${AI.filteredOutCount === 1 ? "" : "s"} whose best case ` +
+        `needed an almost-impossible (<${(MIN_PICK_CHANCE * 100).toFixed(0)}%) result from some pick.`
+      : "";
+    document.getElementById("ai-status").textContent =
+      `Stopped after ${AI.totalSims.toLocaleString()} total simulations.${filterNote}`;
+  }, 10);
 }
 
 // ---------- Driver's Qualifying (real grid entry) ----------
@@ -1228,6 +1289,26 @@ function resetQualiGrid() {
   fixedGrid = null;
   document.getElementById("quali-status").textContent =
     "Using simulated qualifying (randomized each run) — the default, until you Apply a real grid.";
+}
+
+// If config/race_notes.yaml -> qualifying.order has been filled in (real
+// post-qualifying classification), load it and apply it automatically — no
+// manual reordering/clicking needed. Any driver missing from that list (e.g.
+// a data mismatch) is appended in predicted order so nothing goes missing.
+// Falls back to the normal simulated-qualifying default otherwise.
+function initQualifying() {
+  const q = D.raceNotes && D.raceNotes.qualifying;
+  if (q && q.order && q.order.length) {
+    const known = q.order.filter(code => byCode[code]);
+    const missing = D.drivers.map(d => d.code).filter(code => !known.includes(code));
+    qualiOrder = [...known, ...missing];
+    Object.assign(qualiPenalties, q.penalties || {});
+    renderQualiTable();
+    applyQualiGrid();
+  } else {
+    renderQualiTable();
+    resetQualiGrid();
+  }
 }
 
 const TABS = ["builder", "auto", "chances", "ai"];
@@ -1324,8 +1405,7 @@ document.addEventListener("keydown", (e) => {
 render();
 renderTyrePlans();
 renderDriverPerformance();
-renderQualiTable();
-resetQualiGrid();
+initQualifying();
 </script>
 </body>
 </html>

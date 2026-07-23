@@ -90,8 +90,10 @@ to The Chances tab once it finishes (see below).
 Randomized per click — re-simulate to see outcome variance, not a single deterministic
 prediction:
 
-1. **Qualifying** — each driver's grid position is sampled from `avgGrid ± stdGrid`
-   (Gaussian), then ranked into grid 1..N.
+1. **Qualifying** — if a real grid has been applied via the Driver's Qualifying box (see
+   below), every driver's grid position comes straight from `fixedGrid` instead, identical on
+   every call. Otherwise (the default) each driver's grid position is sampled from
+   `avgGrid ± stdGrid` (Gaussian), then ranked into grid 1..N.
 2. **Race** — each driver independently rolls a DNF against their historical `dnfRate`.
    Finishers get a pace score blended from grid position (45%) and historical finish
    form (55%, `avgFinish ± stdFinish`), then are ranked; DNFs are appended ordered by laps
@@ -150,22 +152,34 @@ passes so it stays fast in-browser:
 
 Results render as a ranked table (captain, 4 drivers, constructor, salary, avg score, min–max
 range) inside a scrollable container (`#auto-results-wrap`, max-height 640px, sticky header)
-since 50 rows would otherwise make the page very long. Each row has a **Load** button that
-copies that lineup into `lineup`, switches back to the Lineup Builder tab, and re-renders — the
-loaded lineup is always cap-legal and rule-legal by construction, so Simulate is immediately
-enabled.
+since 50 rows would otherwise make the page very long. Each row has a **Load** button
+(`loadCandidate()`) that copies that lineup into `lineup`, re-renders the builder so it's ready
+whenever you switch back to it, then jumps straight to **The Chances tab** for that specific
+lineup (see below) — the loaded lineup is always cap-legal and rule-legal by construction, so
+Simulate is immediately enabled if you do go back to the builder.
 
 Runs synchronously but wrapped in `setTimeout(...,10)` between the two passes so the "Searching
 …" / "Simulating …" status text actually paints before the heavy loop blocks the main thread.
 
 ## The Chances tab
 
-After ranking finishes, `runAutoSim()` also calls `analyzeTopLineupChances()` on the **#1
-ranked lineup** (2000 dedicated `simulateRace()` runs) and automatically switches to The
-Chances tab to show the result — this is the one part of the flow that "pops up" on its own
-rather than waiting for a click.
+Shows what has to happen for a specific lineup's single best-case simulated outcome, and how
+likely it is. Gets populated two ways:
 
-What it does, using that single batch of 2000 sims:
+- **Automatically** — after ranking finishes, `runAutoSim()` calls `analyzeTopLineupChances()`
+  on the **#1 ranked lineup** (2000 dedicated `simulateRace()` runs) and switches to The Chances
+  tab on its own, without waiting for a click.
+- **Any Load button** — clicking **Load** on *any* row in Auto Simulation or AI Simulation
+  (`loadCandidate()` / `loadAiCandidate()`, via a shared `showChancesForCandidate()` helper)
+  loads that lineup into the builder, then shows its chances the same way — not just the #1
+  ranked one. If that candidate already has a `.chances` result attached (AI Simulation
+  candidates get this from `computeAiChances()` after Stop), it reuses that instantly instead of
+  re-simulating; otherwise it runs a fresh 2000-sim analysis on the spot (fast enough — well
+  under 100ms per lineup — to do synchronously on click). The intro text just says "this
+  lineup," not "#1 ranked," since it can now be any of them.
+
+What the analysis does, using that batch of ~2000 sims (1000 if reusing an AI Simulation
+candidate's cached result):
 
 - Tracks every run's total score and keeps the **single highest-scoring run** found — that
   becomes "the outcome": each pick's finish position (and grid), DNF status, and which bonuses
@@ -221,19 +235,45 @@ not an LLM reasoning about picks.
   indefinitely. Each tick simulates 150 more races per candidate (20 × 150 = 3000 sims/tick,
   ~50ms of work — cheap enough to keep the tab responsive) and folds them into the running
   avg/min/max, then `renderAiResults()` re-sorts and redraws the table live.
-- **Stop** (`stopAiSimulation()`) — clears the interval; whatever averages had accumulated stay
-  on screen, frozen, with a "Stopped after N total simulations" status.
-- Clicking **Start** again always starts a fresh shortlist and resets all counters to zero —
-  it's a restart, not a resume.
-- The table looks like Auto Simulation's (same columns plus a running **Sims** count per
-  candidate) with its own scrollable/sticky-header wrapper (`#ai-results-wrap`) and its own
-  **Load** button per row (`loadAiCandidate()`) that copies that lineup into `lineup` and
-  switches to the Lineup Builder tab — same behavior as Auto Simulation's Load, just against
-  the `aiCandidates` array instead of `autoCandidates`.
+- **Stop** (`stopAiSimulation()`) — clears the interval, then runs `computeAiChances()`: a
+  dedicated `analyzeTopLineupChances()` pass (the same engine The Chances tab uses for the #1
+  Auto Simulation lineup) for **every** currently-ranked AI candidate, 1000 sims each (20 × 1000
+  = 20k sims, ~1.1s in testing). Each row's new **Chances** column then shows that candidate's
+  own best-case score and "chance of this or better" (`combinedProb`), computed the same way as
+  The Chances tab — this only happens once, on Stop, not continuously while running (too
+  expensive to redo every 400ms tick). Status reads "computing chances for each lineup…" while
+  it runs, then reverts to "Stopped after N total simulations."
+- **Filtering out unrealistic best cases** (`MIN_PICK_CHANCE = 0.05`, applied inside
+  `computeAiChances()` right after computing chances) — any candidate whose best-case outcome
+  needs *any* individual pick (or the constructor) to hit a result with less than a 5% solo
+  chance gets dropped from `aiCandidates` entirely; it's not shown, not loadable. This can be
+  aggressive — a lineup's single best-of-1000 run often involves at least one rare event (a
+  fastest lap, an outsized points day), so it's common for most of the 20 shortlisted candidates
+  to get filtered out in one Stop (e.g. 19 of 20 hidden, 1 survivor, in testing). If **every**
+  candidate gets filtered, the table shows a message ("Every shortlisted lineup needed an
+  almost-impossible… result — Click Start to try a fresh shortlist") in place of rows rather
+  than an empty-looking table; the status line also reports how many were hidden. Clicking
+  **Start** resets `AI.filteredOutCount` to 0 and re-shows all candidates unfiltered until the
+  next Stop recomputes and re-filters.
+- Clicking **Start** again always starts a fresh shortlist and resets all counters (and any
+  computed chances) to zero — it's a restart, not a resume.
+- The table looks like Auto Simulation's (same columns plus a running **Sims** count and, once
+  stopped, a **Chances** column per candidate) with its own scrollable/sticky-header wrapper
+  (`#ai-results-wrap`). The **Load** button (`loadAiCandidate()`) only appears once stopped
+  (`renderAiTable()` checks `AI.running` and renders an empty cell instead while it's still
+  live) — the ranking keeps shifting every tick while running, so loading a row mid-run could
+  load a lineup that's no longer where you clicked it; Stop first, then Load. Same
+  copy-into-`lineup`-then-jump-to-The-Chances behavior as Auto Simulation's Load (see below) —
+  and since Stop already ran `computeAiChances()`, every AI Simulation candidate has a
+  `.chances` result cached, so its Load is effectively instant (no on-the-spot re-simulation) —
+  just against the `aiCandidates` array instead of `autoCandidates`.
+  Rendering is split into `renderAiResults()` (recomputes avg/min/max from `AI.stats` while
+  ticking, then calls `renderAiTable()`) and `renderAiTable()` (just redraws whatever's
+  currently in `aiCandidates`, including any `.chances` attached by `computeAiChances()` —
+  kept separate so attaching chances data doesn't get clobbered by a stray re-sort).
 - Because averages only get more precise the longer it runs (standard error shrinks with more
   samples), leaving it running and checking back later gives a tighter estimate of each
-  candidate's true average than Auto Simulation's one-shot 1000-sim pass — the tradeoff is it
-  doesn't run The Chances analysis or explain anything, it just ranks by average score.
+  candidate's true average than Auto Simulation's one-shot 1000-sim pass.
 
 The AI Simulation tab uses a `.layout` two-column grid (same pattern as the Lineup Builder tab)
 so the AI Simulation card sits next to a second card, **Driver's Qualifying** — see below.
@@ -265,8 +305,18 @@ simulation (Simulate race, Auto Simulation, AI Simulation, The Chances) use it i
   lap) is still random, only the starting grid becomes fixed.
 - **Use simulated grid** (`resetQualiGrid`) — sets `fixedGrid = null`, reverting to the default
   randomized qualifying. The status line under the buttons always says which mode is active.
-- Nothing here is persisted to `data.js` or any file — it's in-memory browser state only, reset
-  on page reload. Re-enter it each session (or each race week) after real qualifying happens.
+- **Auto-apply from `config/race_notes.yaml`** (`initQualifying()`, called once at page load,
+  after `renderTyrePlans()`/`renderDriverPerformance()`): if `config/race_notes.yaml` →
+  `qualifying.order` has been filled in (a list of driver codes, best to worst) and
+  `dashboard/data.js` rebuilt, the dashboard loads that as `qualiOrder`, merges in
+  `qualifying.penalties`, and calls `applyQualiGrid()` automatically — no manual reordering or
+  clicking needed, the real grid is just already active when the page opens. Any driver code
+  missing from `order` (e.g. a data mismatch) is appended in predicted order rather than
+  dropped, so the table always has all 22 rows. If `order` is empty (the default, until
+  qualifying actually happens), it falls back to `resetQualiGrid()` — today's behavior,
+  unchanged. Manually reordering/entering penalties in the UI afterward still works exactly the
+  same way regardless of how the initial state was populated; nothing about the box is
+  read-only once loaded, this only affects the *starting* state on page load.
 
 ## Refreshing for a new race week
 
@@ -275,8 +325,9 @@ simulation (Simulate race, Auto Simulation, AI Simulation, The Chances) use it i
 3. `python3 src/fetch_dk_salaries.py` — pull the current week's DK salaries (auto-detects the
    active F1 draft group).
 4. Edit `config/race_notes.yaml` as intel comes in during the week — `tyre_plans`,
-   `driver_performance`, penalties, weather, etc. (see
-   [skill/data-process.md](../skill/data-process.md) for sources/timing).
+   `driver_performance`, penalties, weather, etc., and `qualifying.order`/`qualifying.penalties`
+   once real qualifying happens (see [skill/data-process.md](../skill/data-process.md) for
+   sources/timing).
 5. `python3 dashboard/build_data.py` — regenerate `dashboard/data.js` (rerun any time the yaml
    changes, not just on a full data refresh).
 6. Reload `dashboard/index.html`.

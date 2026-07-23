@@ -92,6 +92,14 @@ parse.
   code in isolation looked plausible. If you touch `renderLineup`, `slotRow`,
   `emptyRow`, or `remove`, retest by actually adding/removing picks and
   confirming Simulate enables on a legal, in-cap lineup.
+- **Stale `data.js` served after a rebuild, even on a fresh tab/server restart:** if you rebuild
+  `data.js` mid-session and the sandboxed browser preview keeps serving the old content (check
+  with `JSON.stringify(Object.keys(D.raceNotes))` or similar — compare against the actual file),
+  a plain reload or even stopping/restarting the `preview_start` server on the *same port* isn't
+  guaranteed to bust it. Changing the port in `.claude/launch.json` and restarting forces a
+  genuinely fresh load. A direct `curl`/`Bash` fetch of the file will show the correct fresh
+  content even while the browser tool is still stale — don't let that fool you into thinking the
+  file itself is wrong.
 - **Windows encoding bug (fixed, watch for regressions):** `build_data.py`
   writes `data.js` with `Path.write_text(...)`. Always pass
   `encoding="utf-8"` explicitly — without it, Windows defaults to cp1252 and

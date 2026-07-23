@@ -41,6 +41,18 @@ tyre_plans:
   audi: []
   cadillac: []
 
+# Real post-qualifying grid for this race, once it happens. `order` is the
+# classified qualifying order (best to worst, driver codes — see
+# src/common.py NAME_TO_CODE for the code list); `penalties` is places
+# dropped per driver code (0 or omitted = no penalty). When `order` is
+# filled in, the dashboard applies it automatically on load — no need to
+# reorder anything by hand in the Driver's Qualifying box. Leave `order`
+# empty until real qualifying results are in; the dashboard falls back to
+# simulated qualifying (its normal default) until then.
+qualifying:
+  order: []
+  penalties: {}
+
 # Summary of each driver's practice (FP1/FP2/FP3) performance for this race —
 # pace, long-run/tyre degradation, notable issues. Keyed by driver code (see
 # src/common.py NAME_TO_CODE for the code list). Fill in as sessions happen;
