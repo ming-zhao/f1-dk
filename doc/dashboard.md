@@ -172,11 +172,12 @@ likely it is. Gets populated two ways:
 - **Any Load button** — clicking **Load** on *any* row in Auto Simulation or AI Simulation
   (`loadCandidate()` / `loadAiCandidate()`, via a shared `showChancesForCandidate()` helper)
   loads that lineup into the builder, then shows its chances the same way — not just the #1
-  ranked one. If that candidate already has a `.chances` result attached (AI Simulation
-  candidates get this from `computeAiChances()` after Stop), it reuses that instantly instead of
-  re-simulating; otherwise it runs a fresh 2000-sim analysis on the spot (fast enough — well
-  under 100ms per lineup — to do synchronously on click). The intro text just says "this
-  lineup," not "#1 ranked," since it can now be any of them.
+  ranked one. If that candidate already has a `.chances` result attached (every AI Simulation
+  candidate visible in the table has one, refreshed continuously by `updateAiChances()` — see
+  the AI Simulation section below), it reuses that instantly instead of re-simulating;
+  otherwise it runs a fresh 2000-sim analysis on the spot (fast enough — well under 100ms per
+  lineup — to do synchronously on click). The intro text just says "this lineup," not "#1
+  ranked," since it can now be any of them.
 
 What the analysis does, using that batch of ~2000 sims (1000 if reusing an AI Simulation
 candidate's cached result):
@@ -228,52 +229,96 @@ Same underlying math-based engine as Auto Simulation — no external AI/LLM call
 request, nothing server-side. "AI" here means "runs on its own without you clicking Simulate,"
 not an LLM reasoning about picks.
 
-- **Start** (`startAiSimulation()`) — shortlists 20 candidates via the same
-  `findTopCandidatesByProjection()` used by Auto Simulation (squad-deduped, captain/constructor
-  capped), zeroes out a per-candidate accumulator (`{n, sum, min, max}`), then immediately runs
-  one batch and arms a `setInterval` (`aiTick()`, every 400ms) to keep running batches
-  indefinitely. Each tick simulates 150 more races per candidate (20 × 150 = 3000 sims/tick,
-  ~50ms of work — cheap enough to keep the tab responsive) and folds them into the running
-  avg/min/max, then `renderAiResults()` re-sorts and redraws the table live.
-- **Stop** (`stopAiSimulation()`) — clears the interval, then runs `computeAiChances()`: a
-  dedicated `analyzeTopLineupChances()` pass (the same engine The Chances tab uses for the #1
-  Auto Simulation lineup) for **every** currently-ranked AI candidate, 1000 sims each (20 × 1000
-  = 20k sims, ~1.1s in testing). Each row's new **Chances** column then shows that candidate's
-  own best-case score and "chance of this or better" (`combinedProb`), computed the same way as
-  The Chances tab — this only happens once, on Stop, not continuously while running (too
-  expensive to redo every 400ms tick). Status reads "computing chances for each lineup…" while
-  it runs, then reverts to "Stopped after N total simulations."
-- **Filtering out unrealistic best cases** (`MIN_PICK_CHANCE = 0.05`, applied inside
-  `computeAiChances()` right after computing chances) — any candidate whose best-case outcome
-  needs *any* individual pick (or the constructor) to hit a result with less than a 5% solo
-  chance gets dropped from `aiCandidates` entirely; it's not shown, not loadable. This can be
-  aggressive — a lineup's single best-of-1000 run often involves at least one rare event (a
-  fastest lap, an outsized points day), so it's common for most of the 20 shortlisted candidates
-  to get filtered out in one Stop (e.g. 19 of 20 hidden, 1 survivor, in testing). If **every**
-  candidate gets filtered, the table shows a message ("Every shortlisted lineup needed an
-  almost-impossible… result — Click Start to try a fresh shortlist") in place of rows rather
-  than an empty-looking table; the status line also reports how many were hidden. Clicking
-  **Start** resets `AI.filteredOutCount` to 0 and re-shows all candidates unfiltered until the
-  next Stop recomputes and re-filters.
-- Clicking **Start** again always starts a fresh shortlist and resets all counters (and any
-  computed chances) to zero — it's a restart, not a resume.
-- The table looks like Auto Simulation's (same columns plus a running **Sims** count and, once
-  stopped, a **Chances** column per candidate) with its own scrollable/sticky-header wrapper
-  (`#ai-results-wrap`). The **Load** button (`loadAiCandidate()`) only appears once stopped
-  (`renderAiTable()` checks `AI.running` and renders an empty cell instead while it's still
-  live) — the ranking keeps shifting every tick while running, so loading a row mid-run could
-  load a lineup that's no longer where you clicked it; Stop first, then Load. Same
-  copy-into-`lineup`-then-jump-to-The-Chances behavior as Auto Simulation's Load (see below) —
-  and since Stop already ran `computeAiChances()`, every AI Simulation candidate has a
-  `.chances` result cached, so its Load is effectively instant (no on-the-spot re-simulation) —
+**Elimination is absolute; the 20-count is a best-effort target, not a guarantee.** A lineup
+currently needing an almost-impossible (<5%) result from any pick is **never shown**, full
+stop — even if that means the table shows fewer than 20 rows, or (rarely, right after Stop's
+harsher precision pass) zero. This was a deliberate trade-off: an earlier version of this
+feature always padded the display back up to exactly 20 by swapping in reserve candidates
+regardless of whether they too failed the check, which technically let a fresh violator sit
+displayed until its next chances re-check. Elimination now wins outright.
+
+*Why the count fluctuates so much in practice:* a lineup's single best-of-N simulated outcome
+is, by definition, an outlier — and outliers usually require at least one individually rare
+break. So on any given sample, **most** candidates fail the <5% check on at least one pick, not
+a rare few. In testing, a running pool often had only 5–7 of 20 passing at once, and Stop's
+harsher 1000-sim precision pass (a more extreme "best of" than the live 300-sim one) not
+infrequently finds that literally none of the currently-tracked candidates pass right at that
+moment. That's expected, not a bug — the filter is working as strictly as asked.
+
+State: `AI.shortlist` (up to 20 currently *tracked* candidates — mutable, entries get replaced
+over time) and `AI.reserve` (backup candidates, pre-ranked by projection, not currently
+tracked), with parallel arrays `AI.stats` (running avg/min/max per tracked slot), `AI.chances`
+(last computed chances result per slot, or `null`), and `AI.visible` (boolean, whether that
+slot currently clears the 5% bar). `aiCandidates`, the array actually rendered, is
+`AI.shortlist` **filtered to only the currently-visible slots**, sorted by avg — length 0–20.
+
+- **Start** (`startAiSimulation()`) — generates a pool of `AI_POOL_SIZE` = 200 candidates via
+  the same `findTopCandidatesByProjection()` used by Auto Simulation (squad-deduped,
+  captain/constructor capped, sorted by projection — in practice this often returns somewhat
+  fewer than 200 distinct legal squads, which is fine). The top 20 become `AI.shortlist`
+  (tracked), the rest become `AI.reserve` (held back, best-projection-first) — a much deeper
+  reserve than an earlier version's 40, specifically to keep the visible count as close to 20
+  as the underlying math allows for as long as possible. Zeroes `AI.stats`, marks every slot
+  `visible` until the first chances pass says otherwise, runs one stats batch, and arms
+  `setInterval(aiTick, 400)`. Each tick simulates `AI_TICK_BATCH` = 150 more races per tracked
+  candidate (20 × 150 = 3000 sims/tick, ~50ms) and folds them into that slot's running
+  avg/min/max.
+- **Live quality control while running** (`MIN_PICK_CHANCE = 0.05`) — immediately after
+  starting, `updateAiChances(300)` runs once synchronously and then again every 2 seconds via
+  its own `setInterval` (`AI.chancesTimer`, separate from the stats tick): a lighter 300-sim
+  `analyzeTopLineupChances()` pass per tracked candidate (20 × 300 = 6000 sims, ~300ms — fast
+  enough for a 2s cadence, too much for every 400ms tick). Any slot whose best-case outcome
+  needs an almost-impossible (<5%) result from some individual pick or the constructor is
+  marked not-`visible` — and disappears from the rendered table on this same pass, unconditionally.
+  Since every pass draws entirely fresh random simulations, a hidden candidate gets an
+  independent fresh shot at passing on the *next* pass too — it isn't gone forever just because
+  it failed once.
+- **Swapping** (`performAiSwaps()`, called at the end of every `updateAiChances()` pass) — best
+  effort to nudge the visible count back toward 20, not what makes elimination happen (the
+  render-time filter does that unconditionally). Ranks the 20 tracked slots worst-first
+  (not-visible ones always rank as worst, then by simulated avg ascending), and for each one,
+  evicts and replaces it from `AI.reserve` (best-projection-first, via `.shift()`) if either:
+  the slot is not-visible, or the next reserve candidate's *projection* beats that slot's
+  *simulated avg*. A freshly swapped-in candidate is immediately seeded with one
+  `AI_TICK_BATCH`-sized batch of sims and its own chances check. Stops once `AI.reserve` runs
+  out (which it eventually will, even at 200-deep, given how often candidates fail the check —
+  verified in testing: reserve hit 0 within ~10s of continuous swapping). Reports how many slots
+  were swapped this pass (`AI.filteredOutCount`, reset to 0 whenever the reserve is empty or
+  nothing needed swapping — an earlier version had a bug here: an early-return path on empty
+  reserve skipped resetting this, so the status kept showing a stale nonzero swap count forever
+  after the reserve ran dry; fixed).
+- **Stop** (`stopAiSimulation()`) — clears both the stats timer and the chances timer, then
+  runs one final, more precise `updateAiChances(1000)` pass (which also runs `performAiSwaps()`
+  one more time) for a settled result instead of the noisier live 300-sim estimate. Being a more
+  extreme "best of 1000" rather than "best of 300," this final pass is *more* likely to trip the
+  5% filter, not less — don't be surprised if the count drops (even to zero) right at Stop.
+  Status reads "computing final chances for each lineup…" while it runs, then "Stopped after N
+  total simulations" plus a count/swap note.
+- Clicking **Start** again always generates a fresh 200-candidate pool and resets everything
+  (stats, chances, visibility, reserve, swap count) — it's a restart, not a resume.
+- If the visible count is ever 0 (all currently-tracked candidates are failing at once), the
+  table shows a message in place of rows rather than looking empty/broken — worded differently
+  depending on whether it's still running ("keep waiting, every pass draws a fresh sample") or
+  stopped ("Click Start to try a fresh pool").
+- The table looks like Auto Simulation's (same columns plus a running **Sims** count and a
+  **Chances** column, populated as soon as the first live pass completes — not just after Stop)
+  with its own scrollable/sticky-header wrapper (`#ai-results-wrap`). The **Load** button
+  (`loadAiCandidate()`) only appears once stopped (`renderAiTable()` checks `AI.running`) — the
+  ranking and visible set keep shifting while running, so loading a row mid-run could load a
+  lineup that's no longer where you clicked it, or that's about to fail the next check; Stop
+  first, then Load. Same copy-into-`lineup`-then-jump-to-The-Chances behavior as Auto
+  Simulation's Load (see below) — and since every visible candidate already has a `.chances`
+  result from the live/final pass, Load is effectively instant (no on-the-spot re-simulation) —
   just against the `aiCandidates` array instead of `autoCandidates`.
-  Rendering is split into `renderAiResults()` (recomputes avg/min/max from `AI.stats` while
-  ticking, then calls `renderAiTable()`) and `renderAiTable()` (just redraws whatever's
-  currently in `aiCandidates`, including any `.chances` attached by `computeAiChances()` —
-  kept separate so attaching chances data doesn't get clobbered by a stray re-sort).
-- Because averages only get more precise the longer it runs (standard error shrinks with more
-  samples), leaving it running and checking back later gives a tighter estimate of each
-  candidate's true average than Auto Simulation's one-shot 1000-sim pass.
+  Rendering is split into `renderAiResults()` (filters `AI.shortlist` down to visible slots,
+  sorts by avg into `aiCandidates`, then calls `renderAiTable()`) and `renderAiTable()` (just
+  draws whatever's currently in `aiCandidates`, or the empty-state message) — kept separate so
+  `updateAiChances()`/`performAiSwaps()` can trigger a redraw without duplicating the filter/sort
+  logic.
+- Because averages only get more precise the longer a given candidate stays tracked (standard
+  error shrinks with more samples), leaving it running and checking back later gives a tighter
+  estimate of each surviving candidate's true average than Auto Simulation's one-shot 1000-sim
+  pass — on top of the list itself having been continuously upgraded via swaps.
 
 The AI Simulation tab uses a `.layout` two-column grid (same pattern as the Lineup Builder tab)
 so the AI Simulation card sits next to a second card, **Driver's Qualifying** — see below.
