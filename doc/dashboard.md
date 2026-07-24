@@ -24,8 +24,10 @@ python3 dashboard/build_data.py
 
 and writes a single `const F1DATA = {...}` payload: driver stats (avg finish/grid, std dev,
 DNF rate, avg DK points, both roster-slot salaries), constructor stats, scoring rules, total
-laps, race name, and the raw `race_notes.yaml` contents (`raceNotes`). If `data.js` is missing
-or stale, the driver/constructor tables render empty and the notes boxes show their
+laps, race name, the raw `race_notes.yaml` contents (`raceNotes`), and `raceHistory` — real
+per-race DK points for every past race in `dk_driver_points.csv`/`dk_constructor_points.csv`
+(built by `build_race_history()`), used by the Testing AI tab. If `data.js` is missing or
+stale, the driver/constructor tables render empty and the notes boxes show their
 "add info and rebuild" placeholder.
 
 **`config/race_notes.yaml` fields:** `tyre_plans` and `driver_performance` are the two fields
@@ -36,14 +38,15 @@ change anything visible today.
 
 ## Tabs
 
-Four tabs, toggled via `switchTab('builder' | 'auto' | 'chances' | 'ai')` (generic — loops the
-`TABS` array, toggling `#tab-<name>` display and `#tab-<name>-btn` active class): **Lineup
-Builder** (default), **Auto Simulation**, **The Chances**, and **AI Simulation**. Only one
-tab's container is visible at a time; state in all of them (current lineup, last auto-sim
-results, last chances breakdown, AI simulation's running totals) is preserved when switching —
-switching away from AI Simulation does **not** stop it; it keeps running in the background via
-`setInterval` regardless of which tab is active. Running auto simulation automatically switches
-to The Chances tab once it finishes (see below).
+Five tabs, toggled via `switchTab('builder' | 'auto' | 'chances' | 'ai' | 'testing')` (generic
+— loops the `TABS` array, toggling `#tab-<name>` display and `#tab-<name>-btn` active class):
+**Lineup Builder** (default), **Auto Simulation**, **The Chances**, **AI Simulation**, and
+**Testing AI**. Only one tab's container is visible at a time; state in all of them (current
+lineup, last auto-sim results, last chances breakdown, AI simulation's running totals, last
+backtest results) is preserved when switching — switching away from AI Simulation does **not**
+stop it; it keeps running in the background via `setInterval` regardless of which tab is
+active. Running auto simulation automatically switches to The Chances tab once it finishes
+(see below).
 
 ## Layout — Lineup Builder tab
 
@@ -362,6 +365,63 @@ simulation (Simulate race, Auto Simulation, AI Simulation, The Chances) use it i
   unchanged. Manually reordering/entering penalties in the UI afterward still works exactly the
   same way regardless of how the initial state was populated; nothing about the box is
   read-only once loaded, this only affects the *starting* state on page load.
+
+## Testing AI tab (backtest against a chosen past season)
+
+Answers "would the AI's picks have actually scored well in a specific real season?" using
+genuine historical DK points — not a projection, not a simulation. Important data caveat,
+shown directly in the tab's own UI: **there are no real historical DraftKings salaries or
+contest payouts anywhere** (DK doesn't archive old pricing, and this project only started
+saving weekly salary snapshots recently — one snapshot exists on disk, for the current race).
+So this uses **today's** salary cap and driver salaries as a stand-in for pricing in every past
+race tested — the scores shown are real, but "would this have made money" is a rough proxy,
+not a real payout simulation. Never fabricate a dollar figure here; there's no real data to
+base one on.
+
+- **Season dropdown** (`populateTestingYearDropdown()`, run once at page load) — lists every
+  year from `F1_FIRST_SEASON` = 1950 (F1's first World Championship season) through
+  `TESTING_LAST_SEASON` = 2025, newest first. Years with no data actually fetched yet (checked
+  against `D.raceHistory`) are labeled "(no data fetched yet)" right in the option text, so
+  it's obvious before you even click Run — this project has only backfilled a handful of
+  recent seasons so far (2023–2026 as of this data pull; 2026 doesn't appear in the dropdown
+  since it's the in-progress season, not one of the 1950–2025 past seasons being backtested).
+  Defaults to the most recent season that actually has data, falling back to 2025 if somehow
+  none do.
+- **Run backtest** (`runTestingAi()`):
+  1. Reads the selected `<option>` value, filters `D.raceHistory` down to just that year's
+     races (sorted by round). If none exist for that year, shows a direct "No race data
+     fetched for {year} yet — run `python3 src/fetch_jolpica.py`..." message and stops there,
+     no picking/scoring wasted.
+  2. `pickTestingLineup()` — picks one lineup using today's rules: the same
+     `findTopCandidatesByProjection(20)` + `evaluateCandidate(c, 500)` shortlist-then-simulate
+     approach Auto Simulation uses, takes the highest-avg result. This is "the AI's" pick for
+     the current race week, not something the user builds by hand, and is **the same pick
+     regardless of which season is being tested** — the point is checking how one present-day
+     recommendation would have fared against different real seasons, not re-optimizing per era.
+  3. For each race in that season (`scoreLineupAtHistoricalRace()`) — sums the picked lineup's
+     real point totals for that race (captain × 1.5, same as everywhere else) if and only if
+     every pick (5 drivers + the constructor) actually appears in that race's data; if any pick
+     wasn't racing that event (almost always the case for older seasons — a driver simply
+     didn't exist in F1 yet), the row is marked "N/A — driver(s) not in that race's field"
+     rather than silently scoring 0. Testing the 2025 season found full data for all 24 races;
+     testing 2023 found 0 of 22, since that lineup included several 2025/2026-rookie picks who
+     weren't racing in 2023 at all — an honest, expected result given how far back rookies'
+     data doesn't reach, not a bug.
+  4. `fieldAverageLineupScore()` — a cheap comparison baseline per race: the average real DK
+     score across all drivers that race, applied as if an "average" driver filled all 5 driver
+     slots (captain included, at 1.5×) plus the average constructor score — O(n), no
+     combinatorial search needed. Deliberately *not* a true "best possible lineup that race"
+     (which would need a full `fiveCombos()`-style search per race) — just a rough "did we beat
+     a typical lineup" signal.
+- Summary tiles: races that season, how many had full data, the average actual score across
+  those, and how often the tested lineup beat the field-average baseline (count and %) — 83%
+  across the 2025 season in testing.
+- Full per-race table (round, race, our score, field-average baseline, delta) for the selected
+  season only, in a scrollable container.
+- Nothing here is persisted — re-running "Run backtest" (same season or a new one) re-picks a
+  lineup from scratch (new random Monte Carlo sims in the evaluation step, so the exact pick
+  can vary run to run) and rescoring is deterministic given that pick (real historical data, no
+  randomness in the scoring itself).
 
 ## Refreshing for a new race week
 
