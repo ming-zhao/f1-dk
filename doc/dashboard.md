@@ -5,6 +5,26 @@ build a DraftKings F1 classic lineup and simulate a race outcome against it. Ope
 in a browser (or serve it over HTTP — see [skill/dashboard.md](../skill/dashboard.md) for why
 that matters when testing).
 
+## Refresh splash
+
+Every page load (there's no separate in-app "refresh" button — this is a static file, so
+"refresh" means the browser reloading it) plays a short intro: `#splash-overlay`, a full-screen
+layer sitting above everything else (`z-index: 1000`), shows an F1 car (🏎️ emoji, flipped via
+`transform: scaleX(-1)` to face its direction of travel) driving left-to-right across a
+checkered finish-line stripe via a CSS `@keyframes splash-drive` animation, 2.2s,
+`animation-fill-mode: forwards` so the car stays parked at the line rather than snapping back.
+The rest of the dashboard is already fully rendered underneath by the time this plays (`render()`
+and friends all run synchronously well before the animation finishes) — the overlay is purely
+cosmetic pacing, not gating on any real load work.
+
+Revealed by `initSplash()` (very end of the main `<script>`, after every other init call):
+listens for the car's `animationend` event to add `.hidden` to the overlay (triggers the CSS
+`opacity`/`visibility` transition already defined on `#splash-overlay`), with a 3-second
+`setTimeout` safety net in case `animationend` never fires for some reason (e.g. the tab was
+backgrounded and the animation got throttled/paused — browsers commonly do this for
+non-visible tabs). `prefers-reduced-motion: reduce` shortens the animation to 0.3s instead of
+skipping it outright, so the reveal timing/mechanism stays identical either way.
+
 ## Data dependency
 
 The page loads `dashboard/data.js` via `<script src="data.js">`. That file is **generated**,
@@ -232,92 +252,107 @@ Same underlying math-based engine as Auto Simulation — no external AI/LLM call
 request, nothing server-side. "AI" here means "runs on its own without you clicking Simulate,"
 not an LLM reasoning about picks.
 
-**Elimination is absolute; the 20-count is a best-effort target, not a guarantee.** A lineup
-currently needing an almost-impossible (<5%) result from any pick is **never shown**, full
-stop — even if that means the table shows fewer than 20 rows, or (rarely, right after Stop's
-harsher precision pass) zero. This was a deliberate trade-off: an earlier version of this
-feature always padded the display back up to exactly 20 by swapping in reserve candidates
-regardless of whether they too failed the check, which technically let a fresh violator sit
-displayed until its next chances re-check. Elimination now wins outright.
+**Always shows all 20 tracked lineups — nothing is hidden — but a lineup currently needing an
+almost-impossible (<5%) result from some pick is sunk to the bottom of the list** (dimmed, with
+a ⚠ badge) instead of being mixed in with the legitimate picks. This replaced an earlier,
+stricter version that eliminated failing lineups from the table entirely, which could shrink
+the display to a handful of rows or even zero. The current design keeps a stable, always-full
+list while still making it visually obvious which entries are shaky and which aren't — and the
+swap mechanism (below) keeps actively trying to replace a bottom entry with a clean reserve
+candidate whenever one's available, so a lineup at the bottom isn't stuck there, just not
+hidden while it's there.
 
-*Why the count fluctuates so much in practice:* a lineup's single best-of-N simulated outcome
+*Why so many end up at the bottom in practice:* a lineup's single best-of-N simulated outcome
 is, by definition, an outlier — and outliers usually require at least one individually rare
 break. So on any given sample, **most** candidates fail the <5% check on at least one pick, not
-a rare few. In testing, a running pool often had only 5–7 of 20 passing at once, and Stop's
-harsher 1000-sim precision pass (a more extreme "best of" than the live 300-sim one) not
-infrequently finds that literally none of the currently-tracked candidates pass right at that
-moment. That's expected, not a bug — the filter is working as strictly as asked.
+a rare few. In testing, a running pool often had only 5–7 of 20 passing at once (the other
+13–15 sunk to the bottom, still visible), and Stop's harsher 1000-sim precision pass (a more
+extreme "best of" than the live 300-sim one) sometimes finds only 1 of 20 passing. That's
+expected, not a bug — the filter is working as strictly as asked, it just no longer hides its
+own results.
 
-State: `AI.shortlist` (up to 20 currently *tracked* candidates — mutable, entries get replaced
+State: `AI.shortlist` (the 20 currently *tracked* candidates — mutable, entries get replaced
 over time) and `AI.reserve` (backup candidates, pre-ranked by projection, not currently
 tracked), with parallel arrays `AI.stats` (running avg/min/max per tracked slot), `AI.chances`
 (last computed chances result per slot, or `null`), and `AI.visible` (boolean, whether that
-slot currently clears the 5% bar). `aiCandidates`, the array actually rendered, is
-`AI.shortlist` **filtered to only the currently-visible slots**, sorted by avg — length 0–20.
+slot currently clears the 5% bar). `aiCandidates`, the array actually rendered, is **all** of
+`AI.shortlist` (never filtered), each entry tagged `.passes` from `AI.visible`, sorted
+passing-first then by avg descending within each group — always length 20.
 
 - **Start** (`startAiSimulation()`) — generates a pool of `AI_POOL_SIZE` = 200 candidates via
   the same `findTopCandidatesByProjection()` used by Auto Simulation (squad-deduped,
   captain/constructor capped, sorted by projection — in practice this often returns somewhat
   fewer than 200 distinct legal squads, which is fine). The top 20 become `AI.shortlist`
-  (tracked), the rest become `AI.reserve` (held back, best-projection-first) — a much deeper
-  reserve than an earlier version's 40, specifically to keep the visible count as close to 20
-  as the underlying math allows for as long as possible. Zeroes `AI.stats`, marks every slot
-  `visible` until the first chances pass says otherwise, runs one stats batch, and arms
-  `setInterval(aiTick, 400)`. Each tick simulates `AI_TICK_BATCH` = 150 more races per tracked
-  candidate (20 × 150 = 3000 sims/tick, ~50ms) and folds them into that slot's running
-  avg/min/max.
+  (tracked), the rest become `AI.reserve` (held back, best-projection-first) — a deep reserve
+  specifically so the swap mechanism has plenty of fresh candidates to try before running dry.
+  Zeroes `AI.stats`, marks every slot `visible` until the first chances pass says otherwise,
+  runs one stats batch, and arms `setInterval(aiTick, 400)`. Each tick simulates
+  `AI_TICK_BATCH` = 150 more races per tracked candidate (20 × 150 = 3000 sims/tick, ~50ms) and
+  folds them into that slot's running avg/min/max.
 - **Live quality control while running** (`MIN_PICK_CHANCE = 0.05`) — immediately after
   starting, `updateAiChances(300)` runs once synchronously and then again every 2 seconds via
   its own `setInterval` (`AI.chancesTimer`, separate from the stats tick): a lighter 300-sim
   `analyzeTopLineupChances()` pass per tracked candidate (20 × 300 = 6000 sims, ~300ms — fast
   enough for a 2s cadence, too much for every 400ms tick). Any slot whose best-case outcome
   needs an almost-impossible (<5%) result from some individual pick or the constructor is
-  marked not-`visible` — and disappears from the rendered table on this same pass, unconditionally.
-  Since every pass draws entirely fresh random simulations, a hidden candidate gets an
-  independent fresh shot at passing on the *next* pass too — it isn't gone forever just because
-  it failed once.
-- **Swapping** (`performAiSwaps()`, called at the end of every `updateAiChances()` pass) — best
-  effort to nudge the visible count back toward 20, not what makes elimination happen (the
-  render-time filter does that unconditionally). Ranks the 20 tracked slots worst-first
-  (not-visible ones always rank as worst, then by simulated avg ascending), and for each one,
-  evicts and replaces it from `AI.reserve` (best-projection-first, via `.shift()`) if either:
-  the slot is not-visible, or the next reserve candidate's *projection* beats that slot's
-  *simulated avg*. A freshly swapped-in candidate is immediately seeded with one
-  `AI_TICK_BATCH`-sized batch of sims and its own chances check. Stops once `AI.reserve` runs
-  out (which it eventually will, even at 200-deep, given how often candidates fail the check —
-  verified in testing: reserve hit 0 within ~10s of continuous swapping). Reports how many slots
-  were swapped this pass (`AI.filteredOutCount`, reset to 0 whenever the reserve is empty or
-  nothing needed swapping — an earlier version had a bug here: an early-return path on empty
-  reserve skipped resetting this, so the status kept showing a stale nonzero swap count forever
-  after the reserve ran dry; fixed).
+  marked not-`visible`, which on the next render sinks it to the bottom (still shown, just
+  ranked last and dimmed) rather than hiding it. Since every pass draws entirely fresh random
+  simulations, a bottom-ranked candidate gets an independent fresh shot at passing on the
+  *next* pass too — it isn't stuck there just because it failed once.
+- **Repair, not replace** (`repairFailingLineup()`, tried first inside `performAiSwaps()` for
+  every not-visible slot) — for a lineup currently failing the 5% bar, changes just its single
+  worst-performing pick (lowest solo chance among the 5 drivers + constructor, read straight off
+  that slot's `.chances`) and keeps everything else exactly as-is, rather than throwing the
+  whole lineup out for an unrelated one. If the worst pick is a driver, it's replaced with the
+  highest-`avgDk` driver not already in the lineup that still fits under the salary cap (using
+  that slot's actual CPT-vs-D salary) and doesn't break DK's same-team rule; if it's the
+  constructor, same idea with the alternative-constructor list. Verified in testing: a repaired
+  lineup differs from the original in exactly one of its 6 slots (e.g. captain/4
+  drivers/constructor unchanged, only the constructor swapped from `rb` to `alpine`; or only one
+  D driver swapped, e.g. `BEA` → `HAD`). Returns `null` if no legal replacement exists for that
+  slot (rare — would need every other driver/constructor to be unaffordable or team-rule-illegal
+  given the rest of the lineup), in which case `performAiSwaps()` falls back to pulling a whole
+  new candidate from `AI.reserve` instead, same as before.
+- **Swapping** (`performAiSwaps()`, called at the end of every `updateAiChances()` pass) — ranks
+  the 20 tracked slots worst-first (not-visible ones always rank as worst, then by simulated avg
+  ascending). For a not-visible slot: try the in-place repair above first; only pull a fresh
+  whole candidate from `AI.reserve` (best-projection-first, via `.shift()`) if repair returns
+  `null`. For an already-visible/passing slot: only replaced from reserve if the next reserve
+  candidate's *projection* clearly beats that slot's *simulated avg* — this path is about
+  opportunistic upgrades, not rule-compliance, so it's unaffected by the repair change. Either
+  way, whatever lands in the slot (`seedAiSlot()`) is immediately seeded with one
+  `AI_TICK_BATCH`-sized batch of sims and its own chances check so it's never shown blank for a
+  tick. Reserve still eventually runs dry (even at 200-deep — verified in testing: ~10s of
+  continuous swapping); once it's empty, a slot that also has no legal repair just stays at the
+  bottom, still visible, until it happens to pass on a later re-check or you Start fresh.
+  Reports how many slots were touched (repaired or reserve-swapped) this pass
+  (`AI.filteredOutCount`, reset to 0 each pass).
 - **Stop** (`stopAiSimulation()`) — clears both the stats timer and the chances timer, then
   runs one final, more precise `updateAiChances(1000)` pass (which also runs `performAiSwaps()`
   one more time) for a settled result instead of the noisier live 300-sim estimate. Being a more
   extreme "best of 1000" rather than "best of 300," this final pass is *more* likely to trip the
-  5% filter, not less — don't be surprised if the count drops (even to zero) right at Stop.
-  Status reads "computing final chances for each lineup…" while it runs, then "Stopped after N
-  total simulations" plus a count/swap note.
+  5% filter, not less — don't be surprised if most of the list sinks to the bottom right at
+  Stop. Status reads "computing final chances for each lineup…" while it runs, then "Stopped
+  after N total simulations" plus a count/swap note.
 - Clicking **Start** again always generates a fresh 200-candidate pool and resets everything
   (stats, chances, visibility, reserve, swap count) — it's a restart, not a resume.
-- If the visible count is ever 0 (all currently-tracked candidates are failing at once), the
-  table shows a message in place of rows rather than looking empty/broken — worded differently
-  depending on whether it's still running ("keep waiting, every pass draws a fresh sample") or
-  stopped ("Click Start to try a fresh pool").
 - The table looks like Auto Simulation's (same columns plus a running **Sims** count and a
-  **Chances** column, populated as soon as the first live pass completes — not just after Stop)
-  with its own scrollable/sticky-header wrapper (`#ai-results-wrap`). The **Load** button
+  **Chances** column, populated as soon as the first live pass completes — not just after Stop).
+  A bottom-ranked (failing) row is dimmed (`opacity:.6`) and its Chances cell gets an extra
+  "⚠ needs a <5% break from some pick" line so it's visually obvious without needing to read the
+  status text. Own scrollable/sticky-header wrapper (`#ai-results-wrap`). The **Load** button
   (`loadAiCandidate()`) only appears once stopped (`renderAiTable()` checks `AI.running`) — the
-  ranking and visible set keep shifting while running, so loading a row mid-run could load a
-  lineup that's no longer where you clicked it, or that's about to fail the next check; Stop
-  first, then Load. Same copy-into-`lineup`-then-jump-to-The-Chances behavior as Auto
-  Simulation's Load (see below) — and since every visible candidate already has a `.chances`
-  result from the live/final pass, Load is effectively instant (no on-the-spot re-simulation) —
-  just against the `aiCandidates` array instead of `autoCandidates`.
-  Rendering is split into `renderAiResults()` (filters `AI.shortlist` down to visible slots,
-  sorts by avg into `aiCandidates`, then calls `renderAiTable()`) and `renderAiTable()` (just
-  draws whatever's currently in `aiCandidates`, or the empty-state message) — kept separate so
-  `updateAiChances()`/`performAiSwaps()` can trigger a redraw without duplicating the filter/sort
-  logic.
+  ranking keeps shifting while running, so loading a row mid-run could load a lineup that's no
+  longer where you clicked it; Stop first, then Load. Load works the same on a bottom-ranked row
+  as a top one — nothing about a failing lineup blocks loading it, only the visual ranking
+  differs. Same copy-into-`lineup`-then-jump-to-The-Chances behavior as Auto Simulation's Load
+  (see below) — and since every tracked candidate already has a `.chances` result from the
+  live/final pass, Load is effectively instant (no on-the-spot re-simulation) — just against the
+  `aiCandidates` array instead of `autoCandidates`.
+  Rendering is split into `renderAiResults()` (builds all 20 into `aiCandidates`, tags
+  `.passes`, sorts passing-first-then-by-avg, then calls `renderAiTable()`) and `renderAiTable()`
+  (just draws whatever's currently in `aiCandidates`) — kept separate so
+  `updateAiChances()`/`performAiSwaps()` can trigger a redraw without duplicating the sort logic.
 - Because averages only get more precise the longer a given candidate stays tracked (standard
   error shrinks with more samples), leaving it running and checking back later gives a tighter
   estimate of each surviving candidate's true average than Auto Simulation's one-shot 1000-sim
@@ -386,7 +421,23 @@ base one on.
   recent seasons so far (2023–2026 as of this data pull; 2026 doesn't appear in the dropdown
   since it's the in-progress season, not one of the 1950–2025 past seasons being backtested).
   Defaults to the most recent season that actually has data, falling back to 2025 if somehow
-  none do.
+  none do. Selecting a different year fires `showSeasonRaceList()` (bound via `onchange`).
+- **Season race list** (`showSeasonRaceList(resetSelection)`) — shows that year's Grand Prix
+  calendar in order right under the dropdown, immediately on selection, with no need to click
+  Run backtest first: just `D.raceHistory` filtered to the selected year and sorted by round
+  (or a "No race data fetched for {year} yet" note if empty). Purely a preview of what's
+  available — no scoring, no lineup picked. Runs once at page load too (called at the end of
+  `populateTestingYearDropdown()`, `resetSelection=true`) so the list for the default season is
+  visible before you interact with anything.
+  - Each race has a clickable dot (`selectTestingRace(round)`, tracked in module-level
+    `testingSelectedRound`) — single-select (picking a new one moves the mark, clicking the
+    same one again clears it), rendered filled/highlighted via `.testing-dot.selected` and a
+    bolded race name. Changing the season dropdown resets the selection
+    (`showSeasonRaceList(true)`); re-rendering after a click within the same season does not
+    (`showSeasonRaceList(false)`, called from `selectTestingRace`).
+  - Selecting a race doesn't feed into anything yet — `Run backtest` still always tests the
+    whole season regardless of `testingSelectedRound`. It's tracked and ready for whatever uses
+    it next (e.g. a future "test just this one race" mode).
 - **Run backtest** (`runTestingAi()`):
   1. Reads the selected `<option>` value, filters `D.raceHistory` down to just that year's
      races (sorted by round). If none exist for that year, shows a direct "No race data

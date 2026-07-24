@@ -11,7 +11,9 @@ Before working on this project, read the relevant skill in `skill/`:
   Follow it step by step for any race-week data work.
 - `skill/dashboard.md` — how to build/rebuild/troubleshoot `dashboard/index.html` and
   `dashboard/data.js` (rebuild workflow, verification, known pitfalls). See also
-  `doc/dashboard.md` for what the dashboard actually does.
+  `doc/dashboard.md` for what the dashboard actually does, and `doc/simulation.md` for how a
+  lineup's race outcome actually gets simulated (a living doc — add new methods there as we
+  build them, don't just change the code silently).
 
 Add new skills here as recurring workflows emerge (e.g. lineup-optimization.md,
 post-race-review.md).

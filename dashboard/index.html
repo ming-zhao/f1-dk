@@ -150,6 +150,11 @@
   .tab-btn.active { background: var(--series-1); color: #fff; border-color: var(--series-1); }
   .tab-btn.active:hover { color: #fff; }
   #auto-results-wrap thead th, #ai-results-wrap thead th, #testing-table thead th { position: sticky; top: 0; background: var(--surface-1); }
+  .testing-dot {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    border: 1.5px solid var(--baseline); flex-shrink: 0;
+  }
+  .testing-dot.selected { background: var(--series-1); border-color: var(--series-1); }
   /* driver stats modal */
   .driver-name { cursor: pointer; }
   .driver-name:hover { color: var(--series-1); text-decoration: underline; }
@@ -176,9 +181,48 @@
     letter-spacing: .04em; color: var(--text-muted);
   }
   .modal-stats .value { font-size: 16px; font-weight: 600; margin-top: 2px; }
+  /* refresh splash */
+  #splash-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: var(--page);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px;
+    transition: opacity .4s ease, visibility .4s ease;
+  }
+  #splash-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+  .splash-track {
+    position: relative; width: min(80vw, 560px); height: 50px;
+    border-bottom: 3px solid var(--baseline);
+  }
+  .splash-car {
+    position: absolute; bottom: 0; left: 0; font-size: 38px; line-height: 1;
+    transform: scaleX(-1); /* emoji faces left by default; flip to face the direction of travel */
+    animation: splash-drive 2.2s cubic-bezier(.45, 0, .55, 1) forwards;
+  }
+  .splash-finish {
+    position: absolute; right: 0; top: -6px; bottom: 0; width: 12px;
+    background-image: repeating-linear-gradient(45deg, #111 0 6px, #eee 6px 12px);
+    border: 1px solid var(--border);
+  }
+  @keyframes splash-drive {
+    from { left: 0; }
+    to { left: calc(100% - 38px); }
+  }
+  .splash-label { color: var(--text-secondary); font-size: 13px; letter-spacing: .04em; }
+  @media (prefers-reduced-motion: reduce) {
+    .splash-car { animation-duration: .3s; }
+  }
 </style>
 </head>
 <body class="viz-root">
+
+<div id="splash-overlay">
+  <div class="splash-track">
+    <span class="splash-car">🏎️</span>
+    <div class="splash-finish"></div>
+  </div>
+  <div class="splash-label">Loading F1 DFS Lineup Simulator…</div>
+</div>
 
 <h1 id="race-title">F1 DFS Lineup Simulator</h1>
 <div class="sub">Pick 1 Captain (1.5× points, 1.5× salary) + 4 Drivers + 1 Constructor under the $50,000 cap, then simulate a race outcome scored with real DraftKings rules.</div>
@@ -403,6 +447,7 @@
       <select id="testing-year-select"></select>
       <button class="primary" id="testing-run-btn" style="max-width:200px">Run backtest</button>
     </div>
+    <div id="testing-season-races" style="margin-top:10px"></div>
     <div class="sub" id="testing-status" style="margin-top:8px"></div>
     <div id="testing-results" style="display:none;margin-top:14px">
       <div class="tiles" style="grid-template-columns:repeat(4,1fr)">
@@ -1174,22 +1219,13 @@ function aiTick() {
 // — callers that need fresh numbers from AI.stats do that before calling this).
 function renderAiTable() {
   document.getElementById("ai-results-wrap").style.display = "";
-  if (aiCandidates.length === 0 && AI.shortlist.length > 0) {
-    const tail = AI.running
-      ? "Keep waiting — every pass draws a fresh sample, or click Stop."
-      : "Click Start to try a fresh pool.";
-    document.querySelector("#ai-results tbody").innerHTML =
-      `<tr><td colspan="10" class="sub" style="padding:16px 8px">None of the currently-tracked ` +
-      `lineups clear the almost-impossible (<${(MIN_PICK_CHANCE * 100).toFixed(0)}%) bar right ` +
-      `now. ${tail}</td></tr>`;
-    return;
-  }
   document.querySelector("#ai-results tbody").innerHTML = aiCandidates.map((c, i) => {
     const chancesCell = c.chances
       ? `${c.chances.total.toFixed(1)} pts best case<br>` +
-        `<span style="color:var(--text-secondary)">${(c.chances.combinedProb * 100).toFixed(2)}% chance of this or better</span>`
+        `<span style="color:var(--text-secondary)">${(c.chances.combinedProb * 100).toFixed(2)}% chance of this or better</span>` +
+        (c.passes ? "" : `<br><span style="color:var(--critical)">⚠ needs a &lt;${(MIN_PICK_CHANCE * 100).toFixed(0)}% break from some pick</span>`)
       : `<span class="sub">—</span>`;
-    return `<tr>
+    return `<tr${c.passes ? "" : ' style="opacity:.6"'}>
     <td class="num">${i + 1}</td>
     <td>${byCode[c.cpt].name}</td>
     <td>${c.drivers.map(code => byCode[code].name).join(", ")}</td>
@@ -1204,31 +1240,27 @@ function renderAiTable() {
   }).join("");
 }
 
-// Elimination is absolute: a lineup currently needing an almost-impossible
-// (<5%) result from any pick is NEVER shown, full stop — regardless of how
-// that affects the displayed count. The 20-slot pool (see AI_POOL_SIZE) and
-// the swap mechanism in performAiSwaps() are a best-effort attempt to keep
-// the *visible* count near AI_DISPLAY_SIZE, not a guarantee: since a
-// lineup's single best-of-N outcome very often involves at least one
-// individually rare break (that's inherent to "find the best of N random
-// runs"), most candidates fail this check on any given sample, and the
-// visible count can legitimately sit well below 20 — that's expected, not
-// a bug. Because every pass draws entirely fresh random simulations, a
-// currently-hidden candidate gets an independent fresh shot at passing on
-// the next pass too, not just via being swapped out.
+// Nothing gets hidden — all AI_DISPLAY_SIZE = 20 tracked lineups are always
+// shown. But they're ranked so any lineup currently needing an
+// almost-impossible (<5%) result from some pick sinks to the bottom of the
+// list (passing lineups first, sorted by avg; failing ones after, also
+// sorted by avg) rather than being mixed in with the legitimate picks. The
+// swap mechanism in performAiSwaps() still actively tries to replace those
+// bottom entries with a clean reserve candidate whenever one's available —
+// this sort is just what happens while it hasn't found one yet (or can't,
+// once the reserve runs out).
 function renderAiResults() {
   aiCandidates = AI.shortlist
     .map((c, i) => ({ ...c, avg: AI.stats[i].sum / AI.stats[i].n, min: AI.stats[i].min,
-      max: AI.stats[i].max, n: AI.stats[i].n, chances: AI.chances[i] }))
-    .filter((c, i) => AI.visible[i])
-    .sort((a, b) => b.avg - a.avg);
+      max: AI.stats[i].max, n: AI.stats[i].n, chances: AI.chances[i], passes: AI.visible[i] }))
+    .sort((a, b) => (b.passes - a.passes) || (b.avg - a.avg));
   renderAiTable();
-  const hiddenCount = AI.shortlist.length - aiCandidates.length;
-  const countNote = ` Showing ${aiCandidates.length} of ${AI_DISPLAY_SIZE} target lineups` +
-    (hiddenCount
-      ? ` — ${hiddenCount} currently need an almost-impossible (<${(MIN_PICK_CHANCE * 100).toFixed(0)}%) ` +
-        `result from some pick and aren't shown.`
-      : ".");
+  const belowBarCount = aiCandidates.filter(c => !c.passes).length;
+  const countNote = belowBarCount
+    ? ` ${belowBarCount} of ${aiCandidates.length} currently need an almost-impossible ` +
+      `(<${(MIN_PICK_CHANCE * 100).toFixed(0)}%) result from some pick — sorted to the bottom, ` +
+      `not hidden.`
+    : "";
   const swapNote = AI.filteredOutCount
     ? ` Swapped in ${AI.filteredOutCount} fresh candidate${AI.filteredOutCount === 1 ? "" : "s"} this pass.`
     : "";
@@ -1268,8 +1300,86 @@ function updateAiChances(simsPerCandidate) {
 // for a tick. Reserve is pre-sorted by projection (from
 // findTopCandidatesByProjection), so `.shift()` always pulls the best
 // remaining untried candidate.
+// Swaps candidate.chances[i]'s worst-performing pick (lowest solo chance —
+// driver or constructor) for the strongest legal alternative not already in
+// the lineup, keeping everything else the same: same captain/drivers/
+// constructor except the one problem slot. Returns a new candidate object,
+// or null if no legal (cap-fitting, DK same-team-rule-legal) replacement
+// exists for that slot. This is a repair, not a fresh pick — .proj is
+// carried over from the original as an approximation rather than
+// recomputed, since it's only used as a rough ordering hint elsewhere.
+function repairFailingLineup(candidate, chances) {
+  const entries = chances.picks.map(p => ({ code: p.code, role: p.role, prob: p.prob, isDriver: true }));
+  entries.push({ code: candidate.constructor, role: "CNSTR", prob: chances.constructor.prob, isDriver: false });
+  entries.sort((a, b) => a.prob - b.prob);
+  const worst = entries[0];
+  const currentDriverCodes = [candidate.cpt, ...candidate.drivers];
+
+  if (!worst.isDriver) {
+    const driverSalaryTotal = byCode[candidate.cpt].salaryCpt +
+      candidate.drivers.reduce((s, c) => s + byCode[c].salary, 0);
+    const budget = CAP - driverSalaryTotal;
+    const alt = D.constructors.find(c => {
+      if (c.id === candidate.constructor || c.salary > budget) return false;
+      const sameTeam = currentDriverCodes.filter(code => byCode[code].team === c.id).length;
+      return sameTeam < 2;
+    });
+    if (!alt) return null;
+    return {
+      cpt: candidate.cpt, drivers: [...candidate.drivers], constructor: alt.id,
+      salaryUsed: driverSalaryTotal + alt.salary, proj: candidate.proj,
+    };
+  }
+
+  const isCpt = worst.role === "CPT";
+  const otherDriverCodes = currentDriverCodes.filter(c => c !== worst.code);
+  const otherSalary = otherDriverCodes.reduce((s, c) =>
+    s + (c === candidate.cpt ? byCode[c].salaryCpt : byCode[c].salary), 0);
+  const budget = CAP - byCid[candidate.constructor].salary - otherSalary;
+  const alt = D.drivers
+    .filter(d => !currentDriverCodes.includes(d.code))
+    .sort((a, b) => b.avgDk - a.avgDk)
+    .find(d => {
+      const slotSalary = isCpt ? d.salaryCpt : d.salary;
+      if (slotSalary > budget) return false;
+      const newTeams = [...otherDriverCodes.map(c => byCode[c].team), d.team];
+      return newTeams.filter(t => t === candidate.constructor).length < 2;
+    });
+  if (!alt) return null;
+
+  const newCpt = isCpt ? alt.code : candidate.cpt;
+  const newDrivers = isCpt ? candidate.drivers : candidate.drivers.map(c => c === worst.code ? alt.code : c);
+  const newSalary = (isCpt ? alt.salaryCpt : byCode[newCpt].salaryCpt) +
+    newDrivers.reduce((s, c) => s + byCode[c].salary, 0) + byCid[candidate.constructor].salary;
+  return { cpt: newCpt, drivers: newDrivers, constructor: candidate.constructor, salaryUsed: newSalary, proj: candidate.proj };
+}
+
+// Re-simulates + re-checks chances for whatever candidate now occupies slot
+// i (freshly repaired or freshly pulled from reserve), so it's never shown
+// blank/stale for a tick.
+function seedAiSlot(i, incoming) {
+  AI.shortlist[i] = incoming;
+  const s = { n: 0, sum: 0, min: Infinity, max: -Infinity };
+  for (let j = 0; j < AI_TICK_BATCH; j++) {
+    const score = simulateCandidateScore(incoming, simulateRace());
+    s.n++; s.sum += score;
+    if (score < s.min) s.min = score;
+    if (score > s.max) s.max = score;
+  }
+  AI.stats[i] = s;
+  const chances = analyzeTopLineupChances(incoming, AI_LIVE_CHANCES_SIMS);
+  AI.chances[i] = chances;
+  const probs = [...chances.picks.map(p => p.prob), chances.constructor.prob];
+  AI.visible[i] = probs.every(p => p >= MIN_PICK_CHANCE);
+}
+
+// For a slot currently failing the 5% bar, first tries to repair it in
+// place (swap just its worst pick, keep the rest — see
+// repairFailingLineup()) rather than throwing the whole lineup out for an
+// unrelated one from reserve. Reserve is only used as a fallback when no
+// legal in-place repair exists (or to opportunistically upgrade an already-
+// passing slot whose avg has fallen behind the best untried reserve pick).
 function performAiSwaps() {
-  if (!AI.reserve.length) { AI.filteredOutCount = 0; return; }
   let swapped = 0;
   const worstFirst = AI.shortlist.map((_, i) => i).sort((a, b) => {
     if (AI.visible[a] !== AI.visible[b]) return AI.visible[a] ? 1 : -1; // not-visible = worst
@@ -1278,24 +1388,25 @@ function performAiSwaps() {
     return avgA - avgB;
   });
   for (const i of worstFirst) {
-    if (!AI.reserve.length) break;
-    const avg = AI.stats[i].n ? AI.stats[i].sum / AI.stats[i].n : -Infinity;
-    if (AI.visible[i] && AI.reserve[0].proj <= avg) continue;
-    const incoming = AI.reserve.shift();
-    AI.shortlist[i] = incoming;
-    const s = { n: 0, sum: 0, min: Infinity, max: -Infinity };
-    for (let j = 0; j < AI_TICK_BATCH; j++) {
-      const score = simulateCandidateScore(incoming, simulateRace());
-      s.n++; s.sum += score;
-      if (score < s.min) s.min = score;
-      if (score > s.max) s.max = score;
+    if (!AI.visible[i]) {
+      const repaired = repairFailingLineup(AI.shortlist[i], AI.chances[i]);
+      if (repaired) {
+        seedAiSlot(i, repaired);
+        swapped++;
+        continue;
+      }
+      if (AI.reserve.length) {
+        seedAiSlot(i, AI.reserve.shift());
+        swapped++;
+      }
+      continue;
     }
-    AI.stats[i] = s;
-    const chances = analyzeTopLineupChances(incoming, AI_LIVE_CHANCES_SIMS);
-    AI.chances[i] = chances;
-    const probs = [...chances.picks.map(p => p.prob), chances.constructor.prob];
-    AI.visible[i] = probs.every(p => p >= MIN_PICK_CHANCE);
-    swapped++;
+    if (!AI.reserve.length) continue;
+    const avg = AI.stats[i].n ? AI.stats[i].sum / AI.stats[i].n : -Infinity;
+    if (AI.reserve[0].proj > avg) {
+      seedAiSlot(i, AI.reserve.shift());
+      swapped++;
+    }
   }
   AI.filteredOutCount = swapped;
 }
@@ -1459,6 +1570,39 @@ function populateTestingYearDropdown() {
   // default to the most recent season we actually have data for, else the latest year listed
   const defaultYear = years.find(y => availableYears.has(y)) || years[0];
   sel.value = String(defaultYear);
+  showSeasonRaceList(true);
+}
+
+// Shows the selected season's Grand Prix calendar in order — a preview of
+// what's in D.raceHistory for that year, plus a clickable dot per race so
+// one can be picked out (testingSelectedRound). Selecting doesn't do
+// anything downstream yet (Run backtest still tests the whole season) —
+// just tracks which race is marked, ready for whatever uses it next.
+let testingSelectedRound = null;
+function showSeasonRaceList(resetSelection) {
+  if (resetSelection) testingSelectedRound = null;
+  const year = parseInt(document.getElementById("testing-year-select").value, 10);
+  const races = D.raceHistory.filter(r => r.year === year).sort((a, b) => a.round - b.round);
+  const container = document.getElementById("testing-season-races");
+  if (!races.length) {
+    container.innerHTML = `<div class="sub">No race data fetched for ${year} yet.</div>`;
+    return;
+  }
+  container.innerHTML = `<div class="sub" style="margin-bottom:4px">${year} Grand Prix calendar (${races.length} races) — click a dot to select a race:</div>` +
+    `<ul style="list-style:none;margin:0;padding:0">` +
+    races.map(r => {
+      const isSelected = testingSelectedRound === r.round;
+      return `<li style="display:flex;align-items:center;gap:8px;padding:3px 0;cursor:pointer" onclick="selectTestingRace(${r.round})">
+        <span class="testing-dot${isSelected ? " selected" : ""}"></span>
+        <span${isSelected ? ' style="font-weight:600"' : ""}>Round ${r.round} — ${r.raceName}</span>
+      </li>`;
+    }).join("") +
+    `</ul>`;
+}
+
+function selectTestingRace(round) {
+  testingSelectedRound = testingSelectedRound === round ? null : round; // click again to deselect
+  showSeasonRaceList(false);
 }
 
 function pickTestingLineup() {
@@ -1618,6 +1762,7 @@ document.getElementById("ai-stop-btn").onclick = stopAiSimulation;
 document.getElementById("quali-apply-btn").onclick = applyQualiGrid;
 document.getElementById("quali-reset-btn").onclick = resetQualiGrid;
 document.getElementById("testing-run-btn").onclick = runTestingAi;
+document.getElementById("testing-year-select").onchange = () => showSeasonRaceList(true);
 populateTestingYearDropdown();
 function bindSort(selector, stateKey) {
   document.querySelectorAll(selector).forEach(th => {
@@ -1641,6 +1786,18 @@ render();
 renderTyrePlans();
 renderDriverPerformance();
 initQualifying();
+
+// The dashboard itself is already fully rendered by this point (render()
+// etc. above run synchronously) — this overlay is purely a cosmetic pace
+// car, revealing it once the car crosses the finish line rather than
+// gating on any actual data/load work.
+(function initSplash() {
+  const overlay = document.getElementById("splash-overlay");
+  const car = document.querySelector(".splash-car");
+  const reveal = () => overlay.classList.add("hidden");
+  car.addEventListener("animationend", reveal, { once: true });
+  setTimeout(reveal, 3000); // safety net in case animationend doesn't fire
+})();
 </script>
 </body>
 </html>
