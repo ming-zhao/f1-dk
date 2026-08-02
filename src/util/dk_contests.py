@@ -6,10 +6,14 @@ Usage:
 """
 
 import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+import sys
 
 import pandas as pd
 
-from common import fetch_dk_lobby
+from util.common import fetch_dk_lobby
 
 
 def fetch_contests() -> pd.DataFrame:

@@ -1,8 +1,8 @@
 """DraftKings F1 fantasy points simulator.
 
-Reads the verified scoring rules from config/scoring.yaml and the backfilled
-race/qualifying data to compute what each driver/constructor WOULD have scored
-in every past race.
+Reads the verified scoring rules from config/scoring.yaml and the crawled race
+data (data/raw/jolpica/<year>/results.csv) to compute what each driver and
+constructor WOULD have scored in every past race.
 
 Note: laps-led points are not computed (lap-by-lap leader data isn't in
 Jolpica results) — a small underestimate for race leaders only.
@@ -12,10 +12,14 @@ Output:
     data/processed/dk_constructor_points.csv
 """
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import pandas as pd
 import yaml
 
-from common import PROCESSED_DIR, ROOT
+from util.common import PROCESSED_DIR, ROOT, load_raw
 
 SCORING = yaml.safe_load((ROOT / "config" / "scoring.yaml").read_text())
 
@@ -110,7 +114,7 @@ def compute_constructor_points(results: pd.DataFrame) -> pd.DataFrame:
 
 
 def main():
-    results = pd.read_csv(PROCESSED_DIR / "results.csv")
+    results = load_raw("jolpica", "results")
     print(f"Loaded {len(results)} result rows ({results.year.nunique()} seasons)")
 
     driver_pts = compute_driver_points(results)

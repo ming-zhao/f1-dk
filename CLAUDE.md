@@ -26,6 +26,10 @@ post-race-review.md).
 - Lineups lock at race start; the edge window is Sat quali → Sun race start.
 - Jolpica quali endpoint shows qualifying classification, NOT the penalized grid —
   check penalties manually (see skill/data-process.md § ③).
-- DK salary snapshots in `data/dk_salaries/` are irreplaceable — never delete.
+- DK salary snapshots in `data/raw/draftkings/` are irreplaceable — never delete.
 - Dashboard: `dashboard/index.html` (plain file, no server). Rebuild data with
   `python3 dashboard/build_data.py` after refreshing data.
+- Code layout: `src/data/` (crawlers, entry point `data_crawler.py`), `src/util/`
+  (shared mappings/paths), `src/simulation/` (DK points + analysis).
+- All crawled data lands in `data/raw/<source>/<year>/`. See `doc/data.md` for every
+  table and column; `skill/data-process.md` for how to fetch it.

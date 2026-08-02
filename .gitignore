@@ -2,9 +2,18 @@
 __pycache__/
 *.pyc
 .env
-# Ignore all fetched/generated data, but keep data/README.md (regeneration guide).
-# Must be `data/*` not `data/`, otherwise git can't re-include a file under it.
-data/*
-!data/README.md
+# Ignore all fetched/generated data. Regeneration steps live in skill/data-process.md;
+# what the data actually is lives in doc/data.md.
+data/
 # dashboard/data.js is committed so the dashboard works from a fresh clone
 # (data/ contents are ignored, so they can't be regenerated after cloning)
+
+# Generated replays: ~3 MB each, rebuilt by src/visual/track_replay.py from the
+# cached data in data/raw/. dashboard/replay.html (the multi-race picker shell) IS
+# committed, since it's a small asset-driven page that works from a clone.
+dashboard/replay_*.html
+dashboard/replays/
+
+# Local Claude Code settings (worktrees, per-machine overrides)
+.claude/settings.local.json
+.claude/worktrees/

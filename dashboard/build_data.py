@@ -19,8 +19,9 @@ import pandas as pd
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
-from common import (  # noqa: E402
+from util.common import (  # noqa: E402
     DK_ABBREV_TO_ID, NAME_TO_CODE, PROCESSED_DIR, ROOT, TEAMS, latest_salary_file,
+    load_raw,
 )
 
 OUT = ROOT / "dashboard" / "data.js"
@@ -70,7 +71,7 @@ def race_total_laps(results: pd.DataFrame, race_name: str) -> int:
 
 
 def main():
-    results = pd.read_csv(PROCESSED_DIR / "results.csv")
+    results = load_raw("jolpica", "results")
     dk_pts = pd.read_csv(PROCESSED_DIR / "dk_driver_points.csv")
     dk_cpts = pd.read_csv(PROCESSED_DIR / "dk_constructor_points.csv")
     salaries = pd.read_csv(latest_salary_file())

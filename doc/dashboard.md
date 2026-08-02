@@ -37,8 +37,8 @@ python3 dashboard/build_data.py
 `build_data.py` reads:
 
 - `data/processed/results.csv`, `dk_driver_points.csv`, `dk_constructor_points.csv`
-  (from `src/fetch_jolpica.py` + `src/dk_points.py`)
-- the latest file in `data/dk_salaries/` (from `src/fetch_dk_salaries.py`)
+  (from `src/data/data_crawler.py` + `src/simulation/dk_points.py`)
+- the latest file in `data/raw/draftkings/` (from `src/data/data_crawler.py --source draftkings`)
 - `config/scoring.yaml` (DK scoring rules)
 - `config/race_notes.yaml` (optional, hand-curated race notes — see below)
 
@@ -456,7 +456,7 @@ base one on.
 - **Run test** (`runTestingAi()`):
   1. Reads the selected `<option>` value, filters `D.raceHistory` down to just that year's
      races (sorted by round). If none exist for that year, shows a direct "No race data
-     fetched for {year} yet — run `python3 src/fetch_jolpica.py`..." message and stops there,
+     fetched for {year} yet — run `python3 src/data/data_crawler.py`..." message and stops there,
      no picking/scoring wasted. If a race is selected via its dot, further narrows to just that
      one race (`testRaces`); otherwise `testRaces` is the whole season.
   2. `pickTestingLineup()` — picks one lineup using today's rules: the same
@@ -500,9 +500,9 @@ base one on.
 
 ## Refreshing for a new race week
 
-1. `python3 src/fetch_jolpica.py` — backfill/update race + qualifying results.
-2. `python3 src/dk_points.py` — recompute DK points from results.
-3. `python3 src/fetch_dk_salaries.py` — pull the current week's DK salaries (auto-detects the
+1. `python3 src/data/data_crawler.py` — crawl/update race + qualifying results.
+2. `python3 src/simulation/dk_points.py` — recompute DK points from results.
+3. `python3 src/data/data_crawler.py --source draftkings` — pull this week's DK salaries (auto-detects the
    active F1 draft group).
 4. Edit `config/race_notes.yaml` as intel comes in during the week — `tyre_plans`,
    `driver_performance`, penalties, weather, etc., and `qualifying.order`/`qualifying.penalties`

@@ -7,9 +7,10 @@ from pathlib import Path
 
 import requests
 
-ROOT = Path(__file__).resolve().parent.parent
-DK_SALARIES_DIR = ROOT / "data" / "dk_salaries"
+ROOT = Path(__file__).resolve().parent.parent.parent
+DK_SALARIES_DIR = ROOT / "data" / "raw" / "draftkings"
 PROCESSED_DIR = ROOT / "data" / "processed"
+RAW_DIR = ROOT / "data" / "raw"
 
 # DK display name -> Jolpica driver code
 NAME_TO_CODE = {
@@ -62,5 +63,35 @@ def latest_salary_file() -> Path:
     files = sorted(DK_SALARIES_DIR.glob("*.csv"))
     if not files:
         raise FileNotFoundError(
-            "No salary files in data/dk_salaries/. Run src/fetch_dk_salaries.py first.")
+            "No salary files in data/raw/draftkings/. Run "
+            "`python3 src/data/data_crawler.py --source draftkings` first.")
     return files[-1]
+
+
+def load_raw(source: str, table: str, years=None):
+    """Concatenate data/raw/<source>/<year>/<table>.csv across seasons.
+
+    The crawler writes one CSV per source per year; downstream code usually wants
+    every season in one frame. Pass `years` to limit it.
+    """
+    import pandas as pd
+
+    src_dir = RAW_DIR / source
+    if not src_dir.exists():
+        raise FileNotFoundError(
+            f"No crawled data at {src_dir}. Run "
+            f"`python3 src/data/data_crawler.py --source {source}` first.")
+
+    frames = []
+    for year_dir in sorted(src_dir.iterdir()):
+        if not year_dir.is_dir() or not year_dir.name.isdigit():
+            continue
+        if years and int(year_dir.name) not in years:
+            continue
+        f = year_dir / f"{table}.csv"
+        if f.exists():
+            frames.append(pd.read_csv(f))
+    if not frames:
+        raise FileNotFoundError(
+            f"No {table}.csv under {src_dir}/<year>/. Run the crawler first.")
+    return pd.concat(frames, ignore_index=True)

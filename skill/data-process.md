@@ -33,11 +33,15 @@ Run these Saturday after qualifying (all cached, safe to re-run):
 ```bash
 cd ~/Documents/projects/f1
 
-python3 src/fetch_dk_contests.py --cheap   # find the $0.25 contest
-python3 src/fetch_dk_salaries.py           # this week's salaries -> data/dk_salaries/
-python3 src/fetch_jolpica.py               # latest results incl. yesterday's quali
-python3 src/dk_points.py                   # recompute simulated DK points
+python3 src/util/dk_contests.py --cheap    # find the $0.25 contest
+python3 src/data/data_crawler.py           # crawl every source (salaries, results, openf1)
+python3 src/simulation/dk_points.py        # recompute simulated DK points
 python3 dashboard/build_data.py            # rebuild dashboard data.js
+
+# or narrow it: one source, one season, or a single round
+python3 src/data/data_crawler.py --source draftkings   # just this week's salaries
+python3 src/data/data_crawler.py 2026 14               # just round 14
+python3 src/data/data_crawler.py --list                # what's on disk
 ```
 
 ---
@@ -95,8 +99,8 @@ What to look for, and why it matters for DK:
 ## ⑤ Post-race (Sunday evening or Monday)
 
 ```bash
-python3 src/fetch_jolpica.py     # pulls the completed race
-python3 src/dk_points.py         # recompute
+python3 src/data/data_crawler.py   # pulls the completed race (all sources)
+python3 src/simulation/dk_points.py # recompute
 ```
 
 Then compare: what did my lineup actually score vs the simulator's range?
@@ -106,22 +110,68 @@ Log lessons in this file or the journal.
 
 ## Data inventory (what lives where)
 
+> **For column-level detail — every table, every column's meaning, row counts, and
+> grain — see [`doc/data.md`](../doc/data.md).** That's the "what data is" reference;
+> this file is the "how to get it" guide.
+
 | Path | Contents | Refreshed by |
 |---|---|---|
-| `data/raw/*.json` | Cached Jolpica API responses (results, quali, schedules 2023–2026) | `fetch_jolpica.py` (only fetches missing) |
-| `data/processed/results.csv` | One row per driver per race: grid, finish, status, laps, fastest-lap rank | `fetch_jolpica.py` |
-| `data/processed/qualifying.csv` | One row per driver per quali: position, Q1/Q2/Q3 times | `fetch_jolpica.py` |
-| `data/processed/dk_driver_points.csv` | Simulated DK points per driver per race, itemized | `dk_points.py` |
-| `data/processed/dk_constructor_points.csv` | Simulated DK constructor points per race | `dk_points.py` |
-| `data/dk_salaries/<race>.csv` | DK salary snapshot per race week (KEEP ALL — builds salary history over time) | `fetch_dk_salaries.py` |
+| `data/raw/jolpica/<year>/api/` | Cached Jolpica API responses, one file per round | `data_crawler.py --source jolpica` |
+| `data/raw/jolpica/<year>/results.csv` | One row per driver per race: grid, finish, status, laps | same |
+| `data/raw/jolpica/<year>/qualifying.csv` | One row per driver per quali: position, Q1/Q2/Q3 | same |
+| `data/raw/openf1/<year>/laps.csv` | Per-lap sector times + speed traps | `data_crawler.py --source openf1` |
+| `data/raw/openf1/<year>/*.csv` | stints, pit, overtakes, weather, race_control, drivers | same |
+| `data/raw/openf1/<year>/telemetry/` | ~3.6 Hz speed/throttle/brake/gear + x/y/z (opt-in) | `data_crawler.py --telemetry` |
+| `data/raw/draftkings/<race>.csv` | DK salary snapshot per race week (KEEP ALL — irreplaceable) | `data_crawler.py --source draftkings` |
+| `data/processed/dk_driver_points.csv` | Simulated DK points per driver per race, itemized | `simulation/dk_points.py` |
+| `data/processed/dk_constructor_points.csv` | Simulated DK constructor points per race | `simulation/dk_points.py` |
 | `dashboard/data.js` | Bundled data for the dashboard | `dashboard/build_data.py` |
+
+## Rebuilding `data/` from scratch
+
+`data/` is git-ignored, so a fresh clone starts empty. Everything except DK salary
+snapshots can be re-crawled — historical results never change, so the CSVs come back
+identical.
+
+**Prerequisites:** Python 3.9+, plus `python3 -m pip install --user pandas requests`.
+All APIs are free and need no key, so there's nothing to configure.
+
+```bash
+python3 src/data/data_crawler.py                # all sources, last 6 seasons
+python3 src/data/data_crawler.py 2023 2024 2025 # specific seasons
+python3 src/data/data_crawler.py 2025 3         # one race (season 2025, round 3)
+python3 src/data/data_crawler.py --source openf1 --telemetry   # + raw telemetry (big)
+python3 src/data/data_crawler.py --list         # what's already on disk
+
+python3 src/simulation/dk_points.py             # derive DK points
+python3 dashboard/build_data.py                 # rebuild the dashboard bundle
+```
+
+Everything is cached and rate-limit aware (sleeps between calls, backs off on 429), so
+re-running is cheap and only fetches what's missing. A single-round fetch merges into the
+season's CSV rather than overwriting it.
+
+**What is and isn't reproducible:**
+
+| Data | Same as mine? | Why |
+|---|---|---|
+| Past race & qualifying CSVs | ✅ identical | Historical results never change |
+| OpenF1 per-lap / telemetry | ✅ identical | Same, for 2023+ |
+| Current season | ⚠️ depends when you run | Grows as races happen — re-run after each GP |
+| `data/raw/draftkings/` past weeks | ❌ not regenerable | DK serves no salary history — copy the files directly |
+| `data/raw/draftkings/` current week | ✅ same | Fetched live for the upcoming race |
+
+**Troubleshooting:** `ModuleNotFoundError` → install `pandas`/`requests` above.
+"HTTP 429, waiting Ns…" → normal, it backs off and retries. Wrong working directory →
+paths resolve from the script's own location, so run as `python3 src/data/data_crawler.py`
+from the repo root.
 
 ## API quick reference
 
 | API | Base URL | Key? | Limits | Notes |
 |---|---|---|---|---|
 | Jolpica | `api.jolpi.ca/ergast/f1/` | no | bursty 429s; scripts retry | History to 1950. Results/quali/grid/status |
-| OpenF1 | `api.openf1.org/v1/` | no | 3 req/s | 2023+. Weather, positions, stints, radio. Live data needs paid tier (not needed — lineups lock pre-race) |
+| OpenF1 | `api.openf1.org/v1/` | no | ~3 req/s; 429s under load | 2023+. Fetched by `src/data/openf1.py`. Per-lap sectors + speed traps, stints, pit, overtakes, weather, telemetry. **Never pass a `limit` param — returns HTTP 404.** Live data needs paid tier (not needed — lineups lock pre-race) |
 | DK lobby | `draftkings.com/lobby/getcontests?sport=F1` | no | be gentle | All F1 contests, entry fees, draft group ids |
 | DK draftables | `api.draftkings.com/draftgroups/v1/draftgroups/<id>/draftables` | no | be gentle | Salaries (CPT slot + D slot), FPPG |
 | DK gametype rules | `api.draftkings.com/lineups/v1/gametypes/380/rules` | no | — | Roster structure, cap. Scoring itself is in `config/scoring.yaml` (hand-verified) |
@@ -130,10 +180,10 @@ Log lessons in this file or the journal.
 
 - **Penalized starting grid pre-race**: manual only (③). Could scrape FIA docs
   PDF but format is inconsistent; revisit if manual checking gets old.
-- **Laps led**: not in Jolpica results; approximated as 0 in dk_points.py
+- **Laps led**: not in Jolpica results; approximated as 0 in simulation/dk_points.py
   backtest (small distortion, ~0.25/lap only for leaders). OpenF1 `position`
   data could reconstruct it — TODO if backtest accuracy matters more later.
 - **Historical DK salaries**: DK doesn't serve past weeks. We snapshot every
-  week into `data/dk_salaries/` — never delete these.
+  week into `data/raw/draftkings/` — never delete these.
 - **Ownership data**: not free pre-lock. Post-contest CSV export from DK shows
   field ownership — could save those too for learning.

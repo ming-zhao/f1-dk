@@ -24,29 +24,28 @@ f1/
 ├── README.md
 ├── CLAUDE.md               # project guide for Claude sessions (points to skill/)
 ├── skill/
-│   └── data-process.md     # THE data-pull guide: weekly refresh, penalties, pre-lock signals
+│   ├── data-process.md     # THE data-pull guide: weekly refresh, penalties, pre-lock signals
+│   └── dashboard.md        # how to build/rebuild/troubleshoot the dashboard
+├── doc/
+│   ├── data.md             # every source, table, column, grain — what the data IS
+│   ├── dashboard.md        # what the dashboard does
+│   └── simulation*.md      # how a lineup's race outcome gets simulated
 ├── config/
-│   └── scoring.yaml        # DK scoring rules (hand-verified — source of truth)
+│   ├── scoring.yaml        # DK scoring rules (hand-verified — source of truth)
+│   └── race_notes.yaml     # race-week intel: penalties, weather, tyre plans
 ├── data/
-│   ├── raw/                # fetched API data (json), cached
-│   ├── processed/          # tidy csv tables (results, qualifying, dk points)
-│   └── dk_salaries/        # weekly DK salary snapshots (keep all — irreplaceable)
+│   ├── raw/<source>/<year>/  # everything the crawler fetches (jolpica, openf1, draftkings)
+│   └── processed/            # derived DK points tables
 ├── src/
-│   ├── fetch_jolpica.py    # backfill race + qualifying results
-│   ├── fetch_dk_salaries.py# current DK salaries via DK API
-│   ├── fetch_dk_contests.py# list F1 contests (find the $0.25 game)
-│   ├── dk_points.py        # DK points simulator (what would each driver have scored?)
-│   └── analyze.py          # value analysis: pts/$1K, captain value, place differential
-└── dashboard/
-    ├── index.html          # lineup builder + race simulator (open directly in browser)
-    ├── build_data.py       # regenerates data.js from processed data + salaries
-    ├── data.js             # generated — do not edit
-    └── logos/              # team logos (from DK CDN)
+│   ├── data/               # one module per source + data_crawler.py (THE entry point)
+│   ├── util/               # shared name/id mappings, paths, DK API access
+│   └── simulation/         # dk_points.py (DK scoring), analyze.py (value analysis)
+└── dashboard/              # index.html + data.js (plain files, no server)
 ```
 
 ## Workflow (race week)
 
-1. Saturday after qualifying: export DK salary CSV → drop into `data/dk_salaries/`
+1. Saturday after qualifying: `python3 src/data/data_crawler.py --source draftkings`
 2. Run analysis / optimizer → pick lineup
 3. Submit on DK before race start ($0.25 contest)
 4. After race: refresh data, compare predicted vs actual, learn
@@ -54,7 +53,7 @@ f1/
 ## Setup / run
 
 ```bash
-python3 src/fetch_jolpica.py     # backfill 2023–2025 (cached in data/raw/)
-python3 src/dk_points.py         # compute simulated DK points per driver per race
-python3 src/analyze.py           # value patterns report
+python3 src/data/data_crawler.py     # crawl every source (cached, safe to re-run)
+python3 src/simulation/dk_points.py  # compute simulated DK points per driver per race
+python3 src/simulation/analyze.py    # value patterns report
 ```

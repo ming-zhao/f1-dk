@@ -18,9 +18,9 @@ inputs, or `config/scoring.yaml` / `config/race_notes.yaml`, then regenerate.
 Full refresh (new race week, or after any pipeline change):
 
 ```bash
-python3 src/fetch_jolpica.py       # results + qualifying -> data/processed/
-python3 src/dk_points.py           # DK points per driver/constructor
-python3 src/fetch_dk_salaries.py   # current week's salaries -> data/dk_salaries/
+python3 src/data/data_crawler.py   # crawl all sources -> data/raw/<source>/<year>/
+python3 src/simulation/dk_points.py           # DK points per driver/constructor
+python3 src/data/data_crawler.py --source draftkings   # this week's salaries
 python3 dashboard/build_data.py    # regenerate dashboard/data.js
 ```
 
@@ -117,9 +117,9 @@ parse.
   the warning if notes aren't ready yet.
 - **Missing driver/team mappings:** `build_data.py` prints
   `WARNING: unmapped driver/team skipped` for any DK salary row it can't map
-  via `NAME_TO_CODE` / `DK_ABBREV_TO_ID` / `TEAMS` in `src/common.py` (e.g. a
+  via `NAME_TO_CODE` / `DK_ABBREV_TO_ID` / `TEAMS` in `src/util/common.py` (e.g. a
   rookie or a new team abbreviation DK uses). Fix by adding the mapping in
-  `src/common.py`, not by patching `data.js`.
+  `src/util/common.py`, not by patching `data.js`.
 
 ## Editing the dashboard UI itself
 

@@ -13,12 +13,16 @@ Usage:
 
 import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+import sys
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import yaml
 
-from common import CONSTR_NAME_MAP, NAME_TO_CODE, PROCESSED_DIR, ROOT, latest_salary_file
+from util.common import CONSTR_NAME_MAP, NAME_TO_CODE, PROCESSED_DIR, ROOT, latest_salary_file
 
 SCORING = yaml.safe_load((ROOT / "config" / "scoring.yaml").read_text())
 CAPTAIN_MULT = SCORING["captain_multiplier"]
