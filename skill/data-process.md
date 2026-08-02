@@ -137,3 +137,28 @@ Log lessons in this file or the journal.
   week into `data/dk_salaries/` — never delete these.
 - **Ownership data**: not free pre-lock. Post-contest CSV export from DK shows
   field ownership — could save those too for learning.
+
+## ⑥ Track profile (derived, no external source needed)
+
+Track characteristics are computed from our own results — no track database required:
+
+```bash
+python3 src/track_profile.py                 # all circuits, 2014+ era
+python3 src/track_profile.py --circuit spa    # one circuit + per-race history
+python3 src/track_profile.py --since 2020     # tighter era
+```
+
+Two metrics, both in DK-scoring terms:
+
+- **overtaking** (avg places moved, FINISHERS ONLY) — drives place differential.
+  HIGH (Baku, Austin, Vegas) = grid penalties are opportunities, target fast cars
+  starting back. LOW (Suzuka, Monaco, Jeddah) = grid is destiny, penalised cars
+  are traps, pay up for front-row starters.
+- **chaos** (DNF rate) — drives variance. HIGH = cheap reliable finishers gain
+  value; LOW = finishing-position points dominate.
+
+DNFs are excluded from the overtaking metric on purpose: a retirement looks like a
+huge position loss, which would make crash-prone circuits (Monaco) falsely appear
+to have lots of overtaking. Circuits with <3 races in the era are shown but not
+tiered. Grouping is by `circuit_id`, not race name, since tracks get renamed
+(Interlagos = Brazilian/São Paulo, Red Bull Ring = Austrian/Styrian).
