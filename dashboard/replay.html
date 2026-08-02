@@ -780,8 +780,17 @@ function updateTower(rows, frameIdx) {
 // is 16 px long, which packed the whole grid into an overlapping heap (measured:
 // 3.5 px between the PIA and RUS centres). Scaling the formation to the cars keeps
 // the shape of a real grid at a size you can actually read.
-const GRID_STEP_CARS = 0.85;   // longitudinal step per position, in car lengths
-const GRID_LATERAL = 0.24;     // offset from centreline, as a fraction of road width
+// Both constants are sized against the DRAWN CAR, not the road, because the cars are
+// what has to stay legible:
+//  * step 0.85 car lengths put consecutive cars 11.2 px apart when a car is 13.1 px
+//    long, so every car overlapped the one behind and the zigzag closed into a solid
+//    line. A step below 1.0 cannot be read as separate cars; 1.5 leaves half a car of
+//    asphalt between rows, which is what a real grid looks like from above.
+//  * lateral 0.24 of road width gave a 5.1 px offset against an 8.5 px-wide car, so
+//    the two columns overlapped on the centreline and read as single file. The offset
+//    now scales with the car's WIDTH, so the columns are always clear of each other.
+const GRID_STEP_CARS = 1.5;      // longitudinal step per position, in car lengths
+const GRID_LATERAL_CARS = 0.62;  // offset from centreline, in car widths
 
 // Grid slot for the car in position `pos` (1-based), as (arc length, lateral offset)
 // in the circuit's arc-length space — the same space cars are animated in, so a car
@@ -792,7 +801,10 @@ function gridSlot(pos, startS) {
   // Slots extend BACKWARDS from the start line. Arc length is wrapped by arcPoint,
   // so a grid that reaches back past the lap seam still lands on the right asphalt.
   const step = (CAR_L * GRID_STEP_CARS) / px;    // one position, in data units
-  const lat = Math.min(halfRoadData() * 0.62, (TRACK_W * GRID_LATERAL) / px);
+  // Keep the columns a car-width apart, but never wider than the asphalt: on a narrow
+  // circuit the road caps it, so cars stay on the track rather than on the barriers.
+  const lat = Math.min(halfRoadData() * 0.55,
+                       (CAR_W * GRID_LATERAL_CARS) / px);
   return [startS - (pos - 1) * step, side * lat];
 }
 

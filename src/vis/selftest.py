@@ -554,6 +554,29 @@ def check_grid(d: dict, r: Report) -> None:
         r.check(n_start == n_max, 18, "starting order present",
                 f"{n_start} car(s) in the first frame, {n_max} at peak")
 
+    # 19. The drawn grid must read as a staggered two-column formation, which is a
+    #     question about the GRID CONSTANTS vs the DRAWN CAR, not about the data.
+    #     Both ways it can fail were live at once and every other check passed:
+    #       * step 0.85 car lengths < 1 car length, so each car overlapped the one
+    #         behind and the zigzag closed into one solid line;
+    #       * lateral 0.24 * road width gave a 5.1 px offset for an 8.5 px-wide car,
+    #         so the two columns overlapped on the centreline and read as single file.
+    #     Mirrors gridSlot() in replay.js — keep the constants in step.
+    GRID_STEP_CARS = 1.5        # replay.js
+    GRID_LATERAL_CARS = 0.62    # replay.js
+    CAR_L_RATIO = 0.62          # replay.js
+    if track_w <= 0:
+        r.skip(19, "grid reads as two staggered columns", "no trackw in payload")
+    else:
+        car_l = track_w * CAR_L_RATIO
+        car_w = track_w * CAR_W_RATIO
+        row_gap = car_l * GRID_STEP_CARS - car_l          # asphalt between rows
+        col_sep = min(track_w * 0.55, car_w * GRID_LATERAL_CARS) * 2
+        r.check(row_gap > 0 and col_sep >= car_w, 19,
+                "grid reads as two staggered columns",
+                f"{row_gap:.1f} px between rows (need > 0), columns {col_sep:.1f} px "
+                f"apart vs {car_w:.1f} px car width (need >=)")
+
 
 def min_self_gap_units(outline: list, rot: float) -> float:
     """Closest approach between non-adjacent parts of the circuit, in data units.
