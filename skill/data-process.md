@@ -35,7 +35,7 @@ cd ~/Documents/projects/f1
 
 python3 src/util/dk_contests.py --cheap    # find the $0.25 contest
 python3 src/data/data_crawler.py           # crawl every source (salaries, results, openf1)
-python3 src/simulation/dk_points.py        # recompute simulated DK points
+python3 src/sim/dk_points.py        # recompute simulated DK points
 python3 dashboard/build_data.py            # rebuild dashboard data.js
 
 # or narrow it: one source, one season, or a single round
@@ -100,7 +100,7 @@ What to look for, and why it matters for DK:
 
 ```bash
 python3 src/data/data_crawler.py   # pulls the completed race (all sources)
-python3 src/simulation/dk_points.py # recompute
+python3 src/sim/dk_points.py # recompute
 ```
 
 Then compare: what did my lineup actually score vs the simulator's range?
@@ -123,8 +123,8 @@ Log lessons in this file or the journal.
 | `data/raw/openf1/<year>/*.csv` | stints, pit, overtakes, weather, race_control, drivers | same |
 | `data/raw/openf1/<year>/telemetry/` | ~3.6 Hz speed/throttle/brake/gear + x/y/z (opt-in) | `data_crawler.py --telemetry` |
 | `data/raw/draftkings/<race>.csv` | DK salary snapshot per race week (KEEP ALL — irreplaceable) | `data_crawler.py --source draftkings` |
-| `data/processed/dk_driver_points.csv` | Simulated DK points per driver per race, itemized | `simulation/dk_points.py` |
-| `data/processed/dk_constructor_points.csv` | Simulated DK constructor points per race | `simulation/dk_points.py` |
+| `data/processed/dk_driver_points.csv` | Simulated DK points per driver per race, itemized | `sim/dk_points.py` |
+| `data/processed/dk_constructor_points.csv` | Simulated DK constructor points per race | `sim/dk_points.py` |
 | `dashboard/data.js` | Bundled data for the dashboard | `dashboard/build_data.py` |
 
 ## Rebuilding `data/` from scratch
@@ -143,7 +143,7 @@ python3 src/data/data_crawler.py 2025 3         # one race (season 2025, round 3
 python3 src/data/data_crawler.py --source openf1 --telemetry   # + raw telemetry (big)
 python3 src/data/data_crawler.py --list         # what's already on disk
 
-python3 src/simulation/dk_points.py             # derive DK points
+python3 src/sim/dk_points.py             # derive DK points
 python3 dashboard/build_data.py                 # rebuild the dashboard bundle
 ```
 
@@ -180,7 +180,7 @@ from the repo root.
 
 - **Penalized starting grid pre-race**: manual only (③). Could scrape FIA docs
   PDF but format is inconsistent; revisit if manual checking gets old.
-- **Laps led**: not in Jolpica results; approximated as 0 in simulation/dk_points.py
+- **Laps led**: not in Jolpica results; approximated as 0 in sim/dk_points.py
   backtest (small distortion, ~0.25/lap only for leaders). OpenF1 `position`
   data could reconstruct it — TODO if backtest accuracy matters more later.
 - **Historical DK salaries**: DK doesn't serve past weeks. We snapshot every

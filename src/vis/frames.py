@@ -22,7 +22,7 @@ import math
 
 import pandas as pd
 
-from visual.race import tyre_at
+from vis.race import tyre_at
 
 FRAME_STEP = 0.25   # seconds per frame after resampling
 KEEP_EVERY = 2      # thin frames to keep the payload small
@@ -58,7 +58,7 @@ def build(pos: pd.DataFrame, order_snaps: list, interval_snaps: list,
     if not official_outline:
         raise SystemExit(
             "No official circuit map for this session. The replay needs one: it is "
-            "the only trustworthy outline (see visual/circuit.py). Check the "
+            "the only trustworthy outline (see vis/circuit.py). Check the "
             "circuit_key in sessions.csv and that data/raw/circuits/ has, or can "
             "fetch, <circuit_key>_<year>.json from api.multiviewer.app.")
     outline = official_outline

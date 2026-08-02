@@ -694,7 +694,7 @@ function applyRace(d) {
 
 // ── Bootstrap ───────────────────────────────────────────────────────────────
 // The page carries one JSON blob. Either it holds the race itself (standalone), or
-// it asks for the race picker, which fetches replays/*.json on demand. That single
+// it asks for the race picker, which fetches its payloads on demand. That single
 // `if` is the whole difference between the two pages.
 const CONFIG = JSON.parse(document.getElementById('replay-data').textContent);
 
@@ -709,9 +709,13 @@ function fillRaces(year) {
   return races[0];
 }
 
+// Where the picker looks for payloads, as a URL path relative to the page. page.py
+// supplies it, so the data location can move without editing this file.
+const DATA_DIR = (CONFIG.dataDir || 'replays').replace(/\/$/, '') + '/';
+
 async function loadRace(file) {
   document.getElementById('meta').textContent = 'loading…';
-  const d = await (await fetch('replays/' + file)).json();
+  const d = await (await fetch(DATA_DIR + file)).json();
   current = d;
   applyRace(d);
   // Lap X/Y lives in its own header slot (updated per frame by draw()), so the meta
@@ -722,10 +726,10 @@ async function loadRace(file) {
 }
 
 async function startPicker() {
-  INDEX = await (await fetch('replays/index.json')).json();
+  INDEX = await (await fetch(DATA_DIR + 'index.json')).json();
   if (!INDEX.length) {
     document.getElementById('meta').textContent =
-      'No replays yet — run: python3 src/visual/track_replay.py 2025 1';
+      'No replays yet — run: python3 src/vis/track_replay.py 2025 1';
     return;
   }
   const years = [...new Set(INDEX.map(r => r.year))].sort();

@@ -1,4 +1,4 @@
-# Refactor plan — `src/visual/`
+# Refactor plan — `src/vis/`
 
 Written while three agents hold `template.py`, `player.py`, `frames.py`, `race.py` and
 `layout.py`, so nothing here is applied yet. This is the plan to execute once they land.
@@ -23,13 +23,13 @@ Consequences, all of which bit today:
   `laneScreen`, `TRACK_POS`, `lastOrder`, `marks`, `cursor`). Cache-invalidation bugs
   stay invisible until something renders wrong.
 
-**Fix:** move the JS and CSS into real files under `src/visual/assets/`. Python's only
+**Fix:** move the JS and CSS into real files under `src/vis/assets/`. Python's only
 job becomes serialising data and inlining assets:
 
 ```
-src/visual/assets/replay.js     # real JS — lintable, formattable, no brace escaping
-src/visual/assets/replay.css
-src/visual/assets/replay.html   # skeleton with {DATA} and {ASSETS} slots
+src/vis/assets/replay.js     # real JS — lintable, formattable, no brace escaping
+src/vis/assets/replay.css
+src/vis/assets/replay.html   # skeleton with {DATA} and {ASSETS} slots
 ```
 
 Data reaches the page as one JSON blob (`<script id="data" type="application/json">`)
@@ -102,7 +102,7 @@ console, compare to the baseline. No step should change rendered output at all.
 1. **Never edit a multi-line block with `str.index()` slicing.** It silently matched a
    docstring instead of code and ballooned `shape.py` to 486k lines; the file was
    untracked, so there was no recovery. Use exact-match assertions or the Edit tool.
-2. **Commit before refactoring.** `src/visual/` is still entirely untracked.
+2. **Commit before refactoring.** `src/vis/` is still entirely untracked.
 3. **Read the JS console every time**, not just screenshots. Three errors today
    rendered a blank or stale canvas with no visual clue why.
 4. **One source of truth per artefact.** Duplicated tower markup desynced within hours.
@@ -191,7 +191,7 @@ that exercises it, so it can't rot unnoticed.
 in `data/raw/circuits/` (48 files, 1.0 MB), so the check is offline and repeatable:
 
 ```
-python3 src/visual/circuit.py     # prints per-circuit pts/km/rotation, exits 1 on a gap
+python3 src/vis/circuit.py     # prints per-circuit pts/km/rotation, exits 1 on a gap
 ```
 
 Removed: `frames._one_lap`, `frames._dedupe`, `layout.best_rotation`. `frames.build()`
@@ -205,7 +205,7 @@ samples into one traversable polyline (39 path points at Monaco, 36 at Melbourne
 current builds). Its docstring said "fallback for when no outline is available", which is
 what made it look dead. Kept, with the docstring corrected.
 
-**Prerequisite before any of this:** commit `src/visual/` (10 untracked files). Needs
+**Prerequisite before any of this:** commit `src/vis/` (10 untracked files). Needs
 mgzhao's go-ahead — a tarball backup exists in the meantime.
 
 ---
@@ -214,7 +214,7 @@ mgzhao's go-ahead — a tarball backup exists in the meantime.
 
 ### First, a correction on where the simulator actually is
 
-`src/simulation/` is only 280 lines and does **not** simulate anything — `dk_points.py`
+`src/sim/` is only 280 lines and does **not** simulate anything — `dk_points.py`
 scores past races and `analyze.py` prints value tables. The real Monte Carlo simulator is
 **1368 lines of JavaScript inside `dashboard/index.html`** (60 functions):
 `simulateRace()`, `simulateCandidateScore()`, `runAutoSim()`, `startAiSimulation()`.
@@ -316,7 +316,7 @@ Not aesthetics — three concrete wins:
    split as Task B; `index.html` is 1860 lines with 1368 of them JS).
 3. Introduce the entity model above in one place, and have both the replay and the
    dashboard consume it.
-4. Add a Python `simulation/model.py` mirroring it, so `dk_points.py` and the simulator
+4. Add a Python `sim/model.py` mirroring it, so `dk_points.py` and the simulator
    share one definition of an entry and one scoring implementation.
 5. Cover it with tests: scoring a known race matches hand-computed DK points; a
    simulated field respects the cap and the max-2-per-team rule; σ floors and clamps hold.

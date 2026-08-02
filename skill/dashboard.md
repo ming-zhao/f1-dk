@@ -19,7 +19,7 @@ Full refresh (new race week, or after any pipeline change):
 
 ```bash
 python3 src/data/data_crawler.py   # crawl all sources -> data/raw/<source>/<year>/
-python3 src/simulation/dk_points.py           # DK points per driver/constructor
+python3 src/sim/dk_points.py           # DK points per driver/constructor
 python3 src/data/data_crawler.py --source draftkings   # this week's salaries
 python3 dashboard/build_data.py    # regenerate dashboard/data.js
 ```

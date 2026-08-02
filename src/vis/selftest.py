@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Regression checks for built race-replay payloads.
 
-Validates the JSON that `track_replay.py` writes to `dashboard/replays/`. Every
+Validates the JSON that `track_replay.py` writes to `data/replay/<year>/`. Every
 past bug in this pipeline was a *silent* one — a truncated outline, a pit lane
 drawn on the racing line, frames clocked at the wrong dt, a tower frozen on one
 tyre compound. None of it raised; it just looked subtly wrong on screen. So this
@@ -9,8 +9,8 @@ asserts the properties a correct replay has, and prints the measured value next
 to every verdict so a human can see how much headroom is left.
 
 Usage:
-    python3 src/visual/selftest.py dashboard/replays/replay_2024_Monaco.json
-    python3 src/visual/selftest.py            # every replay in dashboard/replays/
+    python3 src/vis/selftest.py data/replay/2024/replay_2024_Monaco.json
+    python3 src/vis/selftest.py            # every replay under data/replay/
 
 Exits 1 if any check fails. NOTEs are advisory and never fail the run.
 
@@ -25,7 +25,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-REPLAY_DIR = ROOT / "dashboard" / "replays"
+REPLAY_DIR = ROOT / "data" / "replay"
 
 M = 10.0            # data units per metre
 MAX_CAR_MS = 90.0   # an F1 car's top speed, ~325 km/h
@@ -511,10 +511,11 @@ def main() -> int:
     if len(sys.argv) > 1:
         paths = [Path(a) for a in sys.argv[1:]]
     else:
-        paths = sorted(REPLAY_DIR.glob("replay_*.json"))
+        # Payloads are partitioned by season, so recurse one level.
+        paths = sorted(REPLAY_DIR.glob("*/replay_*.json"))
         if not paths:
             print(f"No replays in {REPLAY_DIR}. Build one with:\n"
-                  f"  python3 src/visual/track_replay.py 2024 8 --full")
+                  f"  python3 src/vis/track_replay.py 2024 8 --full")
             return 1
 
     reports = []

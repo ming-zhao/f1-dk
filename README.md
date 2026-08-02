@@ -54,6 +54,6 @@ f1/
 
 ```bash
 python3 src/data/data_crawler.py     # crawl every source (cached, safe to re-run)
-python3 src/simulation/dk_points.py  # compute simulated DK points per driver per race
-python3 src/simulation/analyze.py    # value patterns report
+python3 src/sim/dk_points.py  # compute simulated DK points per driver per race
+python3 src/sim/analyze.py    # value patterns report
 ```

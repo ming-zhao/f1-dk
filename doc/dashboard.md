@@ -37,7 +37,7 @@ python3 dashboard/build_data.py
 `build_data.py` reads:
 
 - `data/processed/results.csv`, `dk_driver_points.csv`, `dk_constructor_points.csv`
-  (from `src/data/data_crawler.py` + `src/simulation/dk_points.py`)
+  (from `src/data/data_crawler.py` + `src/sim/dk_points.py`)
 - the latest file in `data/raw/draftkings/` (from `src/data/data_crawler.py --source draftkings`)
 - `config/scoring.yaml` (DK scoring rules)
 - `config/race_notes.yaml` (optional, hand-curated race notes — see below)
@@ -501,7 +501,7 @@ base one on.
 ## Refreshing for a new race week
 
 1. `python3 src/data/data_crawler.py` — crawl/update race + qualifying results.
-2. `python3 src/simulation/dk_points.py` — recompute DK points from results.
+2. `python3 src/sim/dk_points.py` — recompute DK points from results.
 3. `python3 src/data/data_crawler.py --source draftkings` — pull this week's DK salaries (auto-detects the
    active F1 draft group).
 4. Edit `config/race_notes.yaml` as intel comes in during the week — `tyre_plans`,

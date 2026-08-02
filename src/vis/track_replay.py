@@ -36,15 +36,16 @@ The map is rotated so the start/finish straight runs horizontally, which gives a
 landscape footprint that fills a wide canvas and lets the car glyphs read clearly.
 
 Usage:
-    python3 src/visual/track_replay.py                       # latest crawled race
-    python3 src/visual/track_replay.py 2025 1                # season 2025, round 1
-    python3 src/visual/track_replay.py 2025 1 --from-lap 10 --laps 3
-    python3 src/visual/track_replay.py 2025 1 --rotate 40    # override rotation
-    python3 src/visual/track_replay.py --list                # what's available
+    python3 src/vis/track_replay.py                       # latest crawled race
+    python3 src/vis/track_replay.py 2025 1                # season 2025, round 1
+    python3 src/vis/track_replay.py 2025 1 --from-lap 10 --laps 3
+    python3 src/vis/track_replay.py 2025 1 --rotate 40    # override rotation
+    python3 src/vis/track_replay.py --list                # what's available
 """
 
 import argparse
 import json
+import os
 import math
 import sys
 from dataclasses import dataclass
@@ -56,10 +57,13 @@ import pandas as pd
 SRC = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(SRC))
 
-from visual import circuit, frames, layout, page, race  # noqa: E402
-from visual.page import build_player  # noqa: E402
+from vis import circuit, frames, layout, page, race  # noqa: E402
+from vis.page import build_player  # noqa: E402
 
 OUT_DIR = SRC.parent / "dashboard"
+# Replay payloads are generated data, so they live under data/ rather than beside the
+# dashboard's committed assets. One subdirectory per season.
+REPLAY_DIR = SRC.parent / "data" / "replay"
 
 
 @dataclass
@@ -297,14 +301,20 @@ def replay_payload(session: dict, opts: argparse.Namespace, win: Window, built: 
 
 
 def refresh_index(data_dir: Path) -> list:
-    """Rebuild replays/index.json from whatever payloads are on disk."""
-    index = sorted(
-        (json.loads(f.read_text()) for f in data_dir.glob("replay_*.json")),
-        key=lambda r: (r["year"], r["round"]))
+    """Rebuild index.json from every payload on disk, across all years.
+
+    Payloads live in per-year subdirectories, so `file` in the index is a relative
+    path (`2024/replay_2024_Monaco.json`) that the picker can fetch directly.
+    """
+    index = []
+    for f in sorted(data_dir.glob("*/replay_*.json")):
+        r = json.loads(f.read_text())
+        r["_file"] = f"{f.parent.name}/{f.name}"
+        index.append(r)
+    index.sort(key=lambda r: (r["year"], r["round"]))
     (data_dir / "index.json").write_text(json.dumps(
         [{k: r[k] for k in ("year", "round", "location", "fromLap", "laps",
-                            "running", "retired")}
-         | {"file": f"replay_{r['year']}_{r['location']}.json"}
+                            "running", "retired")} | {"file": r["_file"]}
          for r in index], indent=1), encoding="utf-8")
     return index
 
@@ -317,16 +327,18 @@ def write_outputs(session: dict, opts: argparse.Namespace, html: str,
     out.write_text(html, encoding="utf-8")
     print(f"\nWrote {out} ({out.stat().st_size/1024:.0f} KB) — open in a browser.")
 
-    data_dir = OUT_DIR / "replays"
-    data_dir.mkdir(parents=True, exist_ok=True)
-    jf = data_dir / f"{stem}.json"
+    year_dir = REPLAY_DIR / str(int(session["year"]))
+    year_dir.mkdir(parents=True, exist_ok=True)
+    jf = year_dir / f"{stem}.json"
     jf.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
 
-    index = refresh_index(data_dir)
+    index = refresh_index(REPLAY_DIR)
     if not opts.no_player:
-        build_player()
-    print(f"Wrote {jf.relative_to(OUT_DIR.parent)} "
-          f"({jf.stat().st_size/1024:.0f} KB) + refreshed replays/index.json "
+        # URL path from dashboard/replay.html to the payload directory.
+        build_player(os.path.relpath(REPLAY_DIR, OUT_DIR))
+    print(f"Wrote {jf.relative_to(SRC.parent)} "
+          f"({jf.stat().st_size/1024:.0f} KB) + refreshed "
+          f"{(REPLAY_DIR / 'index.json').relative_to(SRC.parent)} "
           f"({len(index)} race(s)) — open dashboard/replay.html to switch races.")
 
 

@@ -11,7 +11,7 @@ Before working on this project, read the relevant skill in `skill/`:
   Follow it step by step for any race-week data work.
 - `skill/dashboard.md` — how to build/rebuild/troubleshoot `dashboard/index.html` and
   `dashboard/data.js` (rebuild workflow, verification, known pitfalls). See also
-  `doc/dashboard.md` for what the dashboard actually does, and `doc/simulation.md` for how a
+  `doc/dashboard.md` for what the dashboard actually does, and `doc/sim.md` for how a
   lineup's race outcome actually gets simulated (a living doc — add new methods there as we
   build them, don't just change the code silently).
 
@@ -30,6 +30,6 @@ post-race-review.md).
 - Dashboard: `dashboard/index.html` (plain file, no server). Rebuild data with
   `python3 dashboard/build_data.py` after refreshing data.
 - Code layout: `src/data/` (crawlers, entry point `data_crawler.py`), `src/util/`
-  (shared mappings/paths), `src/simulation/` (DK points + analysis).
+  (shared mappings/paths), `src/sim/` (DK points + analysis).
 - All crawled data lands in `data/raw/<source>/<year>/`. See `doc/data.md` for every
   table and column; `skill/data-process.md` for how to fetch it.

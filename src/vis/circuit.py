@@ -24,7 +24,7 @@ Coverage is COMPLETE, which is why the derived-outline fallback could be deleted
 all 48 (year, circuit_key) pairs in data/raw/openf1/*/sessions.csv resolve to a map
 (2024 and 2025, 24 circuits each). Re-check any time with:
 
-    python3 src/visual/circuit.py
+    python3 src/vis/circuit.py
 
 If that ever reports a gap, the honest fix is to add geometry for that circuit — not
 to reinstate the derived outline, which truncated Monaco to 80% of the lap.

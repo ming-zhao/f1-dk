@@ -4,7 +4,7 @@ Replaces both `template.py`'s 830-line format string and `player.py`'s 18 string
 surgery operations. There are exactly two pages and they share every asset:
 
     standalone(...)  dashboard/replay_<year>_<loc>.html — data inlined
-    picker()         dashboard/replay.html — data fetched from replays/*.json
+    picker()         dashboard/replay.html — data fetched from a payload dir
 
 The only difference reaching the browser is the `mode` field of the JSON blob, which
 `replay.js` branches on once. Nothing here rewrites JS or CSS: the assets are the
@@ -82,16 +82,21 @@ def standalone(title: str, subtitle: str, race: dict) -> str:
                  race["w"], race["h"], max(0, len(race["frames"]) - 1))
 
 
-def picker() -> str:
-    """The multi-race page: dropdowns fetch replays/*.json at runtime."""
-    return _page("F1 race replay", PICKER_HEADER, {"mode": "picker"},
+def picker(data_dir: str = "replays") -> str:
+    """The multi-race page: dropdowns fetch payloads from `data_dir` at runtime.
+
+    `data_dir` is a URL path relative to the page, so payloads can live outside
+    dashboard/ without this module needing to know where.
+    """
+    return _page("F1 race replay", PICKER_HEADER,
+                 {"mode": "picker", "dataDir": data_dir},
                  1150, 620, 0, extra_css=PICKER_CSS)
 
 
-def build_player() -> Path:
+def build_player(data_dir: str = "replays") -> Path:
     """Write dashboard/replay.html. Name kept for track_replay.py's hook."""
     out = OUT_DIR / "replay.html"
-    out.write_text(picker(), encoding="utf-8")
+    out.write_text(picker(data_dir), encoding="utf-8")
     return out
 
 

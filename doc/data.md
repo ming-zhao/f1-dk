@@ -555,7 +555,7 @@ Not fetched from anywhere — curated by hand or agent, and treated as source of
 - **Grain:** one entry per scoring rule (static — not per race or per driver)
 
 DK Classic rules, hand-verified against draftkings.com/help/rules/27 (last verified 2026-07-18).
-**Refresh:** only when DK changes rules. Read by `simulation/dk_points.py` and
+**Refresh:** only when DK changes rules. Read by `sim/dk_points.py` and
 `dashboard/build_data.py`.
 
 Keys: `salary_cap` (50000), `roster{captain:1, drivers:4, constructors:1}`,
@@ -600,7 +600,7 @@ Computed here from the sources above. Not raw data.
 - **Location:** `data/processed/dk_driver_points.csv`
 - **Grain:** one row per driver per race
 
-Producer: `src/simulation/dk_points.py`, from `data/raw/jolpica/<year>/results.csv` +
+Producer: `src/sim/dk_points.py`, from `data/raw/jolpica/<year>/results.csv` +
 `config/scoring.yaml`. What each driver **would have scored** under current DK rules.
 
 | Column | Type | Meaning |
@@ -682,13 +682,13 @@ names to `common.NAME_TO_CODE` / `TEAMS` / `DK_ABBREV_TO_ID` when the grid chang
 
 ---
 
-## 5b. Visualisation — `src/visual/track_replay.py`
+## 5b. Visualisation — `src/vis/track_replay.py`
 
 Builds a self-contained broadcast-style replay HTML (timing tower left, circuit right)
-from OpenF1 data. Split across `src/visual/`: `track_replay.py` (CLI), `race.py` (pick a race + window,
+from OpenF1 data. Split across `src/vis/`: `track_replay.py` (CLI), `race.py` (pick a race + window,
 fetch all feeds), `circuit.py` (official circuit map), `frames.py` (animation timeline),
 `layout.py` (pit lane, rotation, canvas sizing), and `page.py`, which assembles both
-output pages from the real front-end files in `src/visual/assets/` (`replay.html`,
+output pages from the real front-end files in `src/vis/assets/` (`replay.html`,
 `replay.css`, `replay.js`). Both pages load the same `replay.js`; the only difference
 is how data arrives — the standalone page inlines one JSON blob, while
 `dashboard/replay.html` (a multi-race picker) fetches `dashboard/replays/*.json`.
@@ -705,9 +705,9 @@ a GPU would change nothing. No separate track-geometry source is needed: **one d
 trace across a whole lap *is* the circuit outline.**
 
 ```bash
-python3 src/visual/track_replay.py 2025 1          # busiest lap, auto-picked
-python3 src/visual/track_replay.py 2025 1 --from-lap 10 --laps 3
-python3 src/visual/track_replay.py --list          # crawled races
+python3 src/vis/track_replay.py 2025 1          # busiest lap, auto-picked
+python3 src/vis/track_replay.py 2025 1 --from-lap 10 --laps 3
+python3 src/vis/track_replay.py --list          # crawled races
 ```
 
 Inputs: `/location` (dots), `/position` (order), `/intervals` (gaps) fetched on demand and
@@ -770,7 +770,7 @@ Free, no auth. Also supplies an official **`rotation`** (broadcast orientation; 
 for a landscape canvas) and corner markers with arc-length distances. Verified against
 official lengths: Monaco 3.270 km vs 3.337, Melbourne 5.243 vs 5.278 — within 1–2%, and
 Monaco now draws a full-width 26 px road with cars at 0.98× instead of being clamped.
-Implemented in `src/visual/circuit.py`, cached permanently under
+Implemented in `src/vis/circuit.py`, cached permanently under
 `data/raw/circuits/` since the geometry is static. The position-derived path remains as
 a fallback for circuits the map doesn't cover.
 
@@ -865,8 +865,8 @@ Each source uses a different identifier. `src/util/common.py` holds the translat
 | **Weekly, before race** | `python3 src/data/data_crawler.py --source draftkings` — irreplaceable |
 | **After qualifying** | Fill `race_notes.yaml` → `qualifying.order` + `penalties` (manual) |
 | **Race week** | Refresh `pit_strategy`, `weather`, `driver_performance`, `lineup_angles` |
-| **After each race** | `python3 src/data/data_crawler.py <year> <round>` → `simulation/dk_points.py` → `dashboard/build_data.py` |
-| **On rule change** | Re-verify `config/scoring.yaml`, re-run `simulation/dk_points.py` |
+| **After each race** | `python3 src/data/data_crawler.py <year> <round>` → `sim/dk_points.py` → `dashboard/build_data.py` |
+| **On rule change** | Re-verify `config/scoring.yaml`, re-run `sim/dk_points.py` |
 | **Rarely / on demand** | `data_crawler.py <year> --telemetry` (~73 MB per race) |
 | **Never** | Delete anything in `data/raw/draftkings/` |
 
@@ -882,14 +882,14 @@ The crawler caches every response and is safe to re-run — it only fetches what
    figure. Fetch the rest with
    `python3 src/data/data_crawler.py 2023 2024 2026 --source openf1`.
 3. **No telemetry has been pulled at all** (§2.10) — needs `--telemetry`, ~73 MB per race.
-   Note `src/visual/track_replay.py` fetches `/location` on demand, so the replay works
+   Note `src/vis/track_replay.py` fetches `/location` on demand, so the replay works
    without a telemetry crawl.
 4. **Jolpica `/laps`, `/pitstops`, `/driverstandings`, `/status` are unwired** (§1.4–1.8) —
    verified available, but `src/data/jolpica.py` only pulls results + qualifying.
 5. **Straight-line vs cornering speed still isn't computed** — §2.10 explains how; nothing
    implements it. `st_speed` (§2.2) is the cheap proxy available today.
 6. **OpenF1 data isn't consumed by anything yet** — the crawler writes
-   `data/raw/openf1/<year>/*.csv`, but neither `simulation/dk_points.py` nor
+   `data/raw/openf1/<year>/*.csv`, but neither `sim/dk_points.py` nor
    `dashboard/build_data.py` reads it. The simulator still runs purely on season-aggregate
    finish distributions.
 7. **Laps-led points never computed** — understates race leaders ~10–20 pts. **Two ways to
