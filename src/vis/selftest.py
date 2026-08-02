@@ -487,6 +487,95 @@ def check_timing(d: dict, r: Report) -> None:
         r.check(ok, 15, "pit flags plausible", detail)
 
 
+def check_grid(d: dict, r: Report) -> None:
+    """The drawn road has to be wide enough to hold the things we draw on it.
+
+    These are render-geometry checks, so they mirror the constants in replay.js.
+    Keep them in step: CAR_W_RATIO / BORDER_PX are duplicated deliberately, because
+    the point is to catch a drift between the Python that SIZES the road and the JS
+    that DRAWS on it — which is exactly the bug these were written for. The road was
+    being scaled to 0.62x at render time, leaving it narrower than two cars abreast,
+    so a starting grid could not be drawn and side-by-side racing had nowhere to go.
+    """
+    r.section("Render geometry")
+    track_w = float(d.get("trackw") or 0)
+    outline = d.get("outline") or []
+    rows = d.get("rows") or []
+
+    CAR_W_RATIO = 0.40      # replay.js
+    BORDER_PX = 4.0         # the outer stroke under the road in drawTrack()
+
+    # 16. The road must be wide enough, IN ABSOLUTE PIXELS, to show two cars side by
+    #     side as two distinct objects. Note this deliberately does NOT compare
+    #     2*trackw*CAR_W_RATIO against trackw: car width is DERIVED from road width,
+    #     so that ratio is 80% by construction and such a check can never fail —
+    #     it passed happily on the very payload whose road was too narrow. The
+    #     meaningful floor is absolute: two cars plus a visible gap between them,
+    #     which needs the road to be at least MIN_ROAD_PX.
+    MIN_ROAD_PX = 20.0    # 2 cars at 8 px + ~4 px of daylight
+    if track_w <= 0:
+        r.check(False, 16, "road wide enough for two cars", "no trackw in payload")
+    else:
+        car_w = track_w * CAR_W_RATIO
+        r.check(track_w >= MIN_ROAD_PX, 16, "road wide enough for two cars",
+                f"road {track_w:.1f} px (floor {MIN_ROAD_PX:.0f}); one car "
+                f"{car_w:.1f} px wide, two abreast {2 * car_w:.1f} px")
+
+    # 17. The road plus its border must fit in the tightest self-approach, or two
+    #     parts of the circuit visually merge. The border is easy to forget: the
+    #     fitter's 15% margin was entirely consumed by it at Monaco, leaving 0.46 px
+    #     of daylight between the drawn roads.
+    if len(outline) < 40 or track_w <= 0:
+        r.skip(17, "road clears its own circuit",
+               f"{len(outline)} outline points, trackw {track_w}")
+    else:
+        rot = float(d.get("rot") or 0.0)
+        w, h = int(d.get("w") or 0), int(d.get("h") or 0)
+        ca, sa = math.cos(rot), math.sin(rot)
+        xs = [x * ca - y * sa for x, y in outline]
+        ys = [x * sa + y * ca for x, y in outline]
+        bw, bh = max(xs) - min(xs), max(ys) - min(ys)
+        pad = 34
+        scale = min((w - 2 * pad) / bw, (h - 2 * pad) / bh) if bw > 0 and bh > 0 else 0
+        gap_px = min_self_gap_units(outline, rot) * scale
+        need = track_w + BORDER_PX
+        r.check(gap_px >= need, 17, "road clears its own circuit",
+                f"tightest self-approach {gap_px:.1f} px, road+border {need:.1f} px "
+                f"({gap_px - need:+.1f} px clearance)")
+
+    # 18. The grid is drawn from the starting order in the first timing frame, so
+    #     that frame must actually carry a full field. A short order silently drops
+    #     cars off the grid.
+    if not rows:
+        r.skip(18, "starting order present", "no rows")
+    else:
+        n_start = len(rows[0])
+        n_max = max(len(f) for f in rows)
+        r.check(n_start == n_max, 18, "starting order present",
+                f"{n_start} car(s) in the first frame, {n_max} at peak")
+
+
+def min_self_gap_units(outline: list, rot: float) -> float:
+    """Closest approach between non-adjacent parts of the circuit, in data units.
+
+    Mirrors layout.min_self_gap — duplicated so this file stays a standalone
+    validator of the PAYLOAD, with no import from the code that produced it.
+    """
+    ca, sa = math.cos(rot), math.sin(rot)
+    pts = [(x * ca - y * sa, x * sa + y * ca) for x, y in outline]
+    n = len(pts)
+    if n < 40:
+        return float("inf")
+    skip = max(24, n // 10)
+    best = float("inf")
+    for i in range(n):
+        for j in range(i + skip, min(n, i + n - skip + 1)):
+            dd = math.dist(pts[i], pts[j])
+            if dd < best:
+                best = dd
+    return best
+
+
 # ---------------------------------------------------------------------------
 # driver
 # ---------------------------------------------------------------------------
@@ -502,6 +591,7 @@ def run_file(path: Path) -> Report:
     check_geometry(d, r)
     check_frames(d, r)
     check_timing(d, r)
+    check_grid(d, r)
     print(f"\n  {label}: {r.passed} passed, {r.failed} failed, "
           f"{r.noted} note(s), {r.skipped} skipped")
     return r

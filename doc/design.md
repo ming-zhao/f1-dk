@@ -206,6 +206,27 @@ offset) and interpolated in that space.
 zoom. Track and cars are drawn exaggerated, and the canvas grows for tight circuits rather
 than the road thinning — see `data.md`.
 
+**The road is drawn at the width the fitter computed, unscaled.** `layout.fit_for_track`
+sizes the road to the circuit's tightest self-approach; the renderer then used to multiply
+that by 0.62, which left the road *narrower than two cars abreast* (Melbourne: 16.1 px of
+road, 19.3 px for two cars). A starting grid could not be drawn on it and side-by-side
+racing had nowhere to happen. Car size now derives from road width via `CAR_W_RATIO = 0.40`,
+so two abreast span 80% of the road with a gap between them. The fitter also subtracts the
+renderer's `BORDER_PX` border stroke: without that, Monaco's 15% margin was fully consumed
+by the border and left 0.46 px of daylight between two parts of the drawn track.
+Checks 16-17 in `selftest.py` guard both, and are mutation-tested.
+
+**The starting grid is idealised geometry populated with real order.** The feed contains no
+grid formation: at Melbourne 2025 all 20 pre-race cars sit within 0.1 m of the racing line,
+strung single-file with 5-87 m gaps, because /location is too coarse to resolve a stationary
+staggered field. (Monaco 2024 is worse — a lap-1 red flag means its "grid" frames are cars
+queued in the *pit lane*.) So slots come from the sporting regulations — alternating sides,
+one step back per position — while *who* occupies each slot is the real starting order from
+the timing feed. Slot spacing is measured in drawn car lengths, not metres: the cars are
+~10x oversized, so regulation 8 m spacing packs them into an overlapping heap (measured
+3.5 px between centres versus a 16 px car). Geometry stylised, order real — inventing
+plausible-looking telemetry would be worse than an honest stylisation.
+
 **The pit lane is derived and has no width.** No source publishes F1 pit geometry. It's drawn
 as a 1-D dashed path, offset a constant distance, because inventing a road width would be
 fabricating data.

@@ -8,11 +8,18 @@ const PAD = 34;
 // Track/car sizes in px. Deliberately NOT to scale: a real F1 car is ~2m wide on a
 // ~12m track (~17%), which at this zoom makes the cars specks. Both are derived per
 // circuit (layout.fit_for_track) so a tight track like Monaco can't overlap itself.
-// Narrower road: the wide version dominated the frame and made the circuit read
-// as a fat ribbon rather than a track. 0.62 of the fitted width.
-let TRACK_W = 16, CAR_SCALE = 1;
-// Cars sized off the road width so they stay proportionate on any circuit.
-let CAR_L = TRACK_W * 0.86, CAR_W = TRACK_W * 0.60;
+//
+// The road is drawn at the FULL fitted width. It used to be scaled to 0.62 of it,
+// which left the road NARROWER THAN TWO CARS ABREAST (measured at Melbourne: 16.1 px
+// of road versus 19.3 px for two cars). That made a two-column starting grid
+// impossible to draw, and side-by-side racing had nowhere to happen either.
+let TRACK_W = 26, CAR_SCALE = 1;
+// Cars are sized off the road width so they stay proportionate on any circuit. The
+// WIDTH ratio is the load-bearing one: at 0.40 two cars side by side span 0.80 of the
+// road, which leaves a lane-marking gap between them and a margin to each edge.
+// Anything above 0.50 makes two abreast geometrically impossible.
+const CAR_W_RATIO = 0.40, CAR_L_RATIO = 0.62;
+let CAR_L = TRACK_W * CAR_L_RATIO, CAR_W = TRACK_W * CAR_W_RATIO;
 const SHOW_LABELS = true;
 
 // Fit state, recomputed whenever rotation changes.
@@ -549,6 +556,67 @@ function updateTower(rows, frameIdx) {
   if (order.length) lastOrder = order;
 }
 
+// ── Starting grid ────────────────────────────────────────────────────────────
+// The recorded feed contains NO grid formation. Measured on Melbourne 2025 at the
+// pre-race frames, all 20 cars sit within 0.1 m of the racing line, strung out
+// single-file with 5-87 m gaps: /location is simply too coarse (and the cars are
+// stationary in a queue) to show the staggered two-column formation you see on TV.
+// Monaco 2024 is worse — a lap-1 red flag means its "grid" frames are cars queued
+// in the PIT LANE.
+//
+// So the slots are drawn from the SPORTING REGULATIONS instead, and populated with
+// the real starting order from the timing feed (ROWS[0], which is genuine: NOR, PIA,
+// VER, RUS matches the actual 2025 Melbourne grid). Geometry is idealised; who
+// stands where is real. That split is deliberate — inventing plausible-looking
+// telemetry would be worse than an honestly stylised formation.
+//
+// Real grids are staggered: each car sits ~8 m behind the one ahead and on the
+// opposite side of the centreline, giving the classic zigzag.
+//
+// Spacing is measured in DRAWN CAR LENGTHS, not in metres. The cars are deliberately
+// ~10x oversized so they're visible at all (see CAR_W_RATIO), so the regulation 8 m
+// is self-inconsistent here: at Melbourne 8 m is 4.3 px on screen while a drawn car
+// is 16 px long, which packed the whole grid into an overlapping heap (measured:
+// 3.5 px between the PIA and RUS centres). Scaling the formation to the cars keeps
+// the shape of a real grid at a size you can actually read.
+const GRID_STEP_CARS = 0.85;   // longitudinal step per position, in car lengths
+const GRID_LATERAL = 0.24;     // offset from centreline, as a fraction of road width
+
+// Grid slot for the car in position `pos` (1-based), as (arc length, lateral offset)
+// in the circuit's arc-length space — the same space cars are animated in, so a car
+// can be blended from its slot into its first recorded position with no special case.
+function gridSlot(pos, startS) {
+  const side = (pos % 2 === 1) ? -1 : 1;         // pole on the racing-line side
+  const px = scale || 0.05;                       // px per data unit
+  // Slots extend BACKWARDS from the start line. Arc length is wrapped by arcPoint,
+  // so a grid that reaches back past the lap seam still lands on the right asphalt.
+  const step = (CAR_L * GRID_STEP_CARS) / px;    // one position, in data units
+  const lat = Math.min(halfRoadData() * 0.62, (TRACK_W * GRID_LATERAL) / px);
+  return [startS - (pos - 1) * step, side * lat];
+}
+
+// Arc length of the start/finish line. OUTLINE[0] is the S/F point by construction
+// (circuit.py orders the official map from there), so this is 0 — computed rather
+// than assumed so a future reordering of the outline can't silently break the grid.
+function startLineS() {
+  if (!TRACK_ARC) buildTrackArc();
+  return arcProject(TRACK_ARC, OUTLINE[0][0], OUTLINE[0][1])[0];
+}
+
+// Where every car sits on the grid, keyed by driver code, in (s, lateral, onLane)
+// form matching TRACK_POS. Built from the starting order, so a car with no timing
+// row (rare) simply keeps its recorded position.
+let GRID_POS = null;
+function buildGrid() {
+  GRID_POS = null;
+  const rows = ROWS[0] || [];
+  if (!rows.length) return;
+  const startS = startLineS();
+  const g = {};
+  rows.forEach((r, i) => { g[r.d] = [...gridSlot(i + 1, startS), 0]; });
+  GRID_POS = g;
+}
+
 function draw(cur) {
   const idx = Math.floor(cur);
   const frac = cur - idx;
@@ -578,9 +646,22 @@ function draw(cur) {
     const [sx, sy] = proj(q[0], q[1]);
     return [sx, sy, -q[2] - ROT];            // data heading → screen heading
   };
+  // On the grid, substitute the regulation slot for the recorded position (see
+  // gridSlot). The LAST pre-race frame blends slot -> recorded position, so the cars
+  // roll off the grid onto the racing line instead of teleporting on the green light.
+  if (preRace && !GRID_POS) buildGrid();
+  const nextRacing = preRace && LAPNUMS[j] !== 0;
+  const grid = (d, p) => (GRID_POS && GRID_POS[d]) ? GRID_POS[d] : p;
+
   const screen = {}, head = {};
   for (const d in p0) {
-    const a = p0[d], b = p1[d] || a;
+    let a = p0[d], b = p1[d] || a;
+    if (preRace) {
+      a = grid(d, a);
+      // Mid-grid: hold the slot. Final pre-race frame: ease across to the real
+      // position, so the transition into racing is continuous.
+      b = nextRacing ? (p1[d] || a) : grid(d, b);
+    }
     let x, y, h;
     if (a[2] === b[2]) {
       // Same path: interpolate ALONG it, so motion follows the curvature.
@@ -691,12 +772,12 @@ function applyRace(d) {
   COLOURS = d.colours; PITLANE = d.pitlane; PITBOX = d.pitbox;
   W = d.w; H = d.h; DT = d.dt;
   LAPNUMS = d.lapNums || []; TOTAL_LAPS = d.totalLaps || 0;
-  TRACK_W = (d.trackw || 26) * 0.62; CAR_SCALE = d.carscale || 1;
-  CAR_L = TRACK_W * 0.86; CAR_W = TRACK_W * 0.60;
+  TRACK_W = d.trackw || 26; CAR_SCALE = d.carscale || 1;
+  CAR_L = TRACK_W * CAR_L_RATIO; CAR_W = TRACK_W * CAR_W_RATIO;
   const cv = document.getElementById('c');
   cv.width = W; cv.height = H;
   buildTower();                     // this race's driver set
-  laneScreen = laneArcScreen = null; TRACK_POS = null;
+  laneScreen = laneArcScreen = null; TRACK_POS = null; GRID_POS = null;
   setRotation(d.rot);
   document.getElementById('seek').max = Math.max(0, FRAMES.length - 1);
   lastOrder = null; marks.clear(); cursor = 0;

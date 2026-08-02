@@ -1,5 +1,9 @@
 """Circuit geometry: pit lane, self-clearance, rotation and how big to draw it all.
 
+The road is drawn at the width computed here, unscaled, so these numbers ARE the
+pixels on screen — the renderer used to shrink them to 0.62x, which made a road
+narrower than two cars abreast and left no room for a starting grid.
+
 The circuit outline itself comes from `circuit.py` (the official MultiViewer map) —
 deriving it from a car's /location lap was tried and abandoned, because it silently
 truncated Monaco to 80% of the lap. The **pit lane** is still derived from position
@@ -15,6 +19,10 @@ import math
 from datetime import datetime
 
 import pandas as pd
+
+# The border stroke the renderer draws under the road, in px. Must match the
+# `TRACK_W + 4` outer stroke in replay.js drawTrack().
+BORDER_PX = 4.0
 
 
 def pit_lane(session: dict, pits: dict, pos: pd.DataFrame,
@@ -167,8 +175,12 @@ def track_width_px(outline: list, rot: float, w: int, h: int,
     gap_px = min_self_gap(outline, rot) * scale
     if gap_px == float("inf"):
         return desired, 1.0
-    # Leave ~15% of the gap as clear space between adjacent roads.
-    allowed = max(7.0, gap_px * 0.85)
+    # Two roads at their closest approach each occupy HALF a width plus half the
+    # border stroke, so the centre-to-centre gap must cover a full width + border,
+    # not just a width. The browser draws a `TRACK_W + BORDER` outer stroke under the
+    # road (see drawTrack), and omitting it here left Monaco with 0.46 px of daylight
+    # between the drawn roads once the road stopped being scaled down at render time.
+    allowed = max(7.0, gap_px * 0.85 - BORDER_PX)
     width = min(desired, allowed)
     return width, width / desired
 

@@ -132,9 +132,9 @@ def parse_args(argv: list | None = None) -> argparse.Namespace:
     ap.add_argument("--full", action="store_true",
                     help="replay the ENTIRE race (frame step widens automatically; "
                          "~5 MB and ~20 location requests for a 57-lap race)")
-    ap.add_argument("--size", default="1150x620", metavar="WxH",
+    ap.add_argument("--size", default="1420x780", metavar="WxH",
                     help="max canvas size; the canvas is shrink-wrapped to the "
-                         "circuit inside this budget (default 1150x620)")
+                         "circuit inside this budget (default 1420x780)")
     ap.add_argument("--rotate", type=float, default=None, metavar="DEG",
                     help="override rotation, clockwise degrees (default: lay the "
                          "start/finish straight horizontal)")
