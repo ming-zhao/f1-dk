@@ -345,7 +345,7 @@ def write_outputs(session: dict, opts: argparse.Namespace, html: str,
     index = refresh_index(REPLAY_DIR)
     if not opts.no_player:
         # URL path from dashboard/replay.html to the payload directory.
-        build_player(os.path.relpath(REPLAY_DIR, OUT_DIR))
+        build_player(os.path.relpath(REPLAY_DIR, OUT_DIR).replace(os.sep, "/"))
     print(f"Wrote {jf.relative_to(SRC.parent)} "
           f"({jf.stat().st_size/1024:.0f} KB) + refreshed "
           f"{(REPLAY_DIR / 'index.json').relative_to(SRC.parent)} "

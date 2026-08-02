@@ -18,6 +18,9 @@ from pathlib import Path
 
 ASSETS = Path(__file__).resolve().parent / "assets"
 OUT_DIR = Path(__file__).resolve().parent.parent.parent / "dashboard"
+# Where track_replay.py writes payloads, as a URL path relative to a page in
+# OUT_DIR. Must match REPLAY_DIR there — a mismatch gives a picker that 404s.
+DEFAULT_DATA_DIR = "../data/replay"
 
 # Extra styling the picker needs for its dropdowns. Kept next to the page that uses
 # it rather than in replay.css, since the standalone page has no picker.
@@ -82,7 +85,7 @@ def standalone(title: str, subtitle: str, race: dict) -> str:
                  race["w"], race["h"], max(0, len(race["frames"]) - 1))
 
 
-def picker(data_dir: str = "replays") -> str:
+def picker(data_dir: str = DEFAULT_DATA_DIR) -> str:
     """The multi-race page: dropdowns fetch payloads from `data_dir` at runtime.
 
     `data_dir` is a URL path relative to the page, so payloads can live outside
@@ -93,7 +96,7 @@ def picker(data_dir: str = "replays") -> str:
                  1150, 620, 0, extra_css=PICKER_CSS)
 
 
-def build_player(data_dir: str = "replays") -> Path:
+def build_player(data_dir: str = DEFAULT_DATA_DIR) -> Path:
     """Write dashboard/replay.html. Name kept for track_replay.py's hook."""
     out = OUT_DIR / "replay.html"
     out.write_text(picker(data_dir), encoding="utf-8")

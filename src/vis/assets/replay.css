@@ -95,11 +95,20 @@
      as the count crosses 0/1/2 digits, and min-width only stops the bar shrinking
      below 150px — the seek slider still resized by 27px every time a battle started
      or ended. flex:none + a fixed width means nothing in #controls can reflow. */
-  #battles { flex:none; width:186px; color:#ff8a70; font-size:12px;
-             white-space:nowrap; font-variant-numeric:tabular-nums; }
+  /* Fixed width sized for the longest string it ever holds — "20 cars wheel-to-wheel"
+     is wider than "grid forming", so a content-sized box would jump between the two.
+     Left-aligned so the text doesn't slide as the digit count changes. */
+  #battles { flex:none; width:196px; color:#ff8a70; font-size:12px;
+             white-space:nowrap; font-variant-numeric:tabular-nums;
+             text-align:left; overflow:hidden; }
   /* The number wears the same halo the canvas draws around a battling car, so the
      readout shows what it's pointing at. Colours match drawCar()'s halo exactly. */
   .halo { display:inline-flex; align-items:center; justify-content:center;
           min-width:15px; height:15px; padding:0 2px; border-radius:50%;
           background:rgba(255,90,60,.32); border:1px solid rgba(255,120,90,.75);
           font-weight:600; }
+
+/* Lap counter: fixed width and tabular digits, so it doesn't jitter as the lap number
+   gains a digit or switches to "grid · pre-race". */
+#lap { display:inline-block; width:104px; text-align:left;
+       font-variant-numeric:tabular-nums; white-space:nowrap; }

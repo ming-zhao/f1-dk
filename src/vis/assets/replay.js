@@ -641,23 +641,34 @@ function draw(cur) {
   const ln = (typeof LAPNUMS !== 'undefined') ? LAPNUMS[idx] : null;
   setText('lap', ln === 0 ? 'grid \u00b7 pre-race'
                 : ln ? `lap ${ln} / ${TOTAL_LAPS || '?'}` : 'lap \u2013');
-  setText('clock', (idx * DT).toFixed(1) + 's');
+  // Elapsed RACE time (not wall-clock playback time), as m:ss — a full race reaches
+  // ~105 min, which is unreadable in raw seconds.
+  const secs = idx * DT;
+  setText('clock', `${Math.floor(secs / 60)}:${String(Math.floor(secs % 60)).padStart(2, '0')}`);
   document.getElementById('seek').value = idx;
 }
 
 let playing = true, speed = 1, raf = null, lastTs = null, cursor = 0;
 
-// Positions are sampled every DT seconds (4 s on a full race), so drawing one frame
-// per DT is 0.25 fps — visible stop-motion. Instead advance a CONTINUOUS cursor with
-// requestAnimationFrame and interpolate between the two nearest frames, giving smooth
-// 60 fps motion from the same data.
+// Playback is normalised to a FIXED WALL-CLOCK DURATION, not to real race speed: 1x
+// runs the whole replay in PLAY_SECONDS regardless of how long the race actually was.
+// So 1x = 10 min, 0.5x = 20 min, 2x = 5 min, 4x = 2.5 min — and a 78-lap Monaco and a
+// 57-lap Melbourne both take the same time to watch. Real speed would be ~105 min.
+//
+// Rendering is decoupled from the data rate: requestAnimationFrame draws at ~60 fps and
+// draw() interpolates between the two nearest samples, so advancing the cursor slowly
+// still looks smooth even though positions are only sampled every DT seconds.
+const PLAY_SECONDS = 600;
+
 function tick(ts) {
   raf = requestAnimationFrame(tick);
   if (lastTs === null) lastTs = ts;
   const dtMs = Math.min(ts - lastTs, 250);   // clamp, so a tab switch can't jump
   lastTs = ts;
   if (!playing || !FRAMES.length) { return; }
-  cursor += (dtMs / 1000) * speed / DT;      // in frames
+  // Frames per wall-clock second to finish the replay in PLAY_SECONDS at 1x.
+  const rate = (FRAMES.length - 1) / PLAY_SECONDS;
+  cursor += (dtMs / 1000) * speed * rate;
   if (cursor >= FRAMES.length - 1) cursor -= FRAMES.length - 1;
   draw(cursor);
 }

@@ -99,14 +99,23 @@
      as the count crosses 0/1/2 digits, and min-width only stops the bar shrinking
      below 150px — the seek slider still resized by 27px every time a battle started
      or ended. flex:none + a fixed width means nothing in #controls can reflow. */
-  #battles { flex:none; width:186px; color:#ff8a70; font-size:12px;
-             white-space:nowrap; font-variant-numeric:tabular-nums; }
+  /* Fixed width sized for the longest string it ever holds — "20 cars wheel-to-wheel"
+     is wider than "grid forming", so a content-sized box would jump between the two.
+     Left-aligned so the text doesn't slide as the digit count changes. */
+  #battles { flex:none; width:196px; color:#ff8a70; font-size:12px;
+             white-space:nowrap; font-variant-numeric:tabular-nums;
+             text-align:left; overflow:hidden; }
   /* The number wears the same halo the canvas draws around a battling car, so the
      readout shows what it's pointing at. Colours match drawCar()'s halo exactly. */
   .halo { display:inline-flex; align-items:center; justify-content:center;
           min-width:15px; height:15px; padding:0 2px; border-radius:50%;
           background:rgba(255,90,60,.32); border:1px solid rgba(255,120,90,.75);
           font-weight:600; }
+
+/* Lap counter: fixed width and tabular digits, so it doesn't jitter as the lap number
+   gains a digit or switches to "grid · pre-race". */
+#lap { display:inline-block; width:104px; text-align:left;
+       font-variant-numeric:tabular-nums; white-space:nowrap; }
 
   .picker { display:flex; gap:16px; align-items:center; margin-top:6px;
              flex-wrap:wrap; }
@@ -173,10 +182,6 @@
     </select>
   </label>
   <span class="legend">
-    <span class="key"><svg width="13" height="13" viewBox="0 0 13 13">
-      <circle cx="6.5" cy="6.5" r="6" fill="rgba(255,90,60,.30)"/>
-      <rect x="4" y="5" width="5" height="3" fill="#c9c9d1"/></svg>
-      within a car length</span>
     <span class="key"><svg width="14" height="10" viewBox="0 0 14 10">
       <line x1="3" y1="1" x2="3" y2="9" stroke="#e10600" stroke-width="1.8"/>
       <path d="M8 5 L13 2.5 L13 7.5 Z" fill="#e10600"/>
@@ -837,23 +842,34 @@ function draw(cur) {
   const ln = (typeof LAPNUMS !== 'undefined') ? LAPNUMS[idx] : null;
   setText('lap', ln === 0 ? 'grid \u00b7 pre-race'
                 : ln ? `lap ${ln} / ${TOTAL_LAPS || '?'}` : 'lap \u2013');
-  setText('clock', (idx * DT).toFixed(1) + 's');
+  // Elapsed RACE time (not wall-clock playback time), as m:ss — a full race reaches
+  // ~105 min, which is unreadable in raw seconds.
+  const secs = idx * DT;
+  setText('clock', `${Math.floor(secs / 60)}:${String(Math.floor(secs % 60)).padStart(2, '0')}`);
   document.getElementById('seek').value = idx;
 }
 
 let playing = true, speed = 1, raf = null, lastTs = null, cursor = 0;
 
-// Positions are sampled every DT seconds (4 s on a full race), so drawing one frame
-// per DT is 0.25 fps — visible stop-motion. Instead advance a CONTINUOUS cursor with
-// requestAnimationFrame and interpolate between the two nearest frames, giving smooth
-// 60 fps motion from the same data.
+// Playback is normalised to a FIXED WALL-CLOCK DURATION, not to real race speed: 1x
+// runs the whole replay in PLAY_SECONDS regardless of how long the race actually was.
+// So 1x = 10 min, 0.5x = 20 min, 2x = 5 min, 4x = 2.5 min — and a 78-lap Monaco and a
+// 57-lap Melbourne both take the same time to watch. Real speed would be ~105 min.
+//
+// Rendering is decoupled from the data rate: requestAnimationFrame draws at ~60 fps and
+// draw() interpolates between the two nearest samples, so advancing the cursor slowly
+// still looks smooth even though positions are only sampled every DT seconds.
+const PLAY_SECONDS = 600;
+
 function tick(ts) {
   raf = requestAnimationFrame(tick);
   if (lastTs === null) lastTs = ts;
   const dtMs = Math.min(ts - lastTs, 250);   // clamp, so a tab switch can't jump
   lastTs = ts;
   if (!playing || !FRAMES.length) { return; }
-  cursor += (dtMs / 1000) * speed / DT;      // in frames
+  // Frames per wall-clock second to finish the replay in PLAY_SECONDS at 1x.
+  const rate = (FRAMES.length - 1) / PLAY_SECONDS;
+  cursor += (dtMs / 1000) * speed * rate;
   if (cursor >= FRAMES.length - 1) cursor -= FRAMES.length - 1;
   draw(cursor);
 }

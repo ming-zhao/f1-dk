@@ -17,7 +17,7 @@ the race-week checklist, refresh commands, penalty sources, and API quick refere
 
 | § | Source | Auth | Coverage | What it gives you |
 |---|---|---|---|---|
-| [1](#1-jolpica) | **Jolpica** (Ergast successor) | none | results 1950+, laps 1996+, pit stops 2012+ | Race + qualifying results; also lap-by-lap positions, pit stops, championship standings (§1.4–1.8, not yet crawled) |
+| [1](#1-jolpica) | **Jolpica** (Ergast successor) | none | results 1950+, laps 1996+, pit stops 2012+ | Race + qualifying results, lap-by-lap positions, pit stops, championship standings |
 | [2](#2-openf1) | **OpenF1** | none | 2023–present<br>*on disk: 2025 only* | Sector times, speed traps, tyre stints, pit stops, overtakes, weather, raw telemetry |
 | [3](#3-draftkings) | **DraftKings** | none | upcoming race only | Salaries (CPT + D slot), contest list |
 | [4](#4-hand-maintained-config) | **Hand-maintained config** | — | current race week | Scoring rules, grid penalties, weather + tyre notes |
@@ -61,26 +61,13 @@ data/
     └── <year>/<location>.json  e.g. 2024/Monaco.json (~3 MB each)
 ```
 
-All of `data/` is git-ignored. Re-crawl with `python3 src/data/data_crawler.py`, and
+All of `data/` is git-ignored. Re-crawl with `python3 src/data/data_crawler.py`;
 `--list` shows what's currently on disk.
 
-**What's actually there now** (verified, so you can tell a gap from a bug):
-
-| Path | Contents |
-|---|---|
-| `raw/jolpica/` | **55 year directories.** Only **2021–2026** have `results.csv`/`qualifying.csv` (2,520 result rows). The **1950–1998** directories hold *only* cached API responses — an interrupted backfill, no CSVs. |
-| `raw/openf1/` | **2024 and 2025** only, 455 cached responses. No `telemetry/` anywhere — it needs `--telemetry` and is ~73 MB per race. |
-| `raw/circuits/` | **48 maps** (24 circuits × 2 seasons), 1.0 MB. Complete for everything crawlable — verify with `python3 src/vis/circuit.py`. |
-| `raw/draftkings/` | **Empty**, so `dashboard/build_data.py` and `src/sim/analyze.py` both fail. Needs `data_crawler.py --source draftkings`, and only works when DK has an open draft group. |
-| `raw/*.json` (loose) | **1,118 stray files** from the retired flat pipeline. Superseded by `raw/jolpica/<year>/api/`; safe to delete. |
-| `processed/` | DK points tables, plus `results.csv`/`qualifying.csv` left over from the old flat pipeline. |
-| `replay/` | 2 payloads (~3 MB each) + `index.json`. |
-
 Two traps worth knowing. A **single-round fetch merges into the season CSV** rather than
-replacing it, so `data_crawler.py 2025 3` leaves a CSV containing only round 3 — which is how
-2025 spent part of today holding 40 rows instead of 479. Re-run without a round number to
-rebuild the full season; it's free, since every response is cached. And **an `api/` directory
-is not the same as a usable CSV** — the 1950–1998 Jolpica directories prove the point.
+replacing it, so `data_crawler.py 2025 3` leaves a CSV containing only round 3 — re-run
+without a round number to rebuild the full season. And **an `api/` directory is not the same
+as a usable CSV**: a year can hold cached responses with no CSV built from them.
 
 ### Grain, dataset by dataset
 
@@ -92,10 +79,10 @@ This is the quickest way to see whether a dataset can answer a given question.
 |---|---|---|---|---|---|
 | `results.csv` | [1.2](#12-resultscsv) | Jolpica | driver × race | whole race | 20 |
 | `qualifying.csv` | [1.3](#13-qualifyingcsv) | Jolpica | driver × quali session | whole session | 20 |
-| `laps` *(not crawled)* | [1.4](#14-laps-lap-by-lap-positions-available-not-yet-crawled) | Jolpica | **driver × lap** (position + time) | per lap | ~1100 |
-| `pitstops` *(not crawled)* | [1.5](#15-pitstops-pit-stop-timings-available-not-yet-crawled) | Jolpica | pit stop | timestamped event | ~43 |
-| `driverstandings` *(not crawled)* | [1.6](#16-driverstandings-constructorstandings-available-not-yet-crawled) | Jolpica | driver × round, cumulative | after each round | 20 |
-| `status` *(not crawled)* | [1.7](#17-status-retirement-reason-counts-available-not-yet-crawled) | Jolpica | status code × race (a count) | whole race | ~5 |
+| `laps` (Jolpica) | [1.4](#14-laps-lap-by-lap-positions) | Jolpica | **driver × lap** (position + time) | per lap | ~1100 |
+| `pitstops` (Jolpica) | [1.5](#15-pitstops-pit-stop-timings) | Jolpica | pit stop | timestamped event | ~43 |
+| `driverstandings` | [1.6](#16-driverstandings-constructorstandings) | Jolpica | driver × round, cumulative | after each round | 20 |
+| `status` | [1.7](#17-status-retirement-reason-counts) | Jolpica | status code × race (a count) | whole race | ~5 |
 | `sessions.csv` | [2.1](#21-sessionscsv) | OpenF1 | session | whole session | 1 |
 | `laps.csv` | [2.2](#22-lapscsv-the-sector-speed-trap-table) | OpenF1 | **driver × lap** | **per lap + 3 sectors** | ~1099 |
 | `session_result.csv` | [2.3](#23-session_resultcsv) | OpenF1 | driver × session | whole session | 20 |
@@ -201,9 +188,9 @@ grid is published ~2 h before the formation lap and must be tracked by hand — 
 wrong corrupts place-differential, a major DK scoring component. OpenF1 doesn't fix this either
 — §2 has no grid field.
 
-### 1.4 `laps` — lap-by-lap positions (**available, not yet crawled**)
+### 1.4 `laps` — lap-by-lap positions
 
-- **Location:** not on disk — endpoint is `/{year}/{round}/laps.json`
+- **Endpoint:** `/{year}/{round}/laps.json`
 - **Grain:** one row per driver per lap (position + lap time)
 
 Verified live: a 2024 race returns **1129 lap records**. Each lap carries a `Timings[]`
@@ -223,9 +210,9 @@ array of `{driverId, position, time}`.
 **Coverage: 1996-present.** 1996 returns 812 records; 1995 and earlier return **0**. So this
 is deeper history than OpenF1 (2023+) but shallower than results (1950+).
 
-### 1.5 `pitstops` — pit stop timings (**available, not yet crawled**)
+### 1.5 `pitstops` — pit stop timings
 
-- **Location:** not on disk — endpoint is `/{year}/{round}/pitstops.json`
+- **Endpoint:** `/{year}/{round}/pitstops.json`
 - **Grain:** one row per pit stop
 
 Verified live: 43 stops for a 2024 race.
@@ -240,10 +227,9 @@ Verified live: 43 stops for a 2024 race.
 
 Overlaps OpenF1's `pit` (§2.5) but reaches back to **2012** rather than 2023.
 
-### 1.6 `driverstandings` / `constructorstandings` (**available, not yet crawled**)
+### 1.6 `driverstandings` / `constructorstandings`
 
-- **Location:** not on disk — `/{year}/{round}/driverstandings.json`,
-  `/{year}/{round}/constructorstandings.json`
+- **Endpoints:** `/{year}/{round}/driverstandings.json`, `/{year}/{round}/constructorstandings.json`
 - **Grain:** one row per driver (or constructor) per round — **cumulative championship
   state after that round**
 
@@ -257,9 +243,9 @@ Overlaps OpenF1's `pit` (§2.5) but reaches back to **2012** rather than 2023.
 Useful as a form/motivation signal — a driver fighting for a title behaves differently from
 one already out of contention.
 
-### 1.7 `status` — retirement reason counts (**available, not yet crawled**)
+### 1.7 `status` — retirement reason counts
 
-- **Location:** not on disk — endpoint is `/{year}/{round}/status.json`
+- **Endpoint:** `/{year}/{round}/status.json`
 - **Grain:** one row per status code per race (a **count**, not per driver)
 
 Fields: `statusId`, `status` (e.g. `Finished`, `Lapped`, `Engine`), `count`. Per-driver status

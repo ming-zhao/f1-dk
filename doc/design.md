@@ -154,7 +154,28 @@ The standalone page inlines its whole payload, so it is ~3 MB against the picker
 covers one race instead of all of them. It is therefore **opt-in** (`--standalone`) and only
 worth building to hand someone a single race as one file. Both are git-ignored.
 
-## 6. Testing
+## 6. The timing tower
+
+Columns, left to right: **P** (position), a team-colour bar, **Driver** (three-letter code
+plus permanent car number), **+/-** (places gained or lost since the start — `0` when
+unchanged), **Leader**, **Int**, **Tyre** (compound letter plus age in laps), and a flag
+column for `PIT` / `OUT`.
+
+**Leader** is the cumulative gap to the race leader; **Int** is the interval to the car
+directly ahead. So they nest: P3's leader gap ≈ P2's leader gap + P3's interval (measured at
+Monaco: 0.8 + 1.8 ≈ 2.7). Both come from OpenF1 `/intervals`, a change-only feed, so values
+carry forward between updates. Lapped cars read as text (`+1 LAP`) rather than seconds.
+
+Playback is normalised to a **fixed wall-clock duration** — 1x replays any race in 10
+minutes, so 0.5x is 20, 2x is 5 and 4x is 2.5. Real race speed would be ~105 minutes. The
+clock shows elapsed *race* time as `m:ss`, not playback time.
+
+Everything in the control bar has a **fixed width** (`#battles` 196px, `#lap` 104px, both
+with tabular digits). Content-sized boxes jumped as text changed — "20 cars wheel-to-wheel"
+is wider than "grid forming", and "lap 7 / 78" narrower than "lap 78 / 78". Verified across a
+full replay: zero elements change width or position.
+
+## 7. Testing
 
 `src/vis/selftest.py` — 30 checks over a built payload, grouped into geometry, frames, and
 timing/tower. It validates outline closure and length against official circuit lengths, that
@@ -169,7 +190,7 @@ Run it after any change to `vis/`. It has already caught a real bug that visual 
 did not — two orderings breaking a position tie differently, giving two drivers a wrong
 badge in all 1,568 frames of a replay.
 
-## 7. Decisions worth not re-litigating
+## 8. Decisions worth not re-litigating
 
 **Circuit geometry comes from an official map, not from car positions.** Deriving the outline
 from one driver's lap silently truncated Monaco to 80% of the track. MultiViewer publishes a
@@ -198,7 +219,7 @@ finishing positions, which conflate the two. They cannot be separated from resul
 front-runners. Jolpica `/laps` (`data.md` §1.4) has the data needed to fix it. This is the
 strongest argument for the shared entity model in `refactor-plan.md` §G.
 
-## 8. Conventions
+## 9. Conventions
 
 - **`data/` is entirely generated and git-ignored.** Anything there must be reproducible by
   the crawler, with one exception: DK salary snapshots cannot be re-fetched, so they are
