@@ -274,10 +274,19 @@ own results.
 State: `AI.shortlist` (the 20 currently *tracked* candidates — mutable, entries get replaced
 over time) and `AI.reserve` (backup candidates, pre-ranked by projection, not currently
 tracked), with parallel arrays `AI.stats` (running avg/min/max per tracked slot), `AI.chances`
-(last computed chances result per slot, or `null`), and `AI.visible` (boolean, whether that
-slot currently clears the 5% bar). `aiCandidates`, the array actually rendered, is **all** of
-`AI.shortlist` (never filtered), each entry tagged `.passes` from `AI.visible`, sorted
-passing-first then by avg descending within each group — always length 20.
+(last computed chances result per slot, or `null`), `AI.visible` (boolean, whether that slot
+currently clears the 5% bar), and `AI.order` (a permutation of shortlist indices — the display
+order). `aiCandidates`, the array actually rendered, is **all** of `AI.shortlist` (never
+filtered), each entry tagged `.passes` from `AI.visible`, arranged in `AI.order` — always length
+20. Row *order* is **stable**: a lineup never moves just because its running average drifted from
+simulation noise. The only thing that repositions a row is `performAiSwaps()` installing a
+genuinely better lineup in that specific slot, and even then `reorderChangedAiSlots()` re-places
+*only the changed slot(s)* — every other row keeps its exact current position. (This is stronger
+than the earlier approach, which re-sorted all 20 rows on every swap and so let unrelated rows
+shuffle whenever their noisy averages happened to cross.) A just-swapped lineup is re-inserted
+into rank among the frozen rows: passing (clears the 5% bar) before failing, then by avg
+descending. Each row's live avg/min/max/n/chances numbers still update in place every tick
+regardless — only its *position* is held still until that row itself gets a better lineup.
 
 - **Start** (`startAiSimulation()`) — generates a pool of `AI_POOL_SIZE` = 200 candidates via
   the same `findTopCandidatesByProjection()` used by Auto Simulation (squad-deduped,
@@ -326,7 +335,10 @@ passing-first then by avg descending within each group — always length 20.
   continuous swapping); once it's empty, a slot that also has no legal repair just stays at the
   bottom, still visible, until it happens to pass on a later re-check or you Start fresh.
   Reports how many slots were touched (repaired or reserve-swapped) this pass
-  (`AI.filteredOutCount`, reset to 0 each pass).
+  (`AI.filteredOutCount`, reset to 0 each pass). It collects the indices of exactly those touched
+  slots and, if any, calls `reorderChangedAiSlots(changedSlots)` to re-place *only those rows* —
+  this is the *only* place row order changes; a pass that touches nothing leaves `AI.order`
+  completely untouched.
 - **Stop** (`stopAiSimulation()`) — clears both the stats timer and the chances timer, then
   runs one final, more precise `updateAiChances(1000)` pass (which also runs `performAiSwaps()`
   one more time) for a settled result instead of the noisier live 300-sim estimate. Being a more
@@ -341,18 +353,21 @@ passing-first then by avg descending within each group — always length 20.
   A bottom-ranked (failing) row is dimmed (`opacity:.6`) and its Chances cell gets an extra
   "⚠ needs a <5% break from some pick" line so it's visually obvious without needing to read the
   status text. Own scrollable/sticky-header wrapper (`#ai-results-wrap`). The **Load** button
-  (`loadAiCandidate()`) only appears once stopped (`renderAiTable()` checks `AI.running`) — the
-  ranking keeps shifting while running, so loading a row mid-run could load a lineup that's no
-  longer where you clicked it; Stop first, then Load. Load works the same on a bottom-ranked row
+  (`loadAiCandidate()`) only appears once stopped (`renderAiTable()` checks `AI.running`) — a row
+  can still shift while running (only when its own slot gets a better lineup swapped in, not on
+  every tick), so loading a row mid-run could load a lineup that's no longer where you clicked it;
+  Stop first, then Load. Load works the same on a bottom-ranked row
   as a top one — nothing about a failing lineup blocks loading it, only the visual ranking
   differs. Same copy-into-`lineup`-then-jump-to-The-Chances behavior as Auto Simulation's Load
   (see below) — and since every tracked candidate already has a `.chances` result from the
   live/final pass, Load is effectively instant (no on-the-spot re-simulation) — just against the
   `aiCandidates` array instead of `autoCandidates`.
   Rendering is split into `renderAiResults()` (builds all 20 into `aiCandidates`, tags
-  `.passes`, sorts passing-first-then-by-avg, then calls `renderAiTable()`) and `renderAiTable()`
-  (just draws whatever's currently in `aiCandidates`) — kept separate so
-  `updateAiChances()`/`performAiSwaps()` can trigger a redraw without duplicating the sort logic.
+  `.passes`, arranges them in `AI.order` — never re-sorted here; order only changes via
+  `reorderChangedAiSlots()` on a swap, see above — then calls
+  `renderAiTable()`) and `renderAiTable()` (just draws whatever's currently in `aiCandidates`) —
+  kept separate so `aiTick()`, `updateAiChances()`, and `performAiSwaps()` can each trigger a
+  redraw of the live numbers without touching row order.
 - Because averages only get more precise the longer a given candidate stays tracked (standard
   error shrinks with more samples), leaving it running and checking back later gives a tighter
   estimate of each surviving candidate's true average than Auto Simulation's one-shot 1000-sim
@@ -424,7 +439,7 @@ base one on.
   none do. Selecting a different year fires `showSeasonRaceList()` (bound via `onchange`).
 - **Season race list** (`showSeasonRaceList(resetSelection)`) — shows that year's Grand Prix
   calendar in order right under the dropdown, immediately on selection, with no need to click
-  Run backtest first: just `D.raceHistory` filtered to the selected year and sorted by round
+  Run test first: just `D.raceHistory` filtered to the selected year and sorted by round
   (or a "No race data fetched for {year} yet" note if empty). Purely a preview of what's
   available — no scoring, no lineup picked. Runs once at page load too (called at the end of
   `populateTestingYearDropdown()`, `resetSelection=true`) so the list for the default season is
@@ -435,21 +450,27 @@ base one on.
     bolded race name. Changing the season dropdown resets the selection
     (`showSeasonRaceList(true)`); re-rendering after a click within the same season does not
     (`showSeasonRaceList(false)`, called from `selectTestingRace`).
-  - Selecting a race doesn't feed into anything yet — `Run backtest` still always tests the
-    whole season regardless of `testingSelectedRound`. It's tracked and ready for whatever uses
-    it next (e.g. a future "test just this one race" mode).
-- **Run backtest** (`runTestingAi()`):
+  - Selecting a race narrows `Run test` to just that one Grand Prix instead of the whole
+    season (`testingSelectedRound`, read at the top of `runTestingAi()`). Clicking the same dot
+    again deselects it and reverts to whole-season mode.
+- **Run test** (`runTestingAi()`):
   1. Reads the selected `<option>` value, filters `D.raceHistory` down to just that year's
      races (sorted by round). If none exist for that year, shows a direct "No race data
      fetched for {year} yet — run `python3 src/fetch_jolpica.py`..." message and stops there,
-     no picking/scoring wasted.
+     no picking/scoring wasted. If a race is selected via its dot, further narrows to just that
+     one race (`testRaces`); otherwise `testRaces` is the whole season.
   2. `pickTestingLineup()` — picks one lineup using today's rules: the same
      `findTopCandidatesByProjection(20)` + `evaluateCandidate(c, 500)` shortlist-then-simulate
      approach Auto Simulation uses, takes the highest-avg result. This is "the AI's" pick for
      the current race week, not something the user builds by hand, and is **the same pick
-     regardless of which season is being tested** — the point is checking how one present-day
-     recommendation would have fared against different real seasons, not re-optimizing per era.
-  3. For each race in that season (`scoreLineupAtHistoricalRace()`) — sums the picked lineup's
+     regardless of which season/race is being tested** — the picker only ever sees today's
+     driver salaries/projections, never a historical race's actual result, so nothing needs to
+     be "hidden" from it; the point is checking how one present-day recommendation would have
+     fared against real races, not re-optimizing per era. When a single race is selected, the
+     status line frames this explicitly ("forgetting Round N's result…" → "revealing what
+     actually happened…") even though mechanically the pick never depended on that race's data
+     in the first place.
+  3. For each race in `testRaces` (`scoreLineupAtHistoricalRace()`) — sums the picked lineup's
      real point totals for that race (captain × 1.5, same as everywhere else) if and only if
      every pick (5 drivers + the constructor) actually appears in that race's data; if any pick
      wasn't racing that event (almost always the case for older seasons — a driver simply
@@ -464,12 +485,15 @@ base one on.
      combinatorial search needed. Deliberately *not* a true "best possible lineup that race"
      (which would need a full `fiveCombos()`-style search per race) — just a rough "did we beat
      a typical lineup" signal.
-- Summary tiles: races that season, how many had full data, the average actual score across
-  those, and how often the tested lineup beat the field-average baseline (count and %) — 83%
-  across the 2025 season in testing.
-- Full per-race table (round, race, our score, field-average baseline, delta) for the selected
-  season only, in a scrollable container.
-- Nothing here is persisted — re-running "Run backtest" (same season or a new one) re-picks a
+- Summary tiles: races tested (relabeled "Race tested" when a single race is selected, "Races
+  that season" otherwise), how many had full data, the average actual score across those, and
+  how often the tested lineup beat the field-average baseline (count and %) — 83% across the
+  full 2025 season in testing. In single-race mode these naturally collapse to one race (e.g.
+  beat-rate shows 1/1 or 0/1), and the status line after scoring states the points directly
+  ("{race}: this lineup would have scored N points").
+- Full per-race table (round, race, our score, field-average baseline, delta) — every race in
+  `testRaces` (the whole season, or just the one selected), in a scrollable container.
+- Nothing here is persisted — re-running "Run test" (same season/race or a new one) re-picks a
   lineup from scratch (new random Monte Carlo sims in the evaluation step, so the exact pick
   can vary run to run) and rescoring is deterministic given that pick (real historical data, no
   randomness in the scoring itself).

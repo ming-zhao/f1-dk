@@ -431,7 +431,10 @@
       Pick a season (1950, F1's first year, through 2025), then this picks a lineup using
       today's rules (salary cap, DK scoring, current driver salaries) and checks what it would
       have <b>actually</b> scored in every race that season we have real results for — using
-      the genuine historical DK points from those races, not projections.
+      the genuine historical DK points from those races, not projections. Click a race below to
+      narrow the test to just that Grand Prix instead of the whole season: the lineup is picked
+      without looking at that race's result, then its result is revealed to show the points
+      scored.
     </div>
     <div class="warn" style="color:var(--text-secondary)">
       ⚠ We don't have real historical DraftKings salaries or contest payouts for past races —
@@ -445,7 +448,7 @@
     <div style="display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap">
       <label class="sub" for="testing-year-select" style="margin:0">Season:</label>
       <select id="testing-year-select"></select>
-      <button class="primary" id="testing-run-btn" style="max-width:200px">Run backtest</button>
+      <button class="primary" id="testing-run-btn" style="max-width:200px">Run test</button>
     </div>
     <div id="testing-season-races" style="margin-top:10px"></div>
     <div class="sub" id="testing-status" style="margin-top:8px"></div>
@@ -1193,9 +1196,40 @@ function runAutoSim() {
 // ---------- AI simulation (continuous background loop) ----------
 const AI = {
   running: false, timer: null, chancesTimer: null,
-  shortlist: [], reserve: [], stats: [], chances: [], visible: [],
+  shortlist: [], reserve: [], stats: [], chances: [], visible: [], order: [],
   totalSims: 0, filteredOutCount: 0,
 };
+
+// Row order (AI.order, a permutation of shortlist indices) is deliberately
+// STABLE: an existing lineup never moves just because its running average
+// drifted from simulation noise. The only thing that repositions a row is
+// performAiSwaps() installing a genuinely better lineup in that slot — and
+// even then ONLY the changed slot(s) get re-placed; every other row keeps
+// its exact current position. This is stronger than the old behavior, which
+// re-sorted all 20 rows on every swap and so let unrelated rows shuffle
+// whenever their noisy averages happened to cross.
+//
+// A just-swapped lineup is re-inserted into rank among the frozen rows:
+// passing (clears the 5% bar) before failing, then by avg descending.
+function reorderChangedAiSlots(changed) {
+  const changedSet = new Set(changed);
+  const frozen = AI.order.filter(i => !changedSet.has(i)); // untouched rows keep their order
+  const rankOf = i => ({
+    visible: AI.visible[i],
+    avg: AI.stats[i].n ? AI.stats[i].sum / AI.stats[i].n : -Infinity,
+  });
+  for (const i of changed) {
+    const ri = rankOf(i);
+    let pos = frozen.findIndex(j => {
+      const rj = rankOf(j);
+      if (rj.visible !== ri.visible) return ri.visible; // passing outranks failing
+      return ri.avg > rj.avg;
+    });
+    if (pos === -1) pos = frozen.length;
+    frozen.splice(pos, 0, i);
+  }
+  AI.order = frozen;
+}
 let aiCandidates = [];
 
 const AI_TICK_BATCH = 150;
@@ -1241,19 +1275,16 @@ function renderAiTable() {
 }
 
 // Nothing gets hidden — all AI_DISPLAY_SIZE = 20 tracked lineups are always
-// shown. But they're ranked so any lineup currently needing an
-// almost-impossible (<5%) result from some pick sinks to the bottom of the
-// list (passing lineups first, sorted by avg; failing ones after, also
-// sorted by avg) rather than being mixed in with the legitimate picks. The
-// swap mechanism in performAiSwaps() still actively tries to replace those
-// bottom entries with a clean reserve candidate whenever one's available —
-// this sort is just what happens while it hasn't found one yet (or can't,
-// once the reserve runs out).
+// shown, in AI.order. That order is stable: a row only moves when its own
+// slot gets a better lineup swapped in (reorderChangedAiSlots() re-places
+// just that row; every other row stays put). A slot's live avg/min/max/
+// chances numbers still update every tick in place, without moving its row,
+// so the list never jitters from ordinary simulation noise.
 function renderAiResults() {
-  aiCandidates = AI.shortlist
-    .map((c, i) => ({ ...c, avg: AI.stats[i].sum / AI.stats[i].n, min: AI.stats[i].min,
-      max: AI.stats[i].max, n: AI.stats[i].n, chances: AI.chances[i], passes: AI.visible[i] }))
-    .sort((a, b) => (b.passes - a.passes) || (b.avg - a.avg));
+  const enriched = AI.shortlist.map((c, i) => ({ ...c, avg: AI.stats[i].sum / AI.stats[i].n,
+    min: AI.stats[i].min, max: AI.stats[i].max, n: AI.stats[i].n, chances: AI.chances[i],
+    passes: AI.visible[i] }));
+  aiCandidates = AI.order.map(i => enriched[i]);
   renderAiTable();
   const belowBarCount = aiCandidates.filter(c => !c.passes).length;
   const countNote = belowBarCount
@@ -1380,7 +1411,7 @@ function seedAiSlot(i, incoming) {
 // legal in-place repair exists (or to opportunistically upgrade an already-
 // passing slot whose avg has fallen behind the best untried reserve pick).
 function performAiSwaps() {
-  let swapped = 0;
+  const changedSlots = [];
   const worstFirst = AI.shortlist.map((_, i) => i).sort((a, b) => {
     if (AI.visible[a] !== AI.visible[b]) return AI.visible[a] ? 1 : -1; // not-visible = worst
     const avgA = AI.stats[a].n ? AI.stats[a].sum / AI.stats[a].n : -Infinity;
@@ -1392,12 +1423,12 @@ function performAiSwaps() {
       const repaired = repairFailingLineup(AI.shortlist[i], AI.chances[i]);
       if (repaired) {
         seedAiSlot(i, repaired);
-        swapped++;
+        changedSlots.push(i);
         continue;
       }
       if (AI.reserve.length) {
         seedAiSlot(i, AI.reserve.shift());
-        swapped++;
+        changedSlots.push(i);
       }
       continue;
     }
@@ -1405,10 +1436,13 @@ function performAiSwaps() {
     const avg = AI.stats[i].n ? AI.stats[i].sum / AI.stats[i].n : -Infinity;
     if (AI.reserve[0].proj > avg) {
       seedAiSlot(i, AI.reserve.shift());
-      swapped++;
+      changedSlots.push(i);
     }
   }
-  AI.filteredOutCount = swapped;
+  AI.filteredOutCount = changedSlots.length;
+  // Only the slots that actually got a better lineup move; everything else
+  // stays exactly where it is (see reorderChangedAiSlots).
+  if (changedSlots.length) reorderChangedAiSlots(changedSlots);
 }
 
 function loadAiCandidate(i) {
@@ -1438,6 +1472,7 @@ function startAiSimulation() {
     AI.stats = AI.shortlist.map(() => ({ n: 0, sum: 0, min: Infinity, max: -Infinity }));
     AI.chances = AI.shortlist.map(() => null);
     AI.visible = AI.shortlist.map(() => true); // reassessed by the first chances pass
+    AI.order = AI.shortlist.map((_, i) => i); // pool is already projection-sorted
     AI.totalSims = 0;
     AI.filteredOutCount = 0;
     aiTick();
@@ -1575,9 +1610,8 @@ function populateTestingYearDropdown() {
 
 // Shows the selected season's Grand Prix calendar in order — a preview of
 // what's in D.raceHistory for that year, plus a clickable dot per race so
-// one can be picked out (testingSelectedRound). Selecting doesn't do
-// anything downstream yet (Run backtest still tests the whole season) —
-// just tracks which race is marked, ready for whatever uses it next.
+// one can be picked out (testingSelectedRound). Selecting a race narrows
+// Run test to just that one Grand Prix instead of the whole season.
 let testingSelectedRound = null;
 function showSeasonRaceList(resetSelection) {
   if (resetSelection) testingSelectedRound = null;
@@ -1645,13 +1679,28 @@ function runTestingAi() {
     return;
   }
 
+  // If a specific race is selected, forget that race's own results while
+  // picking the lineup (the picker never looks at race outcomes anyway —
+  // it only sees today's driver salaries/projections) and score against
+  // just that one race once picked, instead of the whole season.
+  const testRaces = testingSelectedRound === null
+    ? seasonRaces
+    : seasonRaces.filter(r => r.round === testingSelectedRound);
+  const singleRace = testingSelectedRound !== null;
+  const racesTotalLabel = document.querySelector('#testing-results .tile:nth-child(1) .label');
+  racesTotalLabel.textContent = singleRace ? "Race tested" : "Races that season";
+
   btn.disabled = true;
-  status.textContent = "Picking today's best lineup…";
+  status.textContent = singleRace
+    ? `Forgetting Round ${testingSelectedRound}'s result and picking a lineup using today's rules…`
+    : "Picking today's best lineup…";
   setTimeout(() => {
     const candidate = pickTestingLineup();
-    status.textContent = `Scoring it against every ${year} race we have real results for…`;
+    status.textContent = singleRace
+      ? `Lineup picked without looking at it — revealing what actually happened at ${testRaces[0].raceName}…`
+      : `Scoring it against every ${year} race we have real results for…`;
     setTimeout(() => {
-      const rows = seasonRaces.map(race => {
+      const rows = testRaces.map(race => {
         const score = scoreLineupAtHistoricalRace(candidate, race);
         const baseline = fieldAverageLineupScore(race);
         return { race, score, baseline };
@@ -1688,9 +1737,17 @@ function runTestingAi() {
       }).join("");
 
       document.getElementById("testing-results").style.display = "";
-      status.textContent = `Tested against ${rows.length} races from the ${year} season ` +
-        `(${withData.length} had full data for every pick — the rest include a driver not in ` +
-        `that race's field, e.g. a rookie or a team change).`;
+      if (singleRace) {
+        const r = rows[0];
+        status.textContent = r.score === null
+          ? `${r.race.raceName}: N/A — this lineup includes a driver who wasn't in that race's field.`
+          : `${r.race.raceName}: this lineup would have scored ${r.score.toFixed(1)} points ` +
+            `(field-average lineup scored ${r.baseline.toFixed(1)}).`;
+      } else {
+        status.textContent = `Tested against ${rows.length} races from the ${year} season ` +
+          `(${withData.length} had full data for every pick — the rest include a driver not in ` +
+          `that race's field, e.g. a rookie or a team change).`;
+      }
       btn.disabled = false;
     }, 10);
   }, 10);
