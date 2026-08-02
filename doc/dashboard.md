@@ -273,20 +273,53 @@ own results.
 
 State: `AI.shortlist` (the 20 currently *tracked* candidates — mutable, entries get replaced
 over time) and `AI.reserve` (backup candidates, pre-ranked by projection, not currently
-tracked), with parallel arrays `AI.stats` (running avg/min/max per tracked slot), `AI.chances`
+tracked), with parallel arrays `AI.stats` (running n/sum/sumSq/min/max per tracked slot — sumSq
+lets us compute each lineup's score variance and the standard error of its mean), `AI.chances`
 (last computed chances result per slot, or `null`), `AI.visible` (boolean, whether that slot
 currently clears the 5% bar), and `AI.order` (a permutation of shortlist indices — the display
 order). `aiCandidates`, the array actually rendered, is **all** of `AI.shortlist` (never
 filtered), each entry tagged `.passes` from `AI.visible`, arranged in `AI.order` — always length
-20. Row *order* is **stable**: a lineup never moves just because its running average drifted from
-simulation noise. The only thing that repositions a row is `performAiSwaps()` installing a
-genuinely better lineup in that specific slot, and even then `reorderChangedAiSlots()` re-places
-*only the changed slot(s)* — every other row keeps its exact current position. (This is stronger
-than the earlier approach, which re-sorted all 20 rows on every swap and so let unrelated rows
-shuffle whenever their noisy averages happened to cross.) A just-swapped lineup is re-inserted
-into rank among the frozen rows: passing (clears the 5% bar) before failing, then by avg
-descending. Each row's live avg/min/max/n/chances numbers still update in place every tick
-regardless — only its *position* is held still until that row itself gets a better lineup.
+20. Row *order* is set by **confidence ranking**, not raw average. DK race scores are wildly
+high-variance — the *same* lineup routinely simulates ~40 points one race and ~300 the next
+(implied SD ≈ 40+ points) — so a running average from only a handful of sims is a flashy but
+unreliable number. `computeAiOrder()` (run every render) sorts by each lineup's **lower
+confidence bound**, `avg − AI_RANK_Z (2) × stdErr`, valid lineups (clearing the 5% bar) above
+invalid ones:
+  - A freshly-swapped lineup with a lucky high average off ~150 sims has a huge standard error,
+    so its bound is low and it sinks to the bottom until more sims confirm the average is real.
+    (This is why a row can show a *higher raw average* than #1 yet sit below it — the Sims column
+    makes the reason visible: e.g. 150 sims vs 1,950.)
+  - A well-sampled lineup has a tiny standard error, so its bound ≈ its average and it ranks where
+    it deserves. The noisy lineups that used to jump around are exactly the ones anchored low by
+    their wide error bars, so the list stays calm without freezing anything. `stdErr` needs the
+    per-slot `sumSq` added to `AI.stats`.
+
+**First place is sticky (why #1 stops flip-flopping).** Rank 1 is exempt from the raw sort:
+`AI.order[0]` is the reigning champion, and `computeAiOrder()` pins it while confidence-sorting
+the other 19 beneath it. Three mechanisms keep it from churning:
+  - **The champion is never reseeded.** `performAiSwaps()` skips `AI.order[0]` entirely — no
+    repair, no reserve swap. Earlier it would reseed the champion whenever its *noisy* 5%-bar flag
+    flipped to failing for a single pass, wiping its accumulated sims and knocking it out of first.
+    Now the champion keeps running and only accumulates precision.
+  - **Promotion needs statistical confidence, not a flat margin.** `maybePromoteChampion()` (run
+    once per render, before layout) lets another *valid* tracked lineup take rank 1 only when it's
+    genuinely better, not just luckier this batch — replacing the old flat 0.5-pt margin, which was
+    ~90× smaller than the per-race SD so near-ties traded first place forever. A challenger must:
+    (a) pass the 5% bar and have ≥ `AI_PROMOTE_MIN_SIMS` (3000) sims of its own; (b) beat the
+    champion's average by more than `AI_PROMOTE_Z` (2.5) × the *combined standard error* of the two
+    means, floored at `AI_PROMOTE_FLOOR` (0.3 pt). The error shrinks as sims pile up, so a real edge
+    is eventually recognized while noise never flips the top.
+  - **An invalid champion is only dethroned once it's *confirmed* invalid, not on a noisy flicker.**
+    An invalid lineup (fails the 5% bar) shouldn't hold first place, but the light 300-sim validity
+    flag flickers on noise. So when the champion looks invalid, `updateAiChances()` re-verifies it
+    with a big `AI_CHAMP_RECHECK_SIMS` (2500) pass (usually the flicker clears), and even then it's
+    handed off — to the best valid lineup by confidence bound — only after `AI_CHAMP_FAIL_LIMIT` (3)
+    *consecutive* failing chances passes (`AI.champFailStreak`). A genuinely invalid lineup fails
+    every pass and is replaced; a borderline one that clears occasionally resets the streak and
+    holds. Without these two guards, handing off on every noisy invalid flag churned first place
+    ~1 change/2 s; with them, a measured 55s / 120k-sim run changed first place exactly once after
+    the opening pick. (A truly borderline champion can still flicker its ⚠ warning while holding
+    the top spot — its *position* is stable, only the badge blinks.)
 
 - **Start** (`startAiSimulation()`) — generates a pool of `AI_POOL_SIZE` = 200 candidates via
   the same `findTopCandidatesByProjection()` used by Auto Simulation (squad-deduped,
@@ -335,10 +368,11 @@ regardless — only its *position* is held still until that row itself gets a be
   continuous swapping); once it's empty, a slot that also has no legal repair just stays at the
   bottom, still visible, until it happens to pass on a later re-check or you Start fresh.
   Reports how many slots were touched (repaired or reserve-swapped) this pass
-  (`AI.filteredOutCount`, reset to 0 each pass). It collects the indices of exactly those touched
-  slots and, if any, calls `reorderChangedAiSlots(changedSlots)` to re-place *only those rows* —
-  this is the *only* place row order changes; a pass that touches nothing leaves `AI.order`
-  completely untouched.
+  (`AI.filteredOutCount`, reset to 0 each pass). It never reorders rows itself — the next
+  `renderAiResults()` recomputes the whole confidence order (`computeAiOrder`), so a freshly-seeded
+  slot lands wherever its (initially wide) confidence bound puts it, near the bottom until it
+  accumulates sims. It also skips the reigning champion (`AI.order[0]`) entirely, so first place is
+  never reseeded out from under itself.
 - **Stop** (`stopAiSimulation()`) — clears both the stats timer and the chances timer, then
   runs one final, more precise `updateAiChances(1000)` pass (which also runs `performAiSwaps()`
   one more time) for a settled result instead of the noisier live 300-sim estimate. Being a more
@@ -353,21 +387,20 @@ regardless — only its *position* is held still until that row itself gets a be
   A bottom-ranked (failing) row is dimmed (`opacity:.6`) and its Chances cell gets an extra
   "⚠ needs a <5% break from some pick" line so it's visually obvious without needing to read the
   status text. Own scrollable/sticky-header wrapper (`#ai-results-wrap`). The **Load** button
-  (`loadAiCandidate()`) only appears once stopped (`renderAiTable()` checks `AI.running`) — a row
-  can still shift while running (only when its own slot gets a better lineup swapped in, not on
-  every tick), so loading a row mid-run could load a lineup that's no longer where you clicked it;
+  (`loadAiCandidate()`) only appears once stopped (`renderAiTable()` checks `AI.running`) — rows
+  shift while running as confidence bounds firm up (and #1 can hand off), so loading a row mid-run
+  could load a lineup that's no longer where you clicked it;
   Stop first, then Load. Load works the same on a bottom-ranked row
   as a top one — nothing about a failing lineup blocks loading it, only the visual ranking
   differs. Same copy-into-`lineup`-then-jump-to-The-Chances behavior as Auto Simulation's Load
   (see below) — and since every tracked candidate already has a `.chances` result from the
   live/final pass, Load is effectively instant (no on-the-spot re-simulation) — just against the
   `aiCandidates` array instead of `autoCandidates`.
-  Rendering is split into `renderAiResults()` (builds all 20 into `aiCandidates`, tags
-  `.passes`, arranges them in `AI.order` — never re-sorted here; order only changes via
-  `reorderChangedAiSlots()` on a swap, see above — then calls
+  Rendering is split into `renderAiResults()` (runs `maybePromoteChampion()` then `computeAiOrder()`
+  to confidence-rank the list, builds all 20 into `aiCandidates`, tags `.passes`, then calls
   `renderAiTable()`) and `renderAiTable()` (just draws whatever's currently in `aiCandidates`) —
-  kept separate so `aiTick()`, `updateAiChances()`, and `performAiSwaps()` can each trigger a
-  redraw of the live numbers without touching row order.
+  kept separate so `aiTick()` and `updateAiChances()` can each trigger a redraw through
+  `renderAiResults()`.
 - Because averages only get more precise the longer a given candidate stays tracked (standard
   error shrinks with more samples), leaving it running and checking back later gives a tighter
   estimate of each surviving candidate's true average than Auto Simulation's one-shot 1000-sim
@@ -485,6 +518,14 @@ base one on.
      combinatorial search needed. Deliberately *not* a true "best possible lineup that race"
      (which would need a full `fiveCombos()`-style search per race) — just a rough "did we beat
      a typical lineup" signal.
+- Picked-lineup card (`#testing-lineup-summary`, rendered at the *top* of the results): shows the
+  exact lineup the AI chose — each of the 6 slots (CPT with a "1.5× pts & salary" note, 4 drivers,
+  constructor) with its team logo and salary, plus a header line with the lineup's expected
+  pts/race from the 500-sim eval and total cap used. Same card in both whole-season and single-race
+  modes. This is the answer to "what did it actually pick?" — previously only a one-line names blurb.
+  The card also closes with an **actually-scored** line (green): in single-race mode the real DK
+  points at that race vs the field-average baseline; in whole-season mode the average real score
+  per race across the races with full data and how many it beat the baseline in.
 - Summary tiles: races tested (relabeled "Race tested" when a single race is selected, "Races
   that season" otherwise), how many had full data, the average actual score across those, and
   how often the tested lineup beat the field-average baseline (count and %) — 83% across the
