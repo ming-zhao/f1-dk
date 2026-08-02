@@ -19,7 +19,7 @@ the race-week checklist, refresh commands, penalty sources, and API quick refere
 |---|---|---|---|---|
 | [1](#1-jolpica) | **Jolpica** (Ergast successor) | none | results 1950+, laps 1996+, pit stops 2012+ | Race + qualifying results, lap-by-lap positions, pit stops, championship standings |
 | [2](#2-openf1) | **OpenF1** | none | 2023–present<br>*on disk: 2025 only* | Sector times, speed traps, tyre stints, pit stops, overtakes, weather, raw telemetry |
-| [3](#3-draftkings) | **DraftKings** | none | upcoming race only | Salaries (CPT + D slot), contest list |
+| [3](#3-draftkings) | **DraftKings** | none | upcoming race + history back to ≥ May 2025 (§3.0) | Salaries (CPT + D slot), post-penalty grid, contest list |
 | [4](#4-hand-maintained-config) | **Hand-maintained config** | — | current race week | Scoring rules, grid penalties, weather + tyre notes |
 | [5](#5-derived-datasets) | **Derived** (computed here) | — | 2023–2026 | DK fantasy points, dashboard bundle |
 | [6](#6-cross-source-joins) | — | — | — | How to join across sources |
@@ -512,11 +512,77 @@ later, since a real grid endpoint would remove the manual penalty tracking in §
 
 ## 3. DraftKings
 
-The only source for salaries — and the only one you **cannot backfill**.
+The only source for salaries. Both the DFS API and the *sportsbook* API are described here;
+only the DFS one is usable.
 
 - **Auth:** none, but a browser `User-Agent` header is required (see `common.DK_HEADERS`)
-- **Coverage:** the **upcoming race only**. DK publishes no history.
+- **Coverage:** the upcoming race, **plus past races going back to at least May 2025** — see
+  §3.0. This corrects an earlier note in this file which said history was impossible.
 - **Fetched by:** `src/data/draftkings.py` (via the crawler); `src/util/dk_contests.py` lists contests
+
+### 3.0 Draft groups: how a race is addressed (and history retrieved)
+
+Every DK contest belongs to a **draft group**, and the draft group id is the only handle for
+a race's salaries. Two endpoints matter:
+
+- `api.draftkings.com/draftgroups/v1/{dg}` — metadata: `contestType.sport`,
+  `draftGroupState`, `games[0].description` (e.g. `Dutch Grand Prix 2026`), `minStartTime`,
+  `gameTypeId`
+- `api.draftkings.com/draftgroups/v1/draftgroups/{dg}/draftables` — the salaries
+
+`draftGroupState` is the field that tells you whether salaries exist yet:
+
+| State | Meaning | `draftables` |
+|---|---|---|
+| `Preliminary` | Race announced, salaries **not yet published** | empty `[]` |
+| `Historical` / `Finalized` | Race complete | **full, still served** |
+| `Archived` | Older still | usually full |
+
+**Past salaries are retrievable.** Historical draft groups keep serving their full
+`draftables`, so a DK-priced backtest set can be built after the fact. A contiguous sweep of
+ids **125000–151406** (26,407 ids, no gaps) found **33 F1 draft groups**; 32 return full
+salaries and only the unpublished live one is empty:
+
+| Season | Races found | `gameTypeId` | Rows each | Span |
+|---|---|---|---|---|
+| 2025 | 21 | 202 | 50 (20 drivers × 2 slots + 10 constructors) | Bahrain (dg 125353) → Abu Dhabi (dg 138252) |
+| 2026 | 12 | 380 | 55 (22 × 2 + 11 — Cadillac is the 11th team) | Australian (dg 142984) → Hungarian (dg 151112) |
+| 2026 | 1 live | 380 | **0** | Dutch (dg 151406, `Preliminary`) |
+
+Season boundaries, for scanning: 2025 spans **125353–138252**, 2026 so far **142984–151406**.
+Gap between consecutive races ranged 287–1750 ids.
+
+**Races DK did not run** (confirmed absent, not a scan miss — the id range is contiguous):
+2026 Bahrain, Saudi, Imola/Emilia Romagna, Spanish/Madrid, and everything between the Japanese
+GP (Mar 29) and Miami (May 3). Any 2025 race before Bahrain would sit below the scanned range.
+
+> **There is no endpoint that lists F1 draft groups.** Verified 404/400 on
+> `draftgroupseries/{id}`, `draftgroups?sport=F1`, `draftgroups?sportId=27`,
+> `contesttypes/380/draftgroups`, `draftgroups/available` and
+> `sportsdata/v1/leagues/107/draftgroups`. Ids must be found by **scanning and filtering on
+> `contestType.sport == "F1"`**. F1 density is ~0.13% (33 of 26,407 — ids are shared with
+> NBA/MLB/NFL/SOC/GOLF), so a coarse stride silently misses races: a stride-37 scan found only
+> 1 of the 33.
+>
+> **Filter on `sport`, never on the race description.** NASCAR groups carry descriptions
+> containing "Grand Prix" (e.g. *DuraMAX Texas Grand Prix*, dgs 142555/142820/142943).
+>
+> `draftGroupSeries` is **null on every historical group** (only the live one has 135), so it
+> is useless for discovery. For future races the cheap approach is to poll a few hundred ids
+> above the last known F1 id and filter on `sport == "F1"`.
+
+2025 uses `gameTypeId` **202** and 2026 uses **380**, but both resolve to identical rules
+(Classic, $50,000 cap, `CPT + 4×D + CNSTR`, max 2 per team — confirmed from the rules endpoint
+for both), so the two seasons are **directly comparable in a backtest**.
+
+Salaries are genuine per-race snapshots, not a static table: Verstappen's CPT price moved
+16500 (Monza 2025) → 21000 (Abu Dhabi 2025 peak) → 14100 (Miami 2026 trough) → 16500
+(Hungary 2026), with FPPR tracking alongside (21.7 → 25.2 → 28.6 → 31.9).
+
+`src/data/draftkings.py` currently fetches only `DraftGroups[0]` — the upcoming race — so
+**backfilling needs a new code path**. This is the single highest-value gap in the data
+pipeline: it would turn the DK-priced backtest from impossible into a ~33-race dataset, and
+`sim/analyze.py` currently cannot run at all for want of salaries.
 
 ### 3.1 `data/raw/draftkings/*.csv`
 
@@ -524,28 +590,77 @@ The only source for salaries — and the only one you **cannot backfill**.
 - **Grain:** one row per (driver, roster slot) — each driver appears twice, CPT and D
 
 Endpoint: `api.draftkings.com/draftgroups/v1/draftgroups/{id}/draftables`.
-**Refresh: weekly, before each race — irreplaceable.**
+**Refresh: weekly, before each race.**
+
+What the crawler currently saves — **8 of the 29 fields DK returns** (see §3.1a):
 
 | Column | Type | Meaning |
 |---|---|---|
 | `name` | str | DK display name, e.g. `Lando Norris` — map via `common.NAME_TO_CODE` |
 | `position` | str | `D` (driver) or `CNSTR` (constructor) |
-| `roster_slot_id` | int | Distinguishes CPT vs D slot for the same driver |
+| `roster_slot_id` | int | `646` = CPT, `647` = D, `648` = CNSTR (names from the rules endpoint, §3.3) |
 | `salary` | int | Slot salary in dollars; CPT ≈ 1.5× the D slot |
 | `team` | str | DK abbreviation (`MCL`, `VCARB`…) — map via `common.DK_ABBREV_TO_ID` |
-| `fppg` | float | DK's own fantasy-points-per-game average; may be null |
+| `fppg` | float | **Always empty — DK does not return this field.** Verified absent from every row of a real payload; the crawler reads a key that isn't there. Harmless but misleading. |
 | `competition` | str | e.g. `Belgian Grand Prix 2026` (**includes** the year) |
 | `draftable_id` | int | DK's internal id |
 
 Each driver appears on **two rows** (CPT + D slot); `build_data.py` collapses them via
 `max(salary)` → CPT and `min(salary)` → D.
 
-> ⚠️ **No salary snapshot is on disk yet.** `build_data.py`
-> calls `latest_salary_file()`, which raises `FileNotFoundError` when no CSV is present, so
-> **`python3 dashboard/build_data.py` fails today** — verified by running it. The committed
-> `dashboard/data.js` still works (built for Hungarian GP 2026) but cannot be regenerated until
-> you run `python3 src/data/data_crawler.py --source draftkings`. Any past week not
-> snapshotted is **gone permanently**.
+> ⚠️ **No salary snapshot is on disk yet** — `data/raw/draftkings/` does not exist.
+> `build_data.py` calls `latest_salary_file()`, which raises `FileNotFoundError`, so
+> **`python3 dashboard/build_data.py` fails today** (verified by running it). The committed
+> `dashboard/data.js` still works (built for Hungarian GP 2026) but cannot be regenerated.
+>
+> Running the crawler right now does **not** fix it: the only live draft group is the Dutch GP
+> (2026-08-23), still `Preliminary`, so `draftables` is empty and the crawler correctly writes
+> nothing (`draft group returned no draftables`). Either wait for DK to publish salaries in
+> race week, or backfill a `Historical` draft group per §3.0.
+
+### 3.1a Fields DK returns that we do not save
+
+The full `draftables` schema is **29 keys**. Beyond the 8 above, these exist and are unused:
+
+| Field | Type | Why it might matter |
+|---|---|---|
+| `draftStatAttributes` | list | **DK's own displayed stats** — `{id, value, sortValue, quality}`. Decode via the response-level `draftStats` legend (§3.1b), don't hard-code ids. For F1: `1652` = FPPR (fantasy points per race), `1618` = WINS, and on constructor rows `-35`/`-36` = the driver pairing (`C. Leclerc \| L. Hamilton`), which is exactly the input the max-2-per-team rule needs. |
+| `playerGameAttributes` | list | **The starting grid.** `[{"id": 101, "value": "7"}]` — id 101 is `Starting Position` per the response legend. Present on all 55 rows of the payload checked, and **exactly matches Jolpica's `grid` for all 22 drivers** at the Hungarian GP 2026 (verified). See the note in §3.1b — this is the *penalised* grid, which §1.3 says has to be checked by hand. |
+| `playerId`, `playerDkId` | int | Stable player keys — a far better join than matching on display name via `NAME_TO_CODE` |
+| `teamId` | int | Stable team key, same argument vs `teamAbbreviation` |
+| `status`, `newsStatus` | str | Availability / news flags (`None` when clear). The rules endpoint defines `OUT` and `PPD` statuses, so this is where a non-starter would surface |
+| `isDisabled`, `isSwappable` | bool | Whether DK has locked the entry out of lineups |
+| `draftAlerts` | list | DK's own per-player alerts |
+| `competition`, `competitions` | dict/list | `competitionId`, `name`, `startTime` — the race's own id and start time, currently reduced to a name string |
+| `firstName`, `lastName`, `shortName` | str | Name parts, easier to match than `displayName` |
+| `playerImage50/160`, `altPlayerImage50/160` | str | Image urls (`dkn.gs/sports/images/f1/teams/…` — team liveries, not driver headshots); `alt*` empty |
+| `playerAttributes`, `teamLeagueSeasonAttributes` | list | Empty on every F1 row inspected |
+| `playerGameHash`, `externalRequirements` | str/dict | Internal |
+
+> ⚠️ **The rules endpoint's `glossaryTerms` ids do not match the payload ids.** The rules doc
+> lists 32 `FPPR`, 33 `AVG Finish`, 16 `T10s`, 34 `Starting Grid Position`; the payloads carry
+> `1652`, `1618`, `-35`, `-36` and `101`. Use the response-level `draftStats` /
+> `playerGameAttributes` legends below — they are self-describing, so nothing needs hard-coding.
+
+### 3.1b Response-level fields (outside `draftables`)
+
+A historical response has **7 top-level keys**; the empty `Preliminary` one has only
+`draftables` + `errorStatus`. The extra five are all useful and none are currently read:
+
+| Key | What it gives you |
+|---|---|
+| `draftStats` | **The id legend for `draftStatAttributes`** — `{id, abbr, name, order}`, e.g. `{1652, FPPR, Fantasy Points Per Race}`, `{1618, WINS, Number of Wins}`, `{-35, DN, Drivers (Native)}`, `{-36, DW, Drivers (Web)}`. Self-describing, so decode from this rather than a hard-coded map. |
+| `playerGameAttributes` | The legend for the per-row attributes: `{id: 101, name: "Starting Position", type: "string"}`. |
+| `competitions[0]` | Richer race metadata than the per-row copy: `competitionId`, `sport`, `sportId`, `startTime`, `name`, and **`competitionState`** (`ScoresOfficial` = results final). `competitionAttributes` carries `{typeId 9: "Final"}` and `{typeId 25/54: "70"}` — the **lap count**. |
+| `teamsWithoutCompetitions` | Canonical team table: `teamId` → `teamName` + `abbreviation` (`376046 → Mercedes/MERC`, …). A stable-key alternative to `common.DK_ABBREV_TO_ID`, which is hand-maintained. |
+| `draftAlerts` | Response-level alert list (empty in the payload checked). Per-row `draftAlerts` is where withdrawals surface — e.g. a *"Lance Stroll has withdrawn from the race"* alert at the Spanish GP 2025, which is a DNS ground truth. |
+
+> **`playerGameAttributes` id 101 is the grid — and it agrees with Jolpica exactly.** Checked
+> the Hungarian GP 2026 against `data/raw/jolpica/2026/results.csv`: **22 of 22 drivers match**
+> (Norris 1, Leclerc 2, Piastri 3, … Perez 22), 0 differences. Because DK sets salaries and
+> grids *after* qualifying and penalties, this is the **post-penalty grid** — the thing §1.3
+> warns the Jolpica quali endpoint does *not* give you. It is only available once DK publishes
+> the draft group, so it is a race-week signal, not a pre-quali one.
 
 ### 3.2 Contest list (not persisted)
 
@@ -554,7 +669,58 @@ Each driver appears on **two rows** (CPT + D slot); `build_data.py` collapses th
 
 `src/util/dk_contests.py` hits `draftkings.com/lobby/getcontests?sport=F1` to find the $0.25
 contest and its `DraftGroupId`. `DraftGroups[0]` is also how `src/data/draftkings.py`
-auto-detects the current draft group.
+auto-detects the current draft group. The contest objects carry **38 keys**; the script keeps
+10. Unused ones include `crownAmount`/`crownsAwarded` (loyalty), `freeWithCrowns`,
+`isSnakeDraft`, `payoutDescriptionMetadata`, `pd` (payout detail), `rl`/`rlc`/`rll`
+(rake/limits), `tix` (ticket entry) and `startTimeType`.
+
+> **No $0.25 contest is currently open.** The only open F1 contest for the Dutch GP (three
+> weeks out at time of writing) is `F1 $35K Laurel [$10K to 1st]` at a **$20** entry (max 61
+> entries/user). The cheap contests this project targets weren't listed this early — re-check
+> nearer race day.
+
+### 3.3 Game rules (live, machine-readable — not persisted)
+
+- **Location:** none — not fetched by any code today
+- **Grain:** one document per gametype
+
+`api.draftkings.com/lineups/v1/gametypes/{380|202}/rules` returns the roster and lineup
+rules as JSON. `config/scoring.yaml` is hand-maintained against the *HTML* rules page, so
+this endpoint is a way to **verify part of it automatically**:
+
+| Field | Value (gametype 380) | Mirrors |
+|---|---|---|
+| `salaryCap.maxValue` | `50000` | `scoring.yaml: salary_cap` |
+| `lineupTemplate` | `CPT` (id 646, tip `1.5x`), 4× `D` (647), `CNSTR` (648) | `scoring.yaml: roster`, `captain_multiplier` |
+| `uniquePlayers` | `true` | no duplicate picks |
+| `allowLateSwap` | `false` | lineups lock at race start |
+| `errorCodes[].INVALID_TEAM_COUNT_F1` | *"the maximum number of drivers and/or constructors from one team is 2"* | the roster constraint §4.1 calls **not expressible in the YAML** — DK states it explicitly |
+| `rulesUrl` | `/help/rules/27/380` | the HTML page scoring is verified against |
+
+It does **not** carry the scoring table (points per position, fastest lap, laps led): no
+public scoring endpoint was found (`scoring/v1/gametypes/{id}/scoringdetails` → 404). So
+`scoring.yaml` still has to be verified by hand for the point values themselves.
+
+### 3.4 Sportsbook / betting odds — **not accessible**
+
+Separate API from DFS, and **blocked**. Recorded so it isn't re-investigated from scratch.
+
+- **Hosts:** `sportsbook.draftkings.com/sites/US-SB/api/v5/eventgroups/{id}`,
+  `sportsbook-nash.draftkings.com/api/sportscontent/dkusva/v1/...`
+- **F1 event group ids:** `212334` (*Formula 1*), `84896` (*Formula 1 World Championship*),
+  under `displayGroupId` 14 (Motorsports) — extracted from the page's `__INITIAL_STATE__`
+- **Result:** every variant returns **HTTP 403 Access Denied** (v4, v5 and nash paths, both
+  event groups, with and without a `Referer`). A WAF block, not a wrong URL.
+- **The HTML page is a JS shell:** `sportsbook.draftkings.com/leagues/motorsports/f1` is
+  1.4 MB containing **zero** driver names and zero odds; its `__INITIAL_STATE__` is
+  `{"eventGroups":{},"outcomes":[]}`. Odds load client-side from the blocked API, so
+  scraping the page yields nothing without browser automation against a logged-in session.
+
+**On odds *history*, separately from access:** sportsbooks do not publish historical or
+closing lines — odds are ephemeral by design, and past-odds datasets are commercial products
+(OddsPortal, Betfair historical exchange data). So even with access there would be nothing
+to backfill; useful odds data would have to be **snapshotted weekly going forward**, exactly
+as salaries are. Deliberately not built.
 
 ---
 
@@ -875,7 +1041,7 @@ Each source uses a different identifier. `src/util/common.py` holds the translat
 
 | Cadence | Do this |
 |---|---|
-| **Weekly, before race** | `python3 src/data/data_crawler.py --source draftkings` — irreplaceable |
+| **Weekly, before race** | `python3 src/data/data_crawler.py --source draftkings` — snapshots the upcoming race. Not strictly irreplaceable: historical draft groups can be backfilled (§3.0), though snapshotting live is still simplest |
 | **After qualifying** | Fill `race_notes.yaml` → `qualifying.order` + `penalties` (manual) |
 | **Race week** | Refresh `pit_strategy`, `weather`, `driver_performance`, `lineup_angles` |
 | **After each race** | `python3 src/data/data_crawler.py <year> <round>` → `sim/dk_points.py` → `dashboard/build_data.py` |
@@ -889,8 +1055,12 @@ The crawler caches every response and is safe to re-run — it only fetches what
 
 ## 7. Known gaps
 
-1. **No DK salary snapshot on disk** → `dashboard/build_data.py` fails until you run
-   `python3 src/data/data_crawler.py --source draftkings`. Salaries can't be backfilled.
+1. **No DK salary snapshot on disk** → `dashboard/build_data.py` fails until a salary CSV
+   exists. Running the crawler now writes nothing — the only live draft group (Dutch GP) is
+   still `Preliminary` with empty `draftables`. **Salaries CAN be backfilled**, though: 32
+   historical F1 draft groups (≥ May 2025) still serve full salaries, but
+   `src/data/draftkings.py` only fetches the upcoming race, so a backfill code path is needed
+   (§3.0). This is the highest-value gap — it unblocks the DK-priced backtest and `sim/analyze.py`.
 2. **Only 2025 OpenF1 data has been crawled** (24 races) — so every row count in §2 is a 2025
    figure. Fetch the rest with
    `python3 src/data/data_crawler.py 2023 2024 2026 --source openf1`.
@@ -908,8 +1078,10 @@ The crawler caches every response and is safe to re-run — it only fetches what
 7. **Laps-led points never computed** — understates race leaders ~10–20 pts. **Two ways to
    fix it:** Jolpica `/laps` (§1.4, back to 1996) or OpenF1 `/position` (§2.11, 2023+).
    Jolpica is the better option — deeper history, and already a wired-up source.
-8. **Grid penalties are manual** — `quali_position` isn't the starting grid, and OpenF1's
-   `starting_grid` endpoint 404s. See §1.3.
+8. **Grid penalties are manual from Jolpica/OpenF1** — `quali_position` isn't the starting
+   grid, and OpenF1's `starting_grid` endpoint 404s (§1.3). But **DK's `draftables` carry the
+   post-penalty grid** (`playerGameAttributes` id 101, §3.1b — verified 22/22 against Jolpica),
+   so once a draft group is published the grid is available without manual penalty tracking.
 9. **No OpenF1 ↔ Jolpica circuit mapping table** — joins rely on name matching (§6).
 10. **`race_notes.yaml` may drift from the built `data.js`** — `build_data.py` only warns on a
    race-name mismatch, it doesn't fail.
