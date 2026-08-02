@@ -26,12 +26,12 @@ const SHOW_LABELS = true;
 // laneScreen/laneArcScreen are declared here (not beside drawPitLane) because
 // setRotation() clears them and runs at load — `let` is not hoisted.
 let cosR, sinR, minX, minY, scale, offX, offY, laneScreen = null,
-    laneArcScreen = null;
+    laneArcScreen = null, boxScreen = null;
 const rotXY = (x, y) => [x * cosR - y * sinR, x * sinR + y * cosR];
 
 function setRotation(rad) {
   ROT = rad;
-  laneScreen = laneArcScreen = null;   // screen-space lane offsets depend on the fit
+  laneScreen = laneArcScreen = boxScreen = null;   // screen-space offsets depend on the fit
   cosR = Math.cos(ROT); sinR = Math.sin(ROT);
   // Fit on the CIRCUIT only: stray pit-lane points inflate the box and shrink
   // the track. The pit lane is adjacent, so it still lands on-canvas.
@@ -86,14 +86,95 @@ function makeArc(pts) {
     cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0],
                                      pts[i][1] - pts[i - 1][1]));
   }
-  return { pts, cum, len: cum[cum.length - 1] || 1 };
+  const arc = { pts, cum, len: cum[cum.length - 1] || 1 };
+  arc.grid = buildArcGrid(pts);
+  return arc;
+}
+
+// Uniform-grid index over the arc's segments, so arcProject tests a handful of nearby
+// segments instead of all ~630. Without it, loading a race cost ~39M distance
+// evaluations (2 projections x 20 cars x 1567 frames x 630 segments) and blocked the
+// main thread for ~390 ms per race switch, which reads as the picker hanging.
+// Same idea as SegmentIndex in vis/selftest.py.
+// Below this many segments a linear scan beats any index: the ring search costs more
+// in Map lookups than it saves in distance tests. The pit lane (39 points) is the case
+// that forced this — indexing it made projection 5x SLOWER than brute force, because
+// cars are usually nowhere near the short lane, so 58% of calls widened through every
+// ring, found nothing, and fell back to a full scan anyway.
+const ARC_INDEX_MIN_SEGS = 120;
+
+function buildArcGrid(pts) {
+  if (pts.length < ARC_INDEX_MIN_SEGS) return null;
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (const [x, y] of pts) {
+    if (x < x0) x0 = x;
+    if (x > x1) x1 = x;
+    if (y < y0) y0 = y;
+    if (y > y1) y1 = y;
+  }
+  // ~sqrt(n) cells per axis: enough to shrink the candidate set, cheap to build.
+  const cells = Math.max(8, Math.round(Math.sqrt(pts.length)));
+  const cw = (x1 - x0) / cells || 1, ch = (y1 - y0) / cells || 1;
+  const buckets = new Map();
+  for (let i = 0; i < pts.length - 1; i++) {
+    // Register each segment in every cell its bounding box touches, so a segment
+    // spanning several cells is reachable from any of them.
+    const [ax, ay] = pts[i], [bx, by] = pts[i + 1];
+    const cx0 = Math.floor((Math.min(ax, bx) - x0) / cw);
+    const cx1 = Math.floor((Math.max(ax, bx) - x0) / cw);
+    const cy0 = Math.floor((Math.min(ay, by) - y0) / ch);
+    const cy1 = Math.floor((Math.max(ay, by) - y0) / ch);
+    for (let cx = cx0; cx <= cx1; cx++) {
+      for (let cy = cy0; cy <= cy1; cy++) {
+        const k = cx + ',' + cy;
+        const b = buckets.get(k);
+        if (b) b.push(i); else buckets.set(k, [i]);
+      }
+    }
+  }
+  return { x0, y0, cw, ch, cells, buckets };
+}
+
+// Segment indices worth testing for (x, y): this cell, widening by a ring until a
+// candidate appears, then ONE extra ring — the true nearest segment can sit in a
+// neighbouring cell even when this cell already holds one. Null means "no index,
+// scan everything", so a degenerate arc still works.
+function arcCandidates(arc, x, y) {
+  const g = arc.grid;
+  if (!g) return null;
+  const cx = Math.floor((x - g.x0) / g.cw), cy = Math.floor((y - g.y0) / g.ch);
+  const gather = (ring, out) => {
+    for (let i = cx - ring; i <= cx + ring; i++) {
+      for (let j = cy - ring; j <= cy + ring; j++) {
+        // Only the new outer ring: inner cells were gathered on earlier passes.
+        if (ring && Math.abs(i - cx) !== ring && Math.abs(j - cy) !== ring) continue;
+        const b = g.buckets.get(i + ',' + j);
+        if (b) out.push(...b);
+      }
+    }
+  };
+  // Give up after a couple of empty rings rather than sweeping the whole grid: a point
+  // far outside the arc's bounding box (a car on the far side of the circuit from the
+  // pit lane) would otherwise pay for every cell before falling back to a full scan.
+  const found = [];
+  for (let ring = 0; ring <= 2; ring++) {
+    gather(ring, found);
+    if (found.length) {
+      gather(ring + 1, found);
+      return found;
+    }
+  }
+  return null;
 }
 
 // Nearest point on `arc`, as (arc length s, signed lateral offset d, distance).
 function arcProject(arc, x, y) {
   const { pts, cum } = arc;
   let bi = 0, bd = Infinity, bt = 0;
-  for (let i = 0; i < pts.length - 1; i++) {
+  const cand = arcCandidates(arc, x, y);
+  const n = cand ? cand.length : pts.length - 1;
+  for (let c = 0; c < n; c++) {
+    const i = cand ? cand[c] : c;
     const [ax, ay] = pts[i], [bx, by] = pts[i + 1];
     const vx = bx - ax, vy = by - ay;
     const L2 = vx * vx + vy * vy;
@@ -306,12 +387,18 @@ function drawPitLane() {
     ctx.fillStyle = 'rgba(232,193,28,.9)'; ctx.fill();
   }
 
-  // Pit boxes — where cars actually stop.
-  for (const b of PITBOX) {
-    const [x, y] = offsetToLane(b[0], b[1]);
+  // Pit boxes — where cars actually stop. Cached like pitLaneScreen(): offsetToLane()
+  // reprojects the whole outline per call, so recomputing 17 boxes every frame cost
+  // ~0.23 ms of a 0.73 ms draw() — 60x a second for a result that never moves.
+  for (const [x, y] of pitBoxScreen()) {
     ctx.beginPath(); ctx.arc(x, y, 1.9, 0, 6.2832);
     ctx.fillStyle = 'rgba(232,193,28,.85)'; ctx.fill();
   }
+}
+
+function pitBoxScreen() {
+  if (!boxScreen) boxScreen = PITBOX.map(b => offsetToLane(b[0], b[1]));
+  return boxScreen;
 }
 
 // Start/finish: an arrow set OFF to the side of the track, pointing at the line and
@@ -789,7 +876,7 @@ function applyRace(d) {
   const cv = document.getElementById('c');
   cv.width = W; cv.height = H;
   buildTower();                     // this race's driver set
-  laneScreen = laneArcScreen = null; TRACK_POS = null; GRID_POS = null;
+  laneScreen = laneArcScreen = boxScreen = null; TRACK_POS = null; GRID_POS = null;
   setRotation(d.rot);
   document.getElementById('seek').max = Math.max(0, FRAMES.length - 1);
   lastOrder = null; marks.clear(); cursor = 0;
@@ -818,9 +905,42 @@ function fillRaces(year) {
 const DATA_DIR = (CONFIG.dataDir || 'replays').replace(/\/$/, '') + '/';
 
 async function loadRace(file) {
-  document.getElementById('meta').textContent = 'loading…';
-  const d = await (await fetch(DATA_DIR + file)).json();
-  current = d;
+  // Payloads are ~3 MB, so a switch is a real wait on anything but localhost. Report
+  // download progress rather than a bare "loading…" that looks like a hang, and say
+  // so out loud if the fetch fails — an unhandled rejection here left the page
+  // silently frozen on the previous race.
+  const meta = document.getElementById('meta');
+  meta.textContent = 'loading…';
+  let d;
+  try {
+    const resp = await fetch(DATA_DIR + file);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const total = +resp.headers.get('content-length') || 0;
+    if (resp.body && total) {
+      const reader = resp.body.getReader();
+      const chunks = [];
+      let got = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        got += value.length;
+        meta.textContent = `loading… ${Math.round(got / total * 100)}%`;
+      }
+      const body = new Uint8Array(got);
+      let at = 0;
+      for (const c of chunks) { body.set(c, at); at += c.length; }
+      d = JSON.parse(new TextDecoder().decode(body));
+    } else {
+      d = await resp.json();
+    }
+    meta.textContent = 'preparing…';
+    // Yield once so the browser paints "preparing…" before applyRace() blocks.
+    await new Promise(r => setTimeout(r, 0));
+  } catch (e) {
+    meta.textContent = `couldn't load ${file}: ${e.message}`;
+    return;
+  }
   applyRace(d);
   // Lap X/Y lives in its own header slot (updated per frame by draw()), so the meta
   // line only carries what doesn't change during playback.
