@@ -9,7 +9,7 @@ asserts the properties a correct replay has, and prints the measured value next
 to every verdict so a human can see how much headroom is left.
 
 Usage:
-    python3 src/vis/selftest.py data/replay/2024/replay_2024_Monaco.json
+    python3 src/vis/selftest.py data/replay/2024/Monaco.json
     python3 src/vis/selftest.py            # every replay under data/replay/
 
 Exits 1 if any check fails. NOTEs are advisory and never fail the run.
@@ -512,7 +512,9 @@ def main() -> int:
         paths = [Path(a) for a in sys.argv[1:]]
     else:
         # Payloads are partitioned by season, so recurse one level.
-        paths = sorted(REPLAY_DIR.glob("*/replay_*.json"))
+        # Payloads are partitioned by season and named for the location alone.
+        paths = sorted(p for p in REPLAY_DIR.glob("*/*.json")
+                       if p.name != "index.json")
         if not paths:
             print(f"No replays in {REPLAY_DIR}. Build one with:\n"
                   f"  python3 src/vis/track_replay.py 2024 8 --full")

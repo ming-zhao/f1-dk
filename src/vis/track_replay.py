@@ -303,11 +303,14 @@ def replay_payload(session: dict, opts: argparse.Namespace, win: Window, built: 
 def refresh_index(data_dir: Path) -> list:
     """Rebuild index.json from every payload on disk, across all years.
 
-    Payloads live in per-year subdirectories, so `file` in the index is a relative
-    path (`2024/replay_2024_Monaco.json`) that the picker can fetch directly.
+    Payloads live in per-year subdirectories and are named for the location alone —
+    the directory already carries the year — so `file` in the index is a relative
+    path (`2024/Monaco.json`) that the picker can fetch directly.
     """
     index = []
-    for f in sorted(data_dir.glob("*/replay_*.json")):
+    for f in sorted(data_dir.glob("*/*.json")):
+        if f.name == "index.json":
+            continue
         r = json.loads(f.read_text())
         r["_file"] = f"{f.parent.name}/{f.name}"
         index.append(r)
@@ -329,7 +332,8 @@ def write_outputs(session: dict, opts: argparse.Namespace, html: str,
 
     year_dir = REPLAY_DIR / str(int(session["year"]))
     year_dir.mkdir(parents=True, exist_ok=True)
-    jf = year_dir / f"{stem}.json"
+    # Location only: the year is already the directory name.
+    jf = year_dir / f"{session.get('location', 'race')}.json"
     jf.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
 
     index = refresh_index(REPLAY_DIR)

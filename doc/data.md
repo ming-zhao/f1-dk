@@ -28,32 +28,58 @@ the race-week checklist, refresh commands, penalty sources, and API quick refere
 
 ### How `data/` is laid out
 
-Every crawled source lands under `data/raw/<source>/<year>/`, so what you have on disk is
-obvious at a glance. `data/processed/` holds derived tables computed from those raw sources.
+Everything the crawler fetches lands under `data/raw/<source>/<year>/`, so what you have on
+disk is obvious at a glance. Derived tables go in `data/processed/`, and built replay
+payloads in `data/replay/<year>/`.
 
 ```
 data/
-├── raw/                       ← everything the crawler fetches
+├── raw/                        ← everything the crawler fetches
 │   ├── jolpica/<year>/
-│   │   ├── api/               cached API responses, one file per round
-│   │   ├── results.csv        one row per driver per race          §1.2
-│   │   └── qualifying.csv     one row per driver per quali         §1.3
+│   │   ├── api/                cached API responses, one file per round
+│   │   ├── results.csv         one row per driver per race           §1.2
+│   │   └── qualifying.csv      one row per driver per quali          §1.3
 │   ├── openf1/<year>/
-│   │   ├── api/               cached API responses, one per session
-│   │   ├── sessions.csv       one row per session                  §2.1
-│   │   ├── laps.csv           one row per driver per lap           §2.2
-│   │   ├── …                  stints, pit, overtakes, weather, …   §2.4–2.9
-│   │   └── telemetry/         ~3.6 Hz car data, opt-in             §2.10
-│   └── draftkings/            ← NOT by year: DK serves only the upcoming race
-│       └── Belgian_Grand_Prix_2026.csv                             §3.1
+│   │   ├── api/                cached API responses, one per session
+│   │   ├── sessions.csv        one row per session                   §2.1
+│   │   ├── laps.csv            one row per driver per lap            §2.2
+│   │   ├── drivers.csv  session_result.csv  stints.csv               §2.3–2.9
+│   │   ├── pit.csv  overtakes.csv  weather.csv  race_control.csv
+│   │   └── telemetry/          ~3.6 Hz car data, opt-in              §2.10
+│   ├── circuits/               ← NOT by year: official circuit maps, static
+│   │   └── <circuit_key>_<year>.json    outline + rotation + corners §5b
+│   └── draftkings/             ← NOT by year: DK serves only the upcoming race
+│       └── Belgian_Grand_Prix_2026.csv                               §3.1
 │
-└── processed/                 ← derived, computed from raw/         §5
-    ├── dk_driver_points.csv
-    └── dk_constructor_points.csv
+├── processed/                  ← derived, computed from raw/          §5
+│   ├── dk_driver_points.csv
+│   └── dk_constructor_points.csv
+│
+└── replay/                     ← built replay payloads               §5b
+    ├── index.json              the race list the picker page reads
+    └── <year>/<location>.json     e.g. 2024/Monaco.json
 ```
 
-All of `data/` is git-ignored — re-crawl it with `python3 src/data/data_crawler.py`.
-Run `--list` to see what's currently on disk.
+All of `data/` is git-ignored. Re-crawl with `python3 src/data/data_crawler.py`, and
+`--list` shows what's currently on disk.
+
+**What's actually there now** (verified, so you can tell a gap from a bug):
+
+| Path | Contents |
+|---|---|
+| `raw/jolpica/` | **55 year directories.** Only **2021–2026** have `results.csv`/`qualifying.csv` (2,520 result rows). The **1950–1998** directories hold *only* cached API responses — an interrupted backfill, no CSVs. |
+| `raw/openf1/` | **2024 and 2025** only, 455 cached responses. No `telemetry/` anywhere — it needs `--telemetry` and is ~73 MB per race. |
+| `raw/circuits/` | **48 maps** (24 circuits × 2 seasons), 1.0 MB. Complete for everything crawlable — verify with `python3 src/vis/circuit.py`. |
+| `raw/draftkings/` | **Empty**, so `dashboard/build_data.py` and `src/sim/analyze.py` both fail. Needs `data_crawler.py --source draftkings`, and only works when DK has an open draft group. |
+| `raw/*.json` (loose) | **1,118 stray files** from the retired flat pipeline. Superseded by `raw/jolpica/<year>/api/`; safe to delete. |
+| `processed/` | DK points tables, plus `results.csv`/`qualifying.csv` left over from the old flat pipeline. |
+| `replay/` | 2 payloads (~3 MB each) + `index.json`. |
+
+Two traps worth knowing. A **single-round fetch merges into the season CSV** rather than
+replacing it, so `data_crawler.py 2025 3` leaves a CSV containing only round 3 — which is how
+2025 spent part of today holding 40 rows instead of 479. Re-run without a round number to
+rebuild the full season; it's free, since every response is cached. And **an `api/` directory
+is not the same as a usable CSV** — the 1950–1998 Jolpica directories prove the point.
 
 ### Grain, dataset by dataset
 
