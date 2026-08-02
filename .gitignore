@@ -2,6 +2,9 @@
 __pycache__/
 *.pyc
 .env
-data/
+# Ignore all fetched/generated data, but keep data/README.md (regeneration guide).
+# Must be `data/*` not `data/`, otherwise git can't re-include a file under it.
+data/*
+!data/README.md
 # dashboard/data.js is committed so the dashboard works from a fresh clone
-# (data/ is ignored, so it can't be regenerated after cloning)
+# (data/ contents are ignored, so they can't be regenerated after cloning)
