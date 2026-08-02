@@ -33,3 +33,6 @@ post-race-review.md).
   (shared mappings/paths), `src/sim/` (DK points + analysis).
 - All crawled data lands in `data/raw/<source>/<year>/`. See `doc/data.md` for every
   table and column; `skill/data-process.md` for how to fetch it.
+- `doc/design.md` is the code counterpart to `doc/data.md`: module layout, dependency
+  direction, entry points, and the design decisions not to re-litigate. Read it before
+  restructuring anything.

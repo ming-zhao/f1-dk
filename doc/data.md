@@ -6,7 +6,8 @@ column list, meanings, and refresh frequency.
 
 **This file is the *what the data is* reference** — every table, column, and grain.
 For *how to fetch or rebuild* it, see [`skill/data-process.md`](../skill/data-process.md):
-the race-week checklist, refresh commands, penalty sources, and API quick reference.
+the race-week checklist, refresh commands, penalty sources, and API quick reference. For
+*how the code is organised*, see [`design.md`](design.md).
 
 ---
 
@@ -56,8 +57,8 @@ data/
 │   └── dk_constructor_points.csv
 │
 └── replay/                     ← built replay payloads               §5b
-    ├── index.json              the race list the picker page reads
-    └── <year>/<location>.json     e.g. 2024/Monaco.json
+    ├── index.json              the race list dashboard/replay.html reads
+    └── <year>/<location>.json  e.g. 2024/Monaco.json (~3 MB each)
 ```
 
 All of `data/` is git-ignored. Re-crawl with `python3 src/data/data_crawler.py`, and

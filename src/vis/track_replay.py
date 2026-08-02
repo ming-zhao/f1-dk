@@ -141,6 +141,11 @@ def parse_args(argv: list | None = None) -> argparse.Namespace:
     ap.add_argument("--no-rotate", action="store_true",
                     help="keep the circuit's native orientation (north straight up)")
     ap.add_argument("--list", action="store_true", help="list crawled races and exit")
+    ap.add_argument("--standalone", action="store_true",
+                    help="also write a self-contained dashboard/replay_<year>_<loc>.html "
+                         "with the payload inlined (~3 MB). Only needed to share a single "
+                         "race as one file — dashboard/replay.html already shows every "
+                         "race from data/replay/, at ~40 KB")
     ap.add_argument("--no-player", action="store_true",
                     help="skip regenerating dashboard/replay.html")
     return ap.parse_args(argv)
@@ -325,10 +330,11 @@ def refresh_index(data_dir: Path) -> list:
 def write_outputs(session: dict, opts: argparse.Namespace, html: str,
                   payload: dict) -> None:
     """Standalone HTML, JSON payload, refreshed index, and the player page."""
-    stem = f"replay_{int(session['year'])}_{session.get('location','race')}"
-    out = OUT_DIR / f"{stem}.html"
-    out.write_text(html, encoding="utf-8")
-    print(f"\nWrote {out} ({out.stat().st_size/1024:.0f} KB) — open in a browser.")
+    if opts.standalone:
+        stem = f"replay_{int(session['year'])}_{session.get('location','race')}"
+        out = OUT_DIR / f"{stem}.html"
+        out.write_text(html, encoding="utf-8")
+        print(f"\nWrote {out} ({out.stat().st_size/1024:.0f} KB) — self-contained.")
 
     year_dir = REPLAY_DIR / str(int(session["year"]))
     year_dir.mkdir(parents=True, exist_ok=True)
