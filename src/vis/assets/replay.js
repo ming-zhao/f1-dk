@@ -26,12 +26,12 @@ const SHOW_LABELS = true;
 // laneScreen/laneArcScreen are declared here (not beside drawPitLane) because
 // setRotation() clears them and runs at load — `let` is not hoisted.
 let cosR, sinR, minX, minY, scale, offX, offY, laneScreen = null,
-    laneArcScreen = null, boxScreen = null;
+    laneArcScreen = null, boxScreen = null, garageBays = null;
 const rotXY = (x, y) => [x * cosR - y * sinR, x * sinR + y * cosR];
 
 function setRotation(rad) {
   ROT = rad;
-  laneScreen = laneArcScreen = boxScreen = null;   // screen-space offsets depend on the fit
+  laneScreen = laneArcScreen = boxScreen = garageBays = null;   // screen-space offsets depend on the fit
   cosR = Math.cos(ROT); sinR = Math.sin(ROT);
   // Fit on the CIRCUIT only: stray pit-lane points inflate the box and shrink
   // the track. The pit lane is adjacent, so it still lands on-canvas.
@@ -365,34 +365,77 @@ function pitLaneArc() {
   return laneArcScreen;
 }
 
-function drawPitLane() {
-  if (!PITLANE.length) return;
+// The lane is drawn as a stylised constant-width channel (like broadcast graphics),
+// not the old 1-D dashed line: a sequence of recorded car positions reads as a loose
+// scribble, whereas a kerbed channel with an orderly garage row reads as the pits.
+// Everything here is static per fit, so the expensive part (deciding which side the
+// garages sit on — a nearestTrack scan over the ~600-pt outline) is computed once and
+// cached in garageBays, reset with the other lane caches on rotation/reload.
+function computeGarages() {
+  const arc = pitLaneArc();
   const pts = pitLaneScreen();
-  // A single line, not a road. The derived lane is a 1-D path — a sequence of
-  // recorded car positions — and carries no width, so drawing it as wide asphalt
-  // would be inventing information.
+  const laneW = Math.max(6, TRACK_W * 0.60);
+  // Outward = away from the main track, sampled at the lane midpoint. The lane runs
+  // roughly parallel to the start straight, so a single sign holds for the whole row.
+  const track = OUTLINE.map(p => proj(p[0], p[1]));
+  const mid = pts[pts.length >> 1];
+  const nt = nearestTrack(mid[0], mid[1], track);
+  let ox = 0, oy = 1;
+  if (nt) { ox = mid[0] - nt[0]; oy = mid[1] - nt[1]; const L = Math.hypot(ox, oy) || 1; ox /= L; oy /= L; }
+  // Which sign of arcPoint's lateral offset points outward (away from the track)?
+  const probe = arcPoint(arc, arc.len / 2, 1, false);
+  const sign = ((probe[0] - mid[0]) * ox + (probe[1] - mid[1]) * oy) >= 0 ? 1 : -1;
+  // One bay per ~1.1 lane-widths of lane, clamped to a realistic garage count.
+  const n = Math.max(8, Math.min(22, Math.round(arc.len / (laneW * 1.1))));
+  const bayDepth = laneW * 0.9;
+  const edge = laneW / 2 + bayDepth / 2 + 1;
+  const bays = [];
+  for (let k = 0; k < n; k++) {
+    const s = (k + 0.5) / n * arc.len;
+    const c = arcPoint(arc, s, sign * edge, false);   // [x, y, heading] on the outer edge
+    bays.push(c);
+  }
+  garageBays = { laneW, bayW: laneW * 0.7, bayDepth, bays };
+}
+
+function drawPitLane() {
+  if (PITLANE.length < 2) return;
+  if (!garageBays) computeGarages();
+  const pts = pitLaneScreen();
+  const { laneW, bayW, bayDepth, bays } = garageBays;
+  ctx.lineCap = ctx.lineJoin = 'round';
+
+  // Asphalt channel with a thin yellow kerb: stroking the centreline thick gives a
+  // constant-width lane that reads as a real route rather than a loose dashed line.
   ctx.beginPath();
   pts.forEach(([x, y], i) => { i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
-  ctx.setLineDash([6, 4]);
-  ctx.strokeStyle = 'rgba(232,193,28,.55)';
-  ctx.lineWidth = 2;
-  ctx.lineCap = ctx.lineJoin = 'round';
-  ctx.stroke();
-  ctx.setLineDash([]);
+  ctx.strokeStyle = 'rgba(232,193,28,.45)'; ctx.lineWidth = laneW + 2.5; ctx.stroke();
+  ctx.strokeStyle = 'rgba(38,38,44,.95)';   ctx.lineWidth = laneW;       ctx.stroke();
 
-  // Entry and exit, reproducible to a few metres across stops.
-  for (const [end, label] of [[pts[0], 'in'], [pts[pts.length - 1], 'out']]) {
-    if (!end) continue;
-    ctx.beginPath(); ctx.arc(end[0], end[1], 2.6, 0, 6.2832);
-    ctx.fillStyle = 'rgba(232,193,28,.9)'; ctx.fill();
+  // The fast-lane marking down the middle.
+  ctx.beginPath();
+  pts.forEach(([x, y], i) => { i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+  ctx.setLineDash([5, 6]); ctx.strokeStyle = 'rgba(232,193,28,.5)'; ctx.lineWidth = 1;
+  ctx.stroke(); ctx.setLineDash([]);
+
+  // Garage bays: a clean, evenly spaced row along the outer edge — replaces the
+  // scattered stop-point dots, which carried no structure and just read as noise.
+  ctx.lineWidth = 0.8;
+  ctx.fillStyle = 'rgba(232,193,28,.16)';
+  ctx.strokeStyle = 'rgba(232,193,28,.7)';
+  for (const [x, y, h] of bays) {
+    ctx.save();
+    ctx.translate(x, y); ctx.rotate(h);
+    ctx.beginPath(); ctx.rect(-bayW / 2, -bayDepth / 2, bayW, bayDepth);
+    ctx.fill(); ctx.stroke();
+    ctx.restore();
   }
 
-  // Pit boxes — where cars actually stop. Cached like pitLaneScreen(): offsetToLane()
-  // reprojects the whole outline per call, so recomputing 17 boxes every frame cost
-  // ~0.23 ms of a 0.73 ms draw() — 60x a second for a result that never moves.
-  for (const [x, y] of pitBoxScreen()) {
-    ctx.beginPath(); ctx.arc(x, y, 1.9, 0, 6.2832);
-    ctx.fillStyle = 'rgba(232,193,28,.85)'; ctx.fill();
+  // Pit entry and exit, where the lane meets the track.
+  for (const end of [pts[0], pts[pts.length - 1]]) {
+    if (!end) continue;
+    ctx.beginPath(); ctx.arc(end[0], end[1], 2.4, 0, 6.2832);
+    ctx.fillStyle = 'rgba(232,193,28,.95)'; ctx.fill();
   }
 }
 
@@ -876,7 +919,7 @@ function applyRace(d) {
   const cv = document.getElementById('c');
   cv.width = W; cv.height = H;
   buildTower();                     // this race's driver set
-  laneScreen = laneArcScreen = boxScreen = null; TRACK_POS = null; GRID_POS = null;
+  laneScreen = laneArcScreen = boxScreen = garageBays = null; TRACK_POS = null; GRID_POS = null;
   setRotation(d.rot);
   document.getElementById('seek').max = Math.max(0, FRAMES.length - 1);
   lastOrder = null; marks.clear(); cursor = 0;
