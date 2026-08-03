@@ -137,27 +137,36 @@ file directly and reload.
 - Re-read `doc/dashboard.md` and update it if you change lineup rules, the
   simulation model, or the scoring breakdown — keep the two in sync.
 
-## Viewing a race replay — three ways, and why they differ
+## Viewing a race replay
 
-`dashboard/replay.html` **must be served over HTTP.** It fetches its ~3 MB payload at
-runtime, and browsers block `fetch()` from a `file://` origin, so double-clicking it
-gives a blank page. (It now says so on screen rather than failing silently.)
+**Open `dashboard/replay.html`. That's it — double-click it, no server.**
 
-| What | How to open | Shows |
-|---|---|---|
-| `./run.sh` | serves + opens the picker | any built race, switchable |
-| `dashboard/replay.html` | needs a server | same, if you serve it yourself |
-| `dashboard/replay_<year>_<loc>.html` | **double-click works** | that one race, data inlined |
+It reads `data/replay/index.js` and the per-race payloads beside it. If it says no
+replays are built yet, build some:
 
-The standalone page is built with `--standalone`:
+```bash
+script/build-replays.sh            # a couple of sample races
+script/build-replays.sh 2025 1     # one specific race
+script/build-replays.sh 2025       # every crawled round of a season
+```
+
+### Why the payloads are `.js`, not `.json`
+
+`fetch()` is blocked on a `file://` origin (opaque origin, so CORS denies it) but a
+`<script>` tag is exempt. So each payload is written as `window.REPLAY_RACE = {...}`
+and loaded by injecting a script tag. Same reason `dashboard/index.html` has always
+worked by double-clicking — it loads `data.js` through a script tag.
+
+The page used to `fetch()` JSON, so double-clicking it gave a blank screen and it had
+to be served over HTTP. That was a bug, not a constraint.
+
+Trade-off: a script tag reports nothing until it has run, so a slow ~3 MB load shows
+`loading…` with no percentage.
+
+`--standalone` still exists and inlines one race into a ~3 MB self-contained file:
 
 ```bash
 python3 src/vis/track_replay.py 2025 1 --full --standalone
 ```
 
-It is fully self-contained (no external references at all), which is why it is the only
-one that works from disk. It's gitignored, being a ~3 MB local artifact.
-
-Note `dashboard/index.html` has never needed a server: it loads data through
-`<script src="data.js">`, and script tags are exempt from CORS. That asymmetry is
-exactly what makes a blank `replay.html` confusing.
+That is now only useful for emailing a single race as one file; it's gitignored.

@@ -66,12 +66,18 @@ CIRCUIT_KM = {
     "Abu Dhabi": 5.281,
 }
 
-# The pit lane merges tangentially into the racing line at its entry and exit, so
-# the points at each END of the derived lane genuinely sit on top of the track.
-# Only the lane's interior has to stand off from it. The strict all-points minimum
-# is reported regardless, so an exemption can never hide a lane drawn on the
-# racing line along its whole length.
-PIT_END_EXEMPT = 3
+# The pit lane merges tangentially into the racing line at its entry and exit, so the
+# points at each END of the derived lane genuinely sit on top of the track. Only the
+# lane's interior has to stand off from it. The strict all-points minimum is reported
+# regardless, so an exemption can never hide a lane drawn on the racing line along its
+# whole length.
+#
+# Measured in METRES along the lane, not in samples: how long the merge runs is a
+# property of the circuit, while the sample count depends on how many cars pitted and
+# where they were logged. A fixed 3-point exemption passed 2025 Melbourne and failed
+# 2025 Monaco, whose entry hugs the start/finish straight for ~45 m — six samples, not
+# three. 50 m covers a real merge without excusing a lane that never leaves the track.
+PIT_END_EXEMPT_M = 50.0
 
 
 # ---------------------------------------------------------------------------
@@ -240,20 +246,29 @@ def check_geometry(d: dict, r: Report) -> None:
         idx = SegmentIndex(outline)
         dists = [idx.nearest(p) for p in lane]
         lo_m, hi_m = min(dists) / M, max(dists) / M
-        # Interior only: the ends are the entry/exit merge (see PIT_END_EXEMPT).
-        interior = dists[PIT_END_EXEMPT:len(dists) - PIT_END_EXEMPT] or dists
+        # Exempt the merge at each end, measured as distance ALONG the lane so the
+        # window follows the circuit rather than the sample count (see PIT_END_EXEMPT_M).
+        steps = [0.0]
+        for i in range(1, len(lane)):
+            steps.append(steps[-1] + math.dist(lane[i - 1], lane[i]))
+        total = steps[-1] or 1.0
+        limit = PIT_END_EXEMPT_M * M
+        interior = [x for x, s in zip(dists, steps)
+                    if limit <= s <= total - limit] or dists
+        ends = [(x, s) for x, s in zip(dists, steps)
+                if s < limit or s > total - limit]
         bad_near = [x for x in interior if x < 3 * M]
         bad_far = [x for x in interior if x > 60 * M]
-        ends_m = [f"{x / M:.1f}" for x in
-                  dists[:PIT_END_EXEMPT] + dists[len(dists) - PIT_END_EXEMPT:]]
         r.check(not bad_near and not bad_far, 5, "pit lane offset from track",
                 f"{len(lane)} pts, interior {min(interior) / M:.1f}-"
                 f"{max(interior) / M:.1f} m from nearest segment (band 3-60 m); "
                 f"all-points range {lo_m:.1f}-{hi_m:.1f} m")
         if min(dists) < 3 * M:
             r.note(5, "pit lane merge at ends",
-                   f"end points at {', '.join(ends_m)} m — entry/exit merging "
-                   f"into the racing line, exempt from the 3 m floor")
+                   f"{len(ends)} point(s) within {PIT_END_EXEMPT_M:.0f} m of an end sit "
+                   f"{min(x for x, _ in ends) / M:.1f}-{max(x for x, _ in ends) / M:.1f} m "
+                   f"from the track — entry/exit merging into the racing line, exempt "
+                   f"from the 3 m floor")
 
 
 def check_frames(d: dict, r: Report) -> None:
@@ -603,8 +618,22 @@ def min_self_gap_units(outline: list, rot: float) -> float:
 # driver
 # ---------------------------------------------------------------------------
 
+def load_payload(path: Path) -> dict:
+    """Parse a replay payload.
+
+    Payloads are JavaScript (`window.REPLAY_RACE = {...};`) rather than bare JSON, so
+    that dashboard/replay.html can <script>-load them from a file:// page where fetch()
+    is blocked. Strip the assignment and read the object. Plain .json is still accepted
+    so an old payload, or one piped in by hand, still validates.
+    """
+    text = path.read_text(encoding="utf-8")
+    if path.suffix == ".js":
+        text = text[text.index("=") + 1:].rstrip().rstrip(";")
+    return json.loads(text)
+
+
 def run_file(path: Path) -> Report:
-    d = json.loads(path.read_text())
+    d = load_payload(path)
     label = f"{d.get('year')} {d.get('location')}"
     window = "full race" if d.get("full") else f"from lap {d.get('fromLap')}"
     print(f"\n{'=' * 78}\n{path.name}  —  {label}  "
@@ -624,10 +653,8 @@ def main() -> int:
     if len(sys.argv) > 1:
         paths = [Path(a) for a in sys.argv[1:]]
     else:
-        # Payloads are partitioned by season, so recurse one level.
         # Payloads are partitioned by season and named for the location alone.
-        paths = sorted(p for p in REPLAY_DIR.glob("*/*.json")
-                       if p.name != "index.json")
+        paths = sorted(REPLAY_DIR.glob("*/*.js"))
         if not paths:
             print(f"No replays in {REPLAY_DIR}. Build one with:\n"
                   f"  python3 src/vis/track_replay.py 2024 8 --full")

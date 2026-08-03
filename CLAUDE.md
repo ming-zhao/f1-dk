@@ -36,6 +36,10 @@ post-race-review.md).
   (shared mappings/paths), `src/sim/` (DK points + analysis).
 - All crawled data lands in `data/raw/<source>/<year>/`. See `doc/data.md` for every
   table and column; `skill/data-process.md` for how to fetch it.
+- Race replay: open `dashboard/replay.html` directly (no server). It script-loads
+  `data/replay/index.js` + `data/replay/<year>/<loc>.js`; build them with
+  `script/build-replays.sh`. Payloads are `.js` not `.json` on purpose — `fetch()` is
+  blocked on `file://`, `<script>` tags are not.
 - `doc/design.md` is the code counterpart to `doc/data.md`: module layout, dependency
   direction, entry points, and the design decisions not to re-litigate. Read it before
   restructuring anything.

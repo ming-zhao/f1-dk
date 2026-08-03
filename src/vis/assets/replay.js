@@ -904,36 +904,35 @@ function fillRaces(year) {
 // supplies it, so the data location can move without editing this file.
 const DATA_DIR = (CONFIG.dataDir || 'replays').replace(/\/$/, '') + '/';
 
+// Load a JS file by injecting a <script> tag and wait for it to run.
+//
+// This is the whole reason the picker works from file://. fetch() and XHR are blocked
+// on a file:// origin (it is an opaque origin, so CORS denies it), but a <script> tag
+// is exempt — which is why dashboard/index.html has always worked by double-clicking
+// while this page did not. So the payloads are written as JS assignments
+// (`window.REPLAY_RACE = {...}`) instead of bare JSON, and loaded this way.
+//
+// The cost of the trade: no download progress. A script tag reports nothing until it
+// has run, so a slow ~3 MB load shows "loading…" and no percentage.
+function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = url;
+    s.onload = () => { s.remove(); resolve(); };
+    s.onerror = () => { s.remove(); reject(new Error(`could not load ${url}`)); };
+    document.head.appendChild(s);
+  });
+}
+
 async function loadRace(file) {
-  // Payloads are ~3 MB, so a switch is a real wait on anything but localhost. Report
-  // download progress rather than a bare "loading…" that looks like a hang, and say
-  // so out loud if the fetch fails — an unhandled rejection here left the page
-  // silently frozen on the previous race.
   const meta = document.getElementById('meta');
   meta.textContent = 'loading…';
   let d;
   try {
-    const resp = await fetch(DATA_DIR + file);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const total = +resp.headers.get('content-length') || 0;
-    if (resp.body && total) {
-      const reader = resp.body.getReader();
-      const chunks = [];
-      let got = 0;
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        chunks.push(value);
-        got += value.length;
-        meta.textContent = `loading… ${Math.round(got / total * 100)}%`;
-      }
-      const body = new Uint8Array(got);
-      let at = 0;
-      for (const c of chunks) { body.set(c, at); at += c.length; }
-      d = JSON.parse(new TextDecoder().decode(body));
-    } else {
-      d = await resp.json();
-    }
+    window.REPLAY_RACE = null;
+    await loadScript(DATA_DIR + file);
+    d = window.REPLAY_RACE;
+    if (!d) throw new Error(`${file} did not define window.REPLAY_RACE`);
     meta.textContent = 'preparing…';
     // Yield once so the browser paints "preparing…" before applyRace() blocks.
     await new Promise(r => setTimeout(r, 0));
@@ -951,28 +950,20 @@ async function loadRace(file) {
 
 async function startPicker() {
   const meta = document.getElementById('meta');
-  // This page FETCHES its payloads, and browsers block fetch() from a file:// origin
-  // (opaque origin, so CORS denies it). Opened by double-clicking, the fetch below
-  // rejects, startPicker() dies on its first line, and you get an empty page with no
-  // clue why. Say so instead. index.html has no such problem — it loads data through a
-  // <script> tag, which is exempt from CORS, hence the confusing difference.
   try {
-    const resp = await fetch(DATA_DIR + 'index.json');
-    if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${DATA_DIR}index.json`);
-    INDEX = await resp.json();
+    await loadScript(DATA_DIR + 'index.js');
+    INDEX = window.REPLAY_INDEX;
+    if (!INDEX) throw new Error('index.js did not define window.REPLAY_INDEX');
   } catch (e) {
-    meta.innerHTML = location.protocol === 'file:'
-      ? 'This page must be served over HTTP, not opened as a file. Run '
-        + '<code>python3 -m http.server 8000</code> in the repo root, then open '
-        + '<code>http://localhost:8000/dashboard/replay.html</code>.'
-      : `Couldn't load the replay list (${e.message}). Expected it at `
-        + `<code>${DATA_DIR}index.json</code> — build one with `
-        + '<code>python3 src/vis/track_replay.py 2025 1</code>.';
+    meta.innerHTML =
+      `No replay list found at <code>${DATA_DIR}index.js</code>. Build one with `
+      + '<code>python3 src/vis/track_replay.py 2025 1 --full</code> '
+      + '(or <code>./run.sh --fetch</code> to download a sample).';
     return;
   }
   if (!INDEX.length) {
-    meta.textContent =
-      'No replays yet — run: python3 src/vis/track_replay.py 2025 1';
+    meta.innerHTML = 'No replays built yet — run '
+      + '<code>python3 src/vis/track_replay.py 2025 1 --full</code>.';
     return;
   }
   const years = [...new Set(INDEX.map(r => r.year))].sort();

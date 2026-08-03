@@ -57,7 +57,7 @@ data/
 │   └── dk_constructor_points.csv
 │
 └── replay/                     ← built replay payloads               §5b
-    ├── index.json              the race list dashboard/replay.html reads
+    ├── index.js                the race list dashboard/replay.html reads
     └── <year>/<location>.json  e.g. 2024/Monaco.json (~3 MB each)
 ```
 
@@ -870,7 +870,7 @@ fetch all feeds), `circuit.py` (official circuit map), `frames.py` (animation ti
 output pages from the real front-end files in `src/vis/assets/` (`replay.html`,
 `replay.css`, `replay.js`). Both pages load the same `replay.js`; the only difference
 is how data arrives — the standalone page inlines one JSON blob, while
-`dashboard/replay.html` (a multi-race picker) fetches `dashboard/replays/*.json`.
+`dashboard/replay.html` (a multi-race picker) script-loads `data/replay/*/*.js`.
 `--full` replays a whole race, widening the frame step automatically (a 57-lap race is
 ~1300 frames / 2.3 MB rather than 12k frames / 22 MB). The tower shows **lap X / Y**
 from the race leader's lap count — not an arbitrary reference car, since backmarkers
