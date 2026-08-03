@@ -145,10 +145,19 @@ It reads `data/replay/index.js` and the per-race payloads beside it. If it says 
 replays are built yet, build some:
 
 ```bash
-script/replay_data_builder.sh            # a couple of sample races
-script/replay_data_builder.sh 2025 1     # one specific race
-script/replay_data_builder.sh 2025       # every crawled round of a season
+script/replay_data.sh              # the two sample races (Melbourne, Monaco)
+script/replay_data.sh 2025 1       # one race
+script/replay_data.sh 2025         # every crawled round of a season
+script/replay_data.sh --list       # what would be built, without building
+script/replay_data.sh 2025 --jobs 1  # force serial
 ```
+
+The shell script is a 14-line wrapper; the logic is in `src/vis/build_replays.py`, so
+it stays testable rather than becoming Python heredocs inside bash.
+
+Already-built races rebuild **in parallel** (CPU-bound, ~1.7x on two races); new races
+fetch **one at a time**, because a new race is almost all `sleep` waiting on OpenF1's
+rate limit and running those concurrently just gets you throttled.
 
 ### Why the payloads are `.js`, not `.json`
 
