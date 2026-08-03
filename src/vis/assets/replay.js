@@ -950,9 +950,28 @@ async function loadRace(file) {
 }
 
 async function startPicker() {
-  INDEX = await (await fetch(DATA_DIR + 'index.json')).json();
+  const meta = document.getElementById('meta');
+  // This page FETCHES its payloads, and browsers block fetch() from a file:// origin
+  // (opaque origin, so CORS denies it). Opened by double-clicking, the fetch below
+  // rejects, startPicker() dies on its first line, and you get an empty page with no
+  // clue why. Say so instead. index.html has no such problem — it loads data through a
+  // <script> tag, which is exempt from CORS, hence the confusing difference.
+  try {
+    const resp = await fetch(DATA_DIR + 'index.json');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${DATA_DIR}index.json`);
+    INDEX = await resp.json();
+  } catch (e) {
+    meta.innerHTML = location.protocol === 'file:'
+      ? 'This page must be served over HTTP, not opened as a file. Run '
+        + '<code>python3 -m http.server 8000</code> in the repo root, then open '
+        + '<code>http://localhost:8000/dashboard/replay.html</code>.'
+      : `Couldn't load the replay list (${e.message}). Expected it at `
+        + `<code>${DATA_DIR}index.json</code> — build one with `
+        + '<code>python3 src/vis/track_replay.py 2025 1</code>.';
+    return;
+  }
   if (!INDEX.length) {
-    document.getElementById('meta').textContent =
+    meta.textContent =
       'No replays yet — run: python3 src/vis/track_replay.py 2025 1';
     return;
   }
