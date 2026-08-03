@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F1 DFS Lineup Simulator</title>
+<script src="data.js"></script>
+<style>
+@@CSS@@
+</style>
+</head>
+<body class="viz-root">
+
+<div id="splash-overlay">
+  <div class="splash-track">
+    <span class="splash-car">🏎️</span>
+    <div class="splash-finish"></div>
+  </div>
+  <div class="splash-label">Loading F1 DFS Lineup Simulator…</div>
+</div>
+
+<h1 id="race-title">F1 DFS Lineup Simulator</h1>
+<div class="sub">Pick 1 Captain (1.5× points, 1.5× salary) + 4 Drivers + 1 Constructor under the $50,000 cap, then simulate a race outcome scored with real DraftKings rules.</div>
+
+<div class="tabs">
+  <button class="tab-btn active" id="tab-builder-btn" onclick="switchTab('builder')">Lineup Builder</button>
+  <button class="tab-btn" id="tab-auto-btn" onclick="switchTab('auto')">Auto Simulation</button>
+  <button class="tab-btn" id="tab-chances-btn" onclick="switchTab('chances')">The Chances</button>
+  <button class="tab-btn" id="tab-ai-btn" onclick="switchTab('ai')">AI Simulation</button>
+  <button class="tab-btn" id="tab-testing-btn" onclick="switchTab('testing')">Testing AI</button>
+</div>
+
+<div id="tab-builder">
+<div class="layout">
+  <div class="card">
+    <h2>Driver pool — <span id="race-name"></span></h2>
+    <table id="pool">
+      <thead>
+        <tr>
+          <th>Team</th>
+          <th>Driver</th>
+          <th class="num sortable" data-k="salaryCpt">CPT $</th>
+          <th class="num sortable" data-k="salary">D $</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <h2 style="margin-top:18px">Constructors</h2>
+    <table id="cpool">
+      <thead>
+        <tr>
+          <th>Constructor</th>
+          <th class="num csortable" data-k="salary">Salary</th>
+          <th class="num csortable" data-k="avgDk">Avg DK pts</th>
+          <th class="num csortable" data-k="maxDk">Max DK pts</th>
+          <th class="num csortable" data-k="bothPtsRate">Both top-10 %</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <h2 style="margin-bottom:0">Your lineup</h2>
+        <button id="clear-btn">Remove all</button>
+      </div>
+      <div class="tiles">
+        <div class="tile"><div class="label">Salary used</div><div class="value" id="sal-used">$0</div></div>
+        <div class="tile"><div class="label">Remaining</div><div class="value" id="sal-left">$50,000</div></div>
+        <div class="tile"><div class="label">Proj. avg pts</div><div class="value" id="proj-pts">–</div></div>
+      </div>
+      <div class="meter"><div id="sal-meter" style="width:0%"></div></div>
+      <div id="lineup-slots" style="margin-top:12px"></div>
+      <div id="lineup-warn"></div>
+      <button class="primary" id="sim-btn" style="margin-top:14px" disabled>Simulate race</button>
+      <div class="sub" style="margin-top:8px">Outcome is randomly generated from each driver's recent form (finish distribution, qualifying tendency, DNF rate). Run it multiple times — variance is the point.</div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h2>Tyre plans</h2>
+      <div class="sub" style="margin-bottom:10px">Each team's tyre & stint strategy for this race, from <code>config/race_notes.yaml</code>.</div>
+      <div id="tyre-plans"></div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h2>Driver Performance</h2>
+      <div class="sub" style="margin-bottom:10px">Practice (FP1/FP2/FP3) performance summary per driver, from <code>config/race_notes.yaml</code>.</div>
+      <div id="driver-performance"></div>
+    </div>
+  </div>
+</div>
+
+<div id="results">
+  <div class="card">
+    <div class="hero-row">
+      <div>
+        <div class="tile"><div class="label">Your DK score</div><div class="hero" id="total-score">0</div></div>
+      </div>
+      <div class="sub" id="sim-count"></div>
+      <div style="flex:1"></div>
+      <button id="resim-btn">Simulate again</button>
+    </div>
+    <div class="results-grid">
+      <div>
+        <h2>Score breakdown</h2>
+        <table id="breakdown">
+          <thead><tr>
+            <th>Pick</th><th class="num">Finish</th><th class="num">Diff</th>
+            <th>Bonuses</th><th class="num">×</th><th class="num">Total</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div>
+        <h2>Race classification</h2>
+        <table id="classification">
+          <thead><tr>
+            <th class="num">Pos</th><th>Driver</th><th class="num">Grid</th>
+            <th class="num">+/-</th><th class="num">DK pts</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="tab-auto" style="display:none">
+  <div class="card" style="max-width:1280px">
+    <h2>Auto Simulation — build the optimal lineup</h2>
+    <div class="sub" style="margin-bottom:12px">
+      Searches every legal combination of 1 Captain + 4 Drivers + 1 Constructor under the
+      $50,000 cap and DK's same-team rule, shortlists the best by projected points, then
+      Monte Carlo simulates each shortlisted lineup to rank them by simulated average score.
+    </div>
+    <button class="primary" id="auto-run-btn" style="max-width:260px">Run auto simulation</button>
+    <div class="sub" id="auto-status" style="margin-top:8px"></div>
+    <div id="auto-results-wrap" style="margin-top:14px;max-height:640px;overflow-y:auto;display:none">
+      <table id="auto-results">
+        <thead><tr>
+          <th class="num">#</th><th>Captain</th><th>Drivers</th><th>Constructor</th>
+          <th class="num">Salary</th><th class="num">Avg score</th><th class="num">Range</th><th></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="tab-chances" style="display:none">
+  <div class="card" style="max-width:1280px">
+    <h2>The Chances</h2>
+    <div class="sub" id="chances-intro" style="margin-bottom:12px">
+      Run Auto or AI Simulation and Load a lineup (or let Auto Simulation finish, which does
+      this automatically for its #1 pick) — this tab explains what has to happen for that
+      lineup's best-case outcome, and how likely it is.
+    </div>
+    <div id="chances-body"></div>
+  </div>
+
+  <div class="card" style="margin-top:16px" id="chances-why-card">
+    <h2>Why this percent?</h2>
+    <div id="chances-why-body"></div>
+  </div>
+</div>
+
+<div id="tab-ai" style="display:none">
+<div class="layout">
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <h2 style="margin:0">AI Simulation</h2>
+      <label class="sub" for="ai-min-chance" style="display:flex;align-items:center;gap:6px;margin:0">
+        Min pick chance:
+        <select id="ai-min-chance">
+          <option value="0.05">5%</option>
+          <option value="0.06">6%</option>
+          <option value="0.07">7%</option>
+          <option value="0.08">8%</option>
+          <option value="0.09">9%</option>
+          <option value="0.10">10%</option>
+          <option value="0.11">11%</option>
+          <option value="0.12">12%</option>
+          <option value="0.13">13%</option>
+          <option value="0.14">14%</option>
+          <option value="0.15">15%</option>
+          <option value="0.16">16%</option>
+          <option value="0.17">17%</option>
+          <option value="0.18">18%</option>
+          <option value="0.19">19%</option>
+          <option value="0.20">20%</option>
+        </select>
+      </label>
+    </div>
+    <div class="sub" style="margin-bottom:12px">
+      Shortlists strong candidate lineups (same search as Auto Simulation), then keeps
+      simulating them continuously in the background — no need to click Simulate. Averages
+      refine live as more simulations pile up; leave it running and check back later, or
+      click Stop whenever you've seen enough.
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="primary" id="ai-start-btn" style="max-width:160px">Start</button>
+      <button id="ai-stop-btn" style="max-width:160px" disabled>Stop</button>
+    </div>
+    <div class="sub" id="ai-status" style="margin-top:8px"></div>
+    <div id="ai-results-wrap" style="margin-top:14px;max-height:640px;overflow-y:auto;display:none">
+      <table id="ai-results">
+        <thead><tr>
+          <th class="num">#</th><th>Captain</th><th>Drivers</th><th>Constructor</th>
+          <th class="num">Salary</th><th class="num">Avg score</th><th class="num">Range</th>
+          <th class="num">Sims</th><th>Chances</th><th></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Driver's Qualifying</h2>
+    <div class="sub" style="margin-bottom:10px">
+      After qualifying, reorder drivers (▲/▼) into the real classification and enter any grid
+      penalties, then Apply grid — every simulation (Simulate race, Auto/AI Simulation, The
+      Chances) will use this real grid instead of a randomly simulated one.
+    </div>
+    <table id="quali-table">
+      <thead><tr>
+        <th class="num">Pos</th><th>Driver</th><th class="num">Penalty</th>
+        <th class="num">Grid</th><th></th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="primary" id="quali-apply-btn" style="max-width:160px">Apply grid</button>
+      <button id="quali-reset-btn" style="max-width:200px">Use simulated grid</button>
+    </div>
+    <div class="sub" id="quali-status" style="margin-top:8px"></div>
+  </div>
+</div>
+</div>
+
+<div id="tab-testing" style="display:none">
+  <div class="card" style="max-width:1280px">
+    <h2>Testing AI — backtest against a past season</h2>
+    <div class="sub" style="margin-bottom:12px">
+      Pick a season (1950, F1's first year, through 2025), then this picks a lineup using
+      today's rules (salary cap, DK scoring, current driver salaries) and checks what it would
+      have <b>actually</b> scored in every race that season we have real results for — using
+      the genuine historical DK points from those races, not projections. Click a race below to
+      narrow the test to just that Grand Prix instead of the whole season: the lineup is picked
+      without looking at that race's result, then its result is revealed to show the points
+      scored.
+    </div>
+    <div class="warn" style="color:var(--text-secondary)">
+      ⚠ We don't have real historical DraftKings salaries or contest payouts for past races —
+      DK doesn't archive old pricing, and this project only started saving weekly snapshots
+      recently. So this uses <b>today's</b> salaries/cap as a stand-in for pricing in every
+      past race tested. Scores shown are real historical points, not fabricated — but treat any
+      "would this have made money" read as a rough proxy, not a real payout simulation. Also:
+      race + DK data has only actually been fetched for a few recent seasons so far (see
+      status below); most years in the dropdown won't have data yet until backfilled.
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <label class="sub" for="testing-year-select" style="margin:0">Season:</label>
+      <select id="testing-year-select"></select>
+      <button class="primary" id="testing-run-btn" style="max-width:200px">Run test</button>
+    </div>
+    <div id="testing-season-races" style="margin-top:10px"></div>
+    <div class="sub" id="testing-status" style="margin-top:8px"></div>
+    <div id="testing-results" style="display:none;margin-top:14px">
+      <div id="testing-lineup-summary" style="margin-bottom:14px"></div>
+      <div class="tiles" style="grid-template-columns:repeat(4,1fr)">
+        <div class="tile"><div class="label">Races that season</div><div class="value" id="testing-races-total">–</div></div>
+        <div class="tile"><div class="label">Had full data for</div><div class="value" id="testing-races-data">–</div></div>
+        <div class="tile"><div class="label">Avg actual score</div><div class="value" id="testing-avg-score">–</div></div>
+        <div class="tile"><div class="label">Beat field-average lineup</div><div class="value" id="testing-beat-rate">–</div></div>
+      </div>
+      <div style="margin-top:14px;max-height:500px;overflow-y:auto">
+        <table id="testing-table">
+          <thead><tr>
+            <th class="num">Round</th><th>Race</th><th class="num">Our score</th>
+            <th class="num">Field-avg lineup</th><th class="num">Delta</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="driver-modal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <img class="team-logo" id="dm-logo" src="" alt="">
+      <div>
+        <div class="nm" id="dm-name"></div>
+        <div class="team-nm" id="dm-team"></div>
+      </div>
+      <button class="modal-close" id="dm-close">✕</button>
+    </div>
+    <div class="modal-stats" id="dm-stats"></div>
+  </div>
+</div>
+
+<script>
+@@JS@@
+</script>
+</body>
+</html>

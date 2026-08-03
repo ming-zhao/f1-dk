@@ -27,8 +27,11 @@ post-race-review.md).
 - Jolpica quali endpoint shows qualifying classification, NOT the penalized grid —
   check penalties manually (see skill/data-process.md § ③).
 - DK salary snapshots in `data/raw/draftkings/` are irreplaceable — never delete.
-- Dashboard: `dashboard/index.html` (plain file, no server). Rebuild data with
-  `python3 dashboard/build_data.py` after refreshing data.
+- Dashboard: `dashboard/index.html` (plain file, no server). It is GENERATED —
+  edit `dashboard/assets/*.js` + `dashboard.css`, then `python3 dashboard/build_page.py`.
+  Rebuild the data with `python3 dashboard/build_data.py` after refreshing data.
+  The modules are concatenated (not ES `import`) because `file://` blocks module
+  loading for the same CORS reason it blocks `fetch()`.
 - Code layout: `src/data/` (crawlers, entry point `data_crawler.py`), `src/util/`
   (shared mappings/paths), `src/sim/` (DK points + analysis).
 - All crawled data lands in `data/raw/<source>/<year>/`. See `doc/data.md` for every
