@@ -136,3 +136,28 @@ file directly and reload.
   script still lines up; don't hardcode point values in the HTML/JS.
 - Re-read `doc/dashboard.md` and update it if you change lineup rules, the
   simulation model, or the scoring breakdown — keep the two in sync.
+
+## Viewing a race replay — three ways, and why they differ
+
+`dashboard/replay.html` **must be served over HTTP.** It fetches its ~3 MB payload at
+runtime, and browsers block `fetch()` from a `file://` origin, so double-clicking it
+gives a blank page. (It now says so on screen rather than failing silently.)
+
+| What | How to open | Shows |
+|---|---|---|
+| `./run.sh` | serves + opens the picker | any built race, switchable |
+| `dashboard/replay.html` | needs a server | same, if you serve it yourself |
+| `dashboard/replay_<year>_<loc>.html` | **double-click works** | that one race, data inlined |
+
+The standalone page is built with `--standalone`:
+
+```bash
+python3 src/vis/track_replay.py 2025 1 --full --standalone
+```
+
+It is fully self-contained (no external references at all), which is why it is the only
+one that works from disk. It's gitignored, being a ~3 MB local artifact.
+
+Note `dashboard/index.html` has never needed a server: it loads data through
+`<script src="data.js">`, and script tags are exempt from CORS. That asymmetry is
+exactly what makes a blank `replay.html` confusing.
