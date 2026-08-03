@@ -10,10 +10,14 @@ __pycache__/
 # dashboard/data.js is committed so the dashboard works from a fresh clone
 # (data/ contents are ignored, so they can't be regenerated after cloning)
 
-# Generated replays: ~3 MB each, rebuilt by src/visual/track_replay.py from the
-# cached data in data/raw/. dashboard/replay.html (the multi-race picker shell) IS
-# committed, since it's a small asset-driven page that works from a clone.
-dashboard/replay_*.html
+# Standalone replays (dashboard/replay_<year>_<loc>.html) ARE committed: they are the
+# only replay you can open by double-clicking, since the data is inlined and the page
+# has no external references at all. replay.html, the picker, fetches its payload and
+# so needs a server — see skill/dashboard.md.
+#
+# The cost is deliberate: each is ~3 MB of generated content and git keeps every
+# revision, so rebuilding the same race repeatedly grows the repo permanently. Commit
+# the races you actually want a clone to have, not every experiment.
 dashboard/replays/
 
 # Local Claude Code settings (worktrees, per-machine overrides)
