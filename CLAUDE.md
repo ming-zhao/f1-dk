@@ -38,7 +38,7 @@ post-race-review.md).
   table and column; `skill/data-process.md` for how to fetch it.
 - Race replay: open `dashboard/replay.html` directly (no server). It script-loads
   `data/replay/index.js` + `data/replay/<year>/<loc>.js`; build them with
-  `script/build-replays.sh`. Payloads are `.js` not `.json` on purpose — `fetch()` is
+  `script/replay_data_builder.sh`. Payloads are `.js` not `.json` on purpose — `fetch()` is
   blocked on `file://`, `<script>` tags are not.
 - `doc/design.md` is the code counterpart to `doc/data.md`: module layout, dependency
   direction, entry points, and the design decisions not to re-litigate. Read it before

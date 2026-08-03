@@ -145,9 +145,9 @@ It reads `data/replay/index.js` and the per-race payloads beside it. If it says 
 replays are built yet, build some:
 
 ```bash
-script/build-replays.sh            # a couple of sample races
-script/build-replays.sh 2025 1     # one specific race
-script/build-replays.sh 2025       # every crawled round of a season
+script/replay_data_builder.sh            # a couple of sample races
+script/replay_data_builder.sh 2025 1     # one specific race
+script/replay_data_builder.sh 2025       # every crawled round of a season
 ```
 
 ### Why the payloads are `.js`, not `.json`

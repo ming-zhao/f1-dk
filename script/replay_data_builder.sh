@@ -4,9 +4,9 @@
 # Open dashboard/replay.html directly afterwards — no server. It loads the payloads
 # with <script> tags, which work from file:// (fetch() does not).
 #
-#   script/build-replays.sh                 # a couple of sample races
-#   script/build-replays.sh 2025 1          # one specific race
-#   script/build-replays.sh 2025            # every crawled round of a season
+#   script/replay_data_builder.sh                 # a couple of sample races
+#   script/replay_data_builder.sh 2025 1          # one specific race
+#   script/replay_data_builder.sh 2025            # every crawled round of a season
 #
 # Each replay is ~3 MB and takes a few minutes: the crawl is cached, but ~20 telemetry
 # requests per race are paced to stay inside OpenF1's rate limit. Re-running is cheap —
