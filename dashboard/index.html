@@ -1279,6 +1279,10 @@ function runAutoSim() {
 const AI = {
   running: false, timer: null, chancesTimer: null,
   shortlist: [], reserve: [], stats: [], chances: [], visible: [], order: [],
+  // fitLocked[i]: once a slot's lineup is CONFIRMED to fit the description, it is
+  // locked for the rest of the run — kept and simulated, never re-evaluated out on
+  // measurement noise (the Min-pick-chance bar can't change mid-run). See ai.js.
+  fitLocked: [],
   totalSims: 0, filteredOutCount: 0, champFailStreak: 0,
 };
 
@@ -1482,9 +1486,9 @@ function renderAiResults() {
     : "";
   const fitCount = aiCandidates.length - belowBarCount;
   const phaseNote = AI.running
-    ? (fitCount <= AI_OPTIMIZE_MIN_FIT
-        ? ` Filling: ${fitCount}/${aiCandidates.length} lineups fit the description (locked in) — need more than ${AI_OPTIMIZE_MIN_FIT} before optimizing.`
-        : ` ${fitCount}/${aiCandidates.length} lineups fit the description (more than ${AI_OPTIMIZE_MIN_FIT}) — now upgrading the weakest toward the best.`)
+    ? (fitCount < AI_OPTIMIZE_MIN_FIT
+        ? ` Filling: ${fitCount}/${aiCandidates.length} lineups fit the description (locked in) — need ${AI_OPTIMIZE_MIN_FIT} before optimizing.`
+        : ` ${fitCount}/${aiCandidates.length} lineups fit the description (${AI_OPTIMIZE_MIN_FIT}+) — now upgrading the weakest toward the best.`)
     : "";
   document.getElementById("ai-status").textContent = AI.running
     ? `Simulating ${AI.shortlist.length} candidate lineups continuously — ` +
@@ -1514,36 +1518,38 @@ function updateAiChances(simsPerCandidate) {
   for (let i = 0; i < AI.shortlist.length; i++) {
     const chances = analyzeTopLineupChances(AI.shortlist[i], simsPerCandidate);
     AI.chances[i] = chances;
+    // LOCK — the real fix for "you throw away lineups that work". Once a slot's
+    // lineup is CONFIRMED to fit the description, it is locked for the rest of the
+    // run: we keep it and just keep running sims on it, and never re-evaluate it
+    // out of existence. This is sound because the Min-pick-chance bar can't change
+    // mid-run (its dropdown is disabled while running) and a lineup's TRUE fit
+    // status is fixed — only our noisy chances estimate wobbles. Without this, a
+    // fitting lineup whose weakest pick sits near the bar keeps failing a later
+    // noisy re-check by chance and gets discarded, which is exactly the bug.
+    // (User rule: below 10 fitting lineups, keep simming the ones that fit — don't
+    // throw them away. See doc/ai-simulation-requirements.md.)
+    if (AI.fitLocked[i]) { AI.visible[i] = true; continue; } // locked: keep, ignore noise
+
     const probs = [...chances.picks.map(p => p.prob), chances.constructor.prob];
     let fits = probs.every(p => p >= MIN_PICK_CHANCE);
-    // FLICKER GUARD — the fix for fitting lineups disappearing. A lineup that
-    // ALREADY fits the description must never be thrown away over one noisy pass
-    // (see doc/ai-simulation-requirements.md: fitting lineups are kept, not
-    // deleted/swapped). So if a slot fit last pass but this light 300-sim estimate
-    // reads sub-bar, re-verify it with a much bigger, more reliable chances pass
-    // before believing it. Only a CONFIRMED failure is allowed to mark it
-    // not-fitting — which is the only thing that lets performAiSwaps() repair or
-    // replace it. This is the same protection the champion always had, now every
-    // fitting lineup gets it, so none vanishes on measurement noise.
-    if (!fits && prevFit[i]) {
+    // The 300-sim light pass is noisy, so never trust a flip on it alone. Re-verify
+    // with a big, reliable pass whenever the light read says this slot fits (so a
+    // real fit gets confirmed and LOCKED), OR when it reads sub-bar but the slot fit
+    // last pass (so a fitting lineup is never dropped on a lone flicker before it
+    // has locked). A confirmed fit locks the slot in for the run.
+    if (fits || prevFit[i]) {
       const rc = analyzeTopLineupChances(AI.shortlist[i], AI_CHAMP_RECHECK_SIMS);
       AI.chances[i] = rc;
       const rprobs = [...rc.picks.map(p => p.prob), rc.constructor.prob];
       fits = rprobs.every(p => p >= MIN_PICK_CHANCE);
     }
+    if (fits) AI.fitLocked[i] = true; // confirmed fitting — lock it for the rest of the run
     AI.visible[i] = fits;
   }
-  // Champion fail-streak for maybePromoteChampion()'s debounce. The champion's fit
-  // flag is already flicker-guarded above whenever it fit last pass; the only gap
-  // is a champion freshly installed this session and NOT fitting last pass, so
-  // re-verify that one case here too before its dethrone clock starts on noise.
+  // Champion fail-streak for maybePromoteChampion()'s debounce. A locked champion is
+  // always visible, so its streak stays 0; only a never-locked, still-invalid
+  // champion accrues fails and can be handed off after AI_CHAMP_FAIL_LIMIT of them.
   const champ = AI.order[0];
-  if (champ != null && AI.visible[champ] === false && !prevFit[champ]) {
-    const cc = analyzeTopLineupChances(AI.shortlist[champ], AI_CHAMP_RECHECK_SIMS);
-    AI.chances[champ] = cc;
-    const probs = [...cc.picks.map(p => p.prob), cc.constructor.prob];
-    AI.visible[champ] = probs.every(p => p >= MIN_PICK_CHANCE);
-  }
   if (champ != null && AI.visible[champ] === false) AI.champFailStreak++;
   else AI.champFailStreak = 0;
   performAiSwaps();
@@ -1617,6 +1623,7 @@ function repairFailingLineup(candidate, chances) {
 // blank/stale for a tick.
 function seedAiSlot(i, incoming) {
   AI.shortlist[i] = incoming;
+  AI.fitLocked[i] = false; // a brand-new lineup must re-earn its fit lock via a confirming pass
   const s = { n: 0, sum: 0, sumSq: 0, min: Infinity, max: -Infinity };
   for (let j = 0; j < AI_TICK_BATCH; j++) {
     const score = simulateCandidateScore(incoming, simulateRace());
@@ -1642,15 +1649,14 @@ function seedAiSlot(i, incoming) {
 function performAiSwaps() {
   const changedSlots = [];
   const champion = AI.order[0]; // the reigning first-place lineup — never evicted for an unproven reserve pick
-  // Two phases. FILLING: until MORE THAN AI_OPTIMIZE_MIN_FIT (10) slots hold a
-  // lineup that fits the description (clears the Min-pick-chance bar), every
-  // lineup that already fits is locked in place and never changed — we only ever
-  // work the slots that don't yet fit. OPTIMIZING: once more than 10 fit, we
-  // start upgrading the weakest fitting slots toward the best. If enough later
-  // drop below the bar, canOptimize goes false again and we pause upgrading to
-  // go re-fill first.
+  // Two phases. FILLING: until AI_OPTIMIZE_MIN_FIT (10) slots hold a lineup that
+  // fits the description (clears the Min-pick-chance bar), every lineup that already
+  // fits is locked in place and never changed — we only ever work the slots that
+  // don't yet fit. OPTIMIZING: once 10 fit, we start upgrading the weakest fitting
+  // slots toward the best. If enough later drop below the bar, canOptimize goes
+  // false again and we pause upgrading to go re-fill first.
   const fitCount = AI.visible.filter(Boolean).length;
-  const canOptimize = fitCount > AI_OPTIMIZE_MIN_FIT;
+  const canOptimize = fitCount >= AI_OPTIMIZE_MIN_FIT; // tweaking is allowed once 10 lineups fit
   const worstFirst = AI.shortlist.map((_, i) => i).sort((a, b) => {
     if (AI.visible[a] !== AI.visible[b]) return AI.visible[a] ? 1 : -1; // not-visible = worst
     const avgA = AI.stats[a].n ? AI.stats[a].sum / AI.stats[a].n : -Infinity;
@@ -1693,8 +1699,9 @@ function performAiSwaps() {
       }
       continue;
     }
-    // This slot already fits the description. Leave it alone until more than 10
-    // fit — only then do we upgrade the weakest fitting slots toward the best.
+    // This slot already fits the description (and is locked). Leave it completely
+    // alone until 10 fit — just keep running sims on it. Only once 10 fit do we
+    // upgrade the weakest fitting slots toward the best.
     if (!canOptimize) continue;
     if (!AI.reserve.length) continue;
     const avg = AI.stats[i].n ? AI.stats[i].sum / AI.stats[i].n : -Infinity;
@@ -1720,7 +1727,7 @@ function loadAiCandidate(i) {
 }
 
 const AI_DISPLAY_SIZE = 20;         // always exactly this many lineups shown
-const AI_OPTIMIZE_MIN_FIT = 10;     // keep fitting lineups locked until MORE THAN this many fit, then start upgrading
+const AI_OPTIMIZE_MIN_FIT = 10;     // keep fitting lineups locked until this many fit, then start upgrading
 const AI_POOL_SIZE = 200;           // extra 180 held in reserve to swap in as needed
 const AI_LIVE_CHANCES_SIMS = 300;   // light pass, re-run every few seconds while running
 const AI_FINAL_CHANCES_SIMS = 1000; // precise pass, run once on Stop
@@ -1739,6 +1746,7 @@ function startAiSimulation() {
     AI.stats = AI.shortlist.map(() => ({ n: 0, sum: 0, sumSq: 0, min: Infinity, max: -Infinity }));
     AI.chances = AI.shortlist.map(() => null);
     AI.visible = AI.shortlist.map(() => true); // reassessed by the first chances pass
+    AI.fitLocked = AI.shortlist.map(() => false); // nothing is confirmed-fitting yet
     AI.order = AI.shortlist.map((_, i) => i); // pool is already projection-sorted
     AI.totalSims = 0;
     AI.filteredOutCount = 0;

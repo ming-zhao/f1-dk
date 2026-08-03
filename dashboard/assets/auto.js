@@ -62,6 +62,10 @@ function runAutoSim() {
 const AI = {
   running: false, timer: null, chancesTimer: null,
   shortlist: [], reserve: [], stats: [], chances: [], visible: [], order: [],
+  // fitLocked[i]: once a slot's lineup is CONFIRMED to fit the description, it is
+  // locked for the rest of the run — kept and simulated, never re-evaluated out on
+  // measurement noise (the Min-pick-chance bar can't change mid-run). See ai.js.
+  fitLocked: [],
   totalSims: 0, filteredOutCount: 0, champFailStreak: 0,
 };
 
