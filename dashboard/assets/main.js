@@ -61,7 +61,7 @@ document.getElementById("race-title").textContent = "F1 DFS Lineup Simulator —
 // it's clear on each tab that the street-circuit simulation is active. Shows on
 // nothing when the race isn't a street circuit.
 if (IS_STREET) {
-  for (const id of ["tab-builder", "tab-auto", "tab-chances", "tab-ai", "tab-testing"]) {
+  for (const id of ["tab-builder", "tab-auto", "tab-chances", "tab-ai"]) {
     const panel = document.getElementById(id);
     if (!panel) continue;
     const badge = document.createElement("div");
@@ -87,9 +87,6 @@ document.getElementById("ai-min-chance").onchange = (e) => {
 };
 document.getElementById("quali-apply-btn").onclick = applyQualiGrid;
 document.getElementById("quali-reset-btn").onclick = resetQualiGrid;
-document.getElementById("testing-run-btn").onclick = runTestingAi;
-document.getElementById("testing-year-select").onchange = () => showSeasonRaceList(true);
-populateTestingYearDropdown();
 function bindSort(selector, stateKey) {
   document.querySelectorAll(selector).forEach(th => {
     th.onclick = () => {

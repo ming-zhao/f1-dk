@@ -29,7 +29,6 @@ MODULES = [
     "auto.js",       # Auto-sim tab
     "ai.js",         # AI-sim tab
     "quali.js",      # qualifying/grid entry
-    "testing.js",    # backtest against real past races
     "main.js",       # single-race sim, sort binding, startup
 ]
 

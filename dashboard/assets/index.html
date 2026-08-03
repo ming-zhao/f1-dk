@@ -27,7 +27,6 @@
   <button class="tab-btn" id="tab-auto-btn" onclick="switchTab('auto')">Auto Simulation</button>
   <button class="tab-btn" id="tab-chances-btn" onclick="switchTab('chances')">The Chances</button>
   <button class="tab-btn" id="tab-ai-btn" onclick="switchTab('ai')">AI Simulation</button>
-  <button class="tab-btn" id="tab-testing-btn" onclick="switchTab('testing')">Testing AI</button>
 </div>
 
 <div id="tab-builder">
@@ -240,55 +239,6 @@
     <div class="sub" id="quali-status" style="margin-top:8px"></div>
   </div>
 </div>
-</div>
-
-<div id="tab-testing" style="display:none">
-  <div class="card" style="max-width:1280px">
-    <h2>Testing AI — backtest against a past season</h2>
-    <div class="sub" style="margin-bottom:12px">
-      Pick a season (1950, F1's first year, through 2025), then this picks a lineup using
-      today's rules (salary cap, DK scoring, current driver salaries) and checks what it would
-      have <b>actually</b> scored in every race that season we have real results for — using
-      the genuine historical DK points from those races, not projections. Click a race below to
-      narrow the test to just that Grand Prix instead of the whole season: the lineup is picked
-      without looking at that race's result, then its result is revealed to show the points
-      scored.
-    </div>
-    <div class="warn" style="color:var(--text-secondary)">
-      ⚠ We don't have real historical DraftKings salaries or contest payouts for past races —
-      DK doesn't archive old pricing, and this project only started saving weekly snapshots
-      recently. So this uses <b>today's</b> salaries/cap as a stand-in for pricing in every
-      past race tested. Scores shown are real historical points, not fabricated — but treat any
-      "would this have made money" read as a rough proxy, not a real payout simulation. Also:
-      race + DK data has only actually been fetched for a few recent seasons so far (see
-      status below); most years in the dropdown won't have data yet until backfilled.
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap">
-      <label class="sub" for="testing-year-select" style="margin:0">Season:</label>
-      <select id="testing-year-select"></select>
-      <button class="primary" id="testing-run-btn" style="max-width:200px">Run test</button>
-    </div>
-    <div id="testing-season-races" style="margin-top:10px"></div>
-    <div class="sub" id="testing-status" style="margin-top:8px"></div>
-    <div id="testing-results" style="display:none;margin-top:14px">
-      <div id="testing-lineup-summary" style="margin-bottom:14px"></div>
-      <div class="tiles" style="grid-template-columns:repeat(4,1fr)">
-        <div class="tile"><div class="label">Races that season</div><div class="value" id="testing-races-total">–</div></div>
-        <div class="tile"><div class="label">Had full data for</div><div class="value" id="testing-races-data">–</div></div>
-        <div class="tile"><div class="label">Avg actual score</div><div class="value" id="testing-avg-score">–</div></div>
-        <div class="tile"><div class="label">Beat field-average lineup</div><div class="value" id="testing-beat-rate">–</div></div>
-      </div>
-      <div style="margin-top:14px;max-height:500px;overflow-y:auto">
-        <table id="testing-table">
-          <thead><tr>
-            <th class="num">Round</th><th>Race</th><th class="num">Our score</th>
-            <th class="num">Field-avg lineup</th><th class="num">Delta</th>
-          </tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
 </div>
 
 <div class="modal-backdrop" id="driver-modal">

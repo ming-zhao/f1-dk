@@ -117,4 +117,10 @@ function initQualifying() {
   }
 }
 
-const TABS = ["builder", "auto", "chances", "ai", "testing"];
+const TABS = ["builder", "auto", "chances", "ai"];
+function switchTab(name) {
+  for (const t of TABS) {
+    document.getElementById(`tab-${t}`).style.display = t === name ? "" : "none";
+    document.getElementById(`tab-${t}-btn`).classList.toggle("active", t === name);
+  }
+}
