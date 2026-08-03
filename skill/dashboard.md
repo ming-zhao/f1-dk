@@ -144,13 +144,20 @@ file directly and reload.
 It reads `data/replay/index.js` and the per-race payloads beside it. If it says no
 replays are built yet, build some:
 
+Pick races by editing the `RACES=(...)` list at the top of
+`script/replay_data.sh` — uncomment a line to include that race. All 24 rounds of 2025
+are listed; Melbourne and Monaco are on by default.
+
 ```bash
-script/replay_data.sh              # the two sample races (Melbourne, Monaco)
-script/replay_data.sh 2025 1       # one race
-script/replay_data.sh 2025         # every crawled round of a season
-script/replay_data.sh --list       # what would be built, without building
-script/replay_data.sh 2025 --jobs 1  # force serial
+script/replay_data.sh                # build whatever is uncommented in the list
+script/replay_data.sh --list         # show what that would build, build nothing
+script/replay_data.sh 2025 1         # ignore the list, build one race
+script/replay_data.sh 2025           # ignore the list, build a whole season
+script/replay_data.sh --jobs 1       # force serial
 ```
+
+`--list` is the safe way to check a selection: it marks each race `built` or `new` and
+downloads nothing.
 
 The shell script is a 14-line wrapper; the logic is in `src/vis/build_replays.py`, so
 it stays testable rather than becoming Python heredocs inside bash.

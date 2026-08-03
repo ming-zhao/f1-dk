@@ -112,13 +112,33 @@ def build(races: list[tuple[int, int]], jobs: int) -> None:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("args", nargs="*", type=int, metavar="YEAR [ROUND]")
+    ap.add_argument("--races", metavar="Y:R,...",
+                    help="explicit list, e.g. 2025:1,2025:8 — this is how "
+                         "script/replay_data.sh passes the races you left uncommented")
     ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4,
                     help="parallel jobs for already-built races (default: cores)")
     ap.add_argument("--list", action="store_true",
                     help="show what would be built, and exit")
     opts = ap.parse_args(argv)
 
-    if len(opts.args) >= 2:
+    # `is not None`, not truthiness: an EMPTY --races means "the list in
+    # replay_data.sh is entirely commented out", which must say so rather than
+    # silently falling through to DEFAULT_RACES and building something else.
+    if opts.races is not None:
+        races = []
+        for token in opts.races.split(","):
+            token = token.strip()
+            if not token:
+                continue
+            try:
+                year, rnd = (int(x) for x in token.split(":"))
+            except ValueError:
+                raise SystemExit(f"--races: expected YEAR:ROUND, got {token!r}")
+            races.append((year, rnd))
+        if not races:
+            raise SystemExit("--races was empty: every race in script/replay_data.sh "
+                             "is commented out, so there is nothing to build.")
+    elif len(opts.args) >= 2:
         races = [(opts.args[0], opts.args[1])]
     elif len(opts.args) == 1:
         year = opts.args[0]
