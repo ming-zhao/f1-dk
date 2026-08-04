@@ -19,13 +19,14 @@ the race-week checklist, refresh commands, penalty sources, and API quick refere
 |---|---|---|---|---|
 | [1](#1-jolpica) | **Jolpica** (Ergast successor) | none | results 1950+, laps 1996+, pit stops 2012+ | Race + qualifying results, lap-by-lap positions, pit stops, championship standings |
 | [2](#2-openf1) | **OpenF1** | none | 2023–present<br>*on disk: 2025 only* | Sector times, speed traps, tyre stints, pit stops, overtakes, weather, raw telemetry |
+| [2b](#2b-multiviewer--circuit-geometry) | **MultiViewer** | none | 48/48 crawled circuits (2024, 2025) | Official circuit outline + rotation + corners — the only source of track shape |
 | [3](#3-draftkings) | **DraftKings** | none | upcoming race + history back to ≥ May 2025 (§3.0) | Salaries (CPT + D slot), post-penalty grid, contest list |
 | [4](#4-hand-maintained-config) | **Hand-maintained config** | — | current race week | Scoring rules, grid penalties, weather + tyre notes |
 | [5](#5-derived-datasets) | **Derived** (computed here) | — | 2023–2026 | DK fantasy points, dashboard bundle |
 | [6](#6-cross-source-joins) | — | — | — | How to join across sources |
 | [7](#7-known-gaps) | — | — | — | Known gaps |
 
-**Both API sources are free and need no key or login.** Verified live.
+**All three API sources are free and need no key or login.** Verified live.
 
 ### How `data/` is laid out
 
@@ -47,8 +48,8 @@ data/
 │   │   ├── drivers.csv  session_result.csv  stints.csv               §2.3–2.9
 │   │   ├── pit.csv  overtakes.csv  weather.csv  race_control.csv
 │   │   └── telemetry/          ~3.6 Hz car data, opt-in              §2.10
-│   ├── circuits/               ← NOT by year: official circuit maps, static
-│   │   └── <circuit_key>_<year>.json    outline + rotation + corners §5b
+│   ├── circuits/               ← keyed by circuit, not year: static geometry
+│   │   └── <circuit_key>_<year>.json    outline + rotation + corners §2b
 │   └── draftkings/             ← NOT by year: DK serves only the upcoming race
 │       └── Belgian_Grand_Prix_2026.csv                               §3.1
 │
@@ -58,7 +59,7 @@ data/
 │
 └── replay/                     ← built replay payloads               §5b
     ├── index.js                the race list dashboard/replay.html reads
-    └── <year>/<location>.json  e.g. 2024/Monaco.json (~3 MB each)
+    └── <year>/<location>.js    e.g. 2025/Monaco.js (~3 MB each)
 ```
 
 All of `data/` is git-ignored. Re-crawl with `python3 src/data/data_crawler.py`;
@@ -510,6 +511,53 @@ later, since a real grid endpoint would remove the manual penalty tracking in §
 
 ---
 
+## 2b. MultiViewer — circuit geometry
+
+The **only** source of track shape. Everything drawn as road in the replay comes from here;
+nothing about the circuit's geometry is derived from car positions.
+
+- **Auth:** none. A `User-Agent` is sent (`common`-style courtesy, see `circuit.py:UA`)
+- **Endpoint:** `https://api.multiviewer.app/api/v1/circuits/{circuit_key}/{year}`
+- **Keyed by** `circuit_key` — the **same id OpenF1 returns** in `/sessions` (§2), so no
+  cross-source name matching is needed
+- **Coverage:** complete for what we crawl — all **48** (year, circuit_key) pairs resolve
+  (24 circuits x 2024, 2025). Re-check any time: `python3 src/vis/circuit.py`
+- **Cached:** `data/raw/circuits/<circuit_key>_<year>.json`, **forever** — the geometry is
+  static per circuit, so it is never re-fetched. 48 files, ~940 KB total (~20 KB each)
+
+### Why it matters that the coordinate space matches
+
+MultiViewer's polyline is in the **same coordinate space as OpenF1 `/location`**, so car
+positions overlay the outline with **no transform at all**. That is the property that makes
+this source usable rather than merely available.
+
+Units are **~9.8 per metre** (roughly decimetres). Verified: the assembled Monaco outline
+measures **3,336 m against an official 3,337 m**.
+
+### Fields
+
+| Field | Type | Notes |
+|---|---|---|
+| `x`, `y` | list[float] | Parallel arrays forming the centreline. Monaco 2025: 683 points |
+| `rotation` | float | Degrees, official broadcast orientation (Monaco 315) |
+| `corners` | list | `{number, angle, length, trackPosition:{x,y}}` — 19 at Monaco |
+| `marshalLights`, `marshalSectors` | list | Sector markers; unused so far |
+| `pitLoss` | dict | Seconds lost to a stop: `{normal, sc, vsc}` — scalar times, **not** pit geometry |
+| `circuitName`, `location`, `countryName`, `round`, `raceDate` | — | Event metadata |
+
+`circuit.py:outline()` cleans the raw polyline before use: the published line is **open** and
+contains sub-metre backtrack wiggles (a 22 cm reversal at Monaco registers as a
+self-intersection), so points closer than **5 units** are dropped and the loop is closed
+explicitly. Monaco 683 -> 634 points.
+
+### What this source does NOT provide
+
+**Pit lane geometry.** No source publishes it — `pitLoss` is a time, not a path. The pit lane
+is derived from where cars actually drove during stops (§5b), which is why it needs its own
+validation check in `vis/selftest.py`.
+
+---
+
 ## 3. DraftKings
 
 The only source for salaries. Both the DFS API and the *sportsbook* API are described here;
@@ -880,8 +928,9 @@ run laps down.
 ~12 s serially. It's pure I/O wait, so threads suffice — the GIL is released during
 the request and multiprocessing would only add overhead. Rendering is **not** a
 bottleneck: measured at 0.49 ms/frame (~2000 fps) against a 500 ms frame interval, so
-a GPU would change nothing. No separate track-geometry source is needed: **one driver's `/location`
-trace across a whole lap *is* the circuit outline.**
+a GPU would change nothing. The circuit outline is a **separate source** — MultiViewer's
+official map, §2b — *not* a driver's `/location` trace; see the note further down on why
+deriving it was abandoned.
 
 ```bash
 python3 src/vis/track_replay.py 2025 1          # busiest lap, auto-picked
