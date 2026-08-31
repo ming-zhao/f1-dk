@@ -1228,6 +1228,10 @@ const AI = {
   // locked for the rest of the run — kept and simulated, never re-evaluated out on
   // measurement noise (the Min-pick-chance bar can't change mid-run). See ai.js.
   fitLocked: [],
+  // Highest "weakest pick chance" any evaluated lineup has reached this run — i.e.
+  // the highest Min-pick-chance bar the data can actually satisfy. Used to tell the
+  // user when their bar is set higher than any lineup this race can meet.
+  bestWeakestSeen: 0,
   totalSims: 0, filteredOutCount: 0, champFailStreak: 0,
 };
 
@@ -1349,7 +1353,17 @@ let aiCandidates = [];
 
 const AI_TICK_BATCH = 150;
 function aiTick() {
+  // Only spend score sims on lineups that FIT the requirements. A lineup that
+  // doesn't fit isn't worth measuring — the job for that slot is to CHANGE it
+  // (swap the offending pick for one with an over-the-bar chance; see
+  // performAiSwaps/repairFailingLineup), not to keep averaging a score on a
+  // lineup that doesn't qualify. So skip it here and let the chances/repair pass
+  // work it instead. (Every slot has already been simmed at least once — the
+  // first tick runs before any slot is marked invalid, and seedAiSlot re-seeds
+  // sims on every repaired/swapped slot — so a skipped slot never has n === 0.)
+  let simmedSlots = 0;
   for (let i = 0; i < AI.shortlist.length; i++) {
+    if (!AI.visible[i]) continue;
     const c = AI.shortlist[i];
     const s = AI.stats[i];
     for (let j = 0; j < AI_TICK_BATCH; j++) {
@@ -1360,8 +1374,9 @@ function aiTick() {
       if (score < s.min) s.min = score;
       if (score > s.max) s.max = score;
     }
+    simmedSlots++;
   }
-  AI.totalSims += AI.shortlist.length * AI_TICK_BATCH;
+  AI.totalSims += simmedSlots * AI_TICK_BATCH;
   renderAiResults();
 }
 
@@ -1371,8 +1386,8 @@ function renderAiTable() {
   document.getElementById("ai-results-wrap").style.display = "";
   document.querySelector("#ai-results tbody").innerHTML = aiCandidates.map((c, i) => {
     const chancesCell = c.chances
-      ? `${c.chances.total.toFixed(1)} pts best case<br>` +
-        `<span style="color:var(--text-secondary)">${(c.chances.combinedProb * 100).toFixed(2)}% chance of this or better</span>` +
+      ? `${c.chances.total.toFixed(1)} pts strong case<br>` +
+        `<span style="color:var(--text-secondary)">${(c.chances.combinedProb * 100).toFixed(1)}% chance of this or better</span>` +
         (c.passes ? "" : `<br><span style="color:var(--critical)">⚠ needs a &lt;${(MIN_PICK_CHANCE * 100).toFixed(0)}% break from some pick</span>`)
       : `<span class="sub">—</span>`;
     return `<tr${c.passes ? "" : ' style="opacity:.6"'}>
@@ -1399,45 +1414,55 @@ function renderAiTable() {
 function renderAiResults() {
   maybePromoteChampion(); // let a proven-better lineup take rank 1 first
   computeAiOrder();       // then confidence-sort the rest beneath the champion
+  // "Fits the description" in the UI means CONFIRMED-fitting, i.e. LOCKED — not a
+  // single noisy chances read. AI.visible[i] flickers pass-to-pass for a lineup
+  // whose weakest pick sits near the bar, so counting/showing visible made the tab
+  // look like it kept discarding working lineups (the count bounced 7→2→3…). The
+  // LOCKED set only ever grows and its lineups are never thrown away, so that is
+  // what we count, rank, and label as fitting. (See doc/ai-simulation-requirements.md.)
   const enriched = AI.shortlist.map((c, i) => ({ ...c, avg: AI.stats[i].sum / AI.stats[i].n,
     min: AI.stats[i].min, max: AI.stats[i].max, n: AI.stats[i].n, chances: AI.chances[i],
-    passes: AI.visible[i] }));
-  // DISPLAY ORDER. GUARANTEE: a lineup that fits the description always ranks
-  // above every lineup that doesn't — even when the fitting lineup's average is
-  // LOWER. So whenever at least one lineup fits, rank 1 ("number one") is a
-  // fitting lineup, never a higher-average non-fitting one. Every lineup that
-  // doesn't fit (invalid — some pick below the bar) is forced to the bottom.
-  // computeAiOrder() already sorts the non-champion rows valid-before-invalid; the
-  // one case it leaves an invalid lineup up top is a champion pinned at rank 1 that
-  // has momentarily fallen below the bar. Partitioning here (valid rows keep their
-  // ranked order, invalid rows fall beneath them) drops that invalid champion to
-  // the bottom too. This is DISPLAY-ONLY — AI.order still tracks the champion
-  // (order[0]) for the promotion/repair machinery, so once first place is repaired
-  // back to valid it returns to the top of the table.
+    passes: AI.fitLocked[i] }));
+  // DISPLAY ORDER. GUARANTEE: a lineup that fits the description (locked) always
+  // ranks above every lineup that doesn't — even when its average is LOWER. So
+  // whenever at least one lineup fits, rank 1 is a confirmed-fitting lineup. The
+  // still-being-worked candidates fall beneath them. DISPLAY-ONLY — AI.order still
+  // tracks the champion (order[0]) for the promotion/repair machinery.
   const displayOrder = [
-    ...AI.order.filter(i => AI.visible[i]),
-    ...AI.order.filter(i => !AI.visible[i]),
+    ...AI.order.filter(i => AI.fitLocked[i]),
+    ...AI.order.filter(i => !AI.fitLocked[i]),
   ];
   aiCandidates = displayOrder.map(i => enriched[i]);
   renderAiTable();
-  const belowBarCount = aiCandidates.filter(c => !c.passes).length;
+  const fitCount = AI.fitLocked.filter(Boolean).length;   // confirmed, permanently-kept lineups
+  const belowBarCount = aiCandidates.length - fitCount;
   const countNote = belowBarCount
-    ? ` ${belowBarCount} of ${aiCandidates.length} currently need an almost-impossible ` +
-      `(<${(MIN_PICK_CHANCE * 100).toFixed(0)}%) result from some pick — sorted to the bottom, ` +
-      `not hidden.`
+    ? ` The other ${belowBarCount} are still being worked toward fitting — not yet locked, ` +
+      `and sorted below the confirmed ones.`
     : "";
   const swapNote = AI.filteredOutCount
-    ? ` Swapped in ${AI.filteredOutCount} fresh candidate${AI.filteredOutCount === 1 ? "" : "s"} this pass.`
+    ? ` Reworked ${AI.filteredOutCount} unconfirmed candidate${AI.filteredOutCount === 1 ? "" : "s"} this pass.`
     : "";
-  const fitCount = aiCandidates.length - belowBarCount;
   const phaseNote = AI.running
     ? (fitCount < AI_OPTIMIZE_MIN_FIT
-        ? ` Filling: ${fitCount}/${aiCandidates.length} lineups fit the description (locked in) — need ${AI_OPTIMIZE_MIN_FIT} before optimizing.`
-        : ` ${fitCount}/${aiCandidates.length} lineups fit the description (${AI_OPTIMIZE_MIN_FIT}+) — now upgrading the weakest toward the best.`)
+        ? ` Filling: ${fitCount}/${aiCandidates.length} lineups confirmed to fit (locked in, never discarded) — need ${AI_OPTIMIZE_MIN_FIT} before optimizing.`
+        : ` ${fitCount}/${aiCandidates.length} lineups confirmed to fit (${AI_OPTIMIZE_MIN_FIT}+) — now upgrading the weakest toward the best.`)
+    : "";
+  // When filling can't reach 10, it's usually because the Min-pick-chance bar is set
+  // higher than any lineup this race can meet — not because fitting lineups are being
+  // thrown away. Tell the user the highest bar the data actually supports so they can
+  // lower it. Once the whole reserve pool has been explored (reserve empty) this is the
+  // definitive achievable max; before that it's the best seen so far.
+  const barPct = (MIN_PICK_CHANCE * 100).toFixed(0);
+  const reachPct = (AI.bestWeakestSeen * 100).toFixed(1);
+  const reachNote = (AI.running && fitCount < AI_OPTIMIZE_MIN_FIT && AI.bestWeakestSeen < MIN_PICK_CHANCE)
+    ? (AI.reserve.length === 0
+        ? ` ⚠ No lineup this race can clear ${barPct}% on every pick — the best any lineup reaches is about ${reachPct}%. Lower "Min pick chance" below that to fill ${AI_OPTIMIZE_MIN_FIT}.`
+        : ` (Best any lineup has reached so far: ~${reachPct}% on its weakest pick; if this stalls below ${AI_OPTIMIZE_MIN_FIT}, lower "Min pick chance".)`)
     : "";
   document.getElementById("ai-status").textContent = AI.running
     ? `Simulating ${AI.shortlist.length} candidate lineups continuously — ` +
-      `${AI.totalSims.toLocaleString()} total simulations so far.${phaseNote}${countNote}${swapNote} ` +
+      `${AI.totalSims.toLocaleString()} total simulations so far.${phaseNote}${reachNote}${countNote}${swapNote} ` +
       `Click Stop when you've seen enough.`
     : `Stopped after ${AI.totalSims.toLocaleString()} total simulations.${countNote}${swapNote}`;
 }
@@ -1457,39 +1482,61 @@ function renderAiResults() {
 // by the "Min pick chance" dropdown next to the AI Simulation title — raise it and
 // the next chances pass repairs/swaps any lineup (the champion included) whose
 // weakest pick now falls short, so first place always has every pick above the bar.
-let MIN_PICK_CHANCE = 0.05;
+let MIN_PICK_CHANCE = 0.15;
+// Deciding whether a pick "clears the bar" from a finite chances sample is a
+// statistics problem, not a bare comparison: a pick whose TRUE chance sits right at
+// the bar reads above it half the time and below it the other half, purely from
+// sampling noise. Testing the raw estimate against the bar therefore discards
+// genuinely-fitting borderline lineups (the reported bug). So we use a confidence
+// margin instead — AI_FIT_Z standard errors around each pick's estimated chance:
+//   • misses  = we're confident the pick is BELOW the bar (its upper bound misses it)
+//   • otherwise = borderline: not confident it misses -> keep it and keep simming.
+// (The lock side deliberately uses the plain estimate, not a lower-bound margin —
+// see updateAiChances — because the best real lineups sit right at the bar.)
+const AI_FIT_Z = 2; // std errors of margin before we call a pick clearly below the bar
+function pickStdErr(p, n) { return Math.sqrt(Math.max(p * (1 - p), 0) / n); }
+function fitClearlyMisses(probs, n) { // confident SOME pick is below the bar -> discardable
+  return probs.some(p => p + AI_FIT_Z * pickStdErr(p, n) < MIN_PICK_CHANCE);
+}
 function updateAiChances(simsPerCandidate) {
-  const prevFit = AI.visible.slice(); // whether each slot fit the description last pass
   for (let i = 0; i < AI.shortlist.length; i++) {
     const chances = analyzeTopLineupChances(AI.shortlist[i], simsPerCandidate);
     AI.chances[i] = chances;
-    // LOCK — the real fix for "you throw away lineups that work". Once a slot's
-    // lineup is CONFIRMED to fit the description, it is locked for the rest of the
-    // run: we keep it and just keep running sims on it, and never re-evaluate it
-    // out of existence. This is sound because the Min-pick-chance bar can't change
-    // mid-run (its dropdown is disabled while running) and a lineup's TRUE fit
-    // status is fixed — only our noisy chances estimate wobbles. Without this, a
-    // fitting lineup whose weakest pick sits near the bar keeps failing a later
-    // noisy re-check by chance and gets discarded, which is exactly the bug.
-    // (User rule: below 10 fitting lineups, keep simming the ones that fit — don't
-    // throw them away. See doc/ai-simulation-requirements.md.)
+    // LOCK — once a slot's lineup is CONFIRMED to fit, it is locked for the rest of
+    // the run: kept, simulated, and never re-evaluated out of existence. Sound
+    // because the bar can't change mid-run (dropdown disabled) so a lineup's TRUE
+    // fit status is fixed; only the estimate wobbles. (User rule: below 10 fitting
+    // lineups, keep simming the ones that fit — don't throw them away.)
     if (AI.fitLocked[i]) { AI.visible[i] = true; continue; } // locked: keep, ignore noise
 
-    const probs = [...chances.picks.map(p => p.prob), chances.constructor.prob];
-    let fits = probs.every(p => p >= MIN_PICK_CHANCE);
-    // The 300-sim light pass is noisy, so never trust a flip on it alone. Re-verify
-    // with a big, reliable pass whenever the light read says this slot fits (so a
-    // real fit gets confirmed and LOCKED), OR when it reads sub-bar but the slot fit
-    // last pass (so a fitting lineup is never dropped on a lone flicker before it
-    // has locked). A confirmed fit locks the slot in for the run.
-    if (fits || prevFit[i]) {
+    // Two asymmetric decisions, both from the reliable recheck:
+    //   • LOCK readily: the moment the recheck's estimate puts every pick at/above
+    //     the bar, lock it in for the run. We do NOT demand a full confidence margin
+    //     above the bar to lock — the best real lineups sit right at the bar, and
+    //     requiring ~1pt of headroom would lock nothing. Locking on the estimate is
+    //     safe because a lock is permanent-for-the-run and a truly-below lineup
+    //     rarely reads at/above the bar on a big 2500-sim pass.
+    //   • DISCARD conservatively: only rework a lineup when we're CONFIDENT a pick is
+    //     below the bar (its upper confidence bound misses it). A borderline lineup —
+    //     estimate a hair below the bar but not confidently under it — is NEITHER
+    //     locked NOR discarded: it stays visible (kept, never thrown away) and gets
+    //     more passes to lock. This is the fix for "hit 3 fitting lineups and
+    //     discarded them all": borderline fitters are no longer vetoed away.
+    // The big recheck is spent only when the light pass isn't already a confident
+    // miss — rechecking every slot every pass would starve the sim loop.
+    let probs = [...chances.picks.map(p => p.prob), chances.constructor.prob];
+    let clearMiss = fitClearlyMisses(probs, simsPerCandidate);
+    let fitsEstimate = false; // recheck estimate puts every pick at/above the bar
+    if (!clearMiss) {
       const rc = analyzeTopLineupChances(AI.shortlist[i], AI_CHAMP_RECHECK_SIMS);
       AI.chances[i] = rc;
-      const rprobs = [...rc.picks.map(p => p.prob), rc.constructor.prob];
-      fits = rprobs.every(p => p >= MIN_PICK_CHANCE);
+      probs = [...rc.picks.map(p => p.prob), rc.constructor.prob];
+      clearMiss = fitClearlyMisses(probs, AI_CHAMP_RECHECK_SIMS);
+      fitsEstimate = probs.every(p => p >= MIN_PICK_CHANCE);
     }
-    if (fits) AI.fitLocked[i] = true; // confirmed fitting — lock it for the rest of the run
-    AI.visible[i] = fits;
+    AI.bestWeakestSeen = Math.max(AI.bestWeakestSeen, Math.min(...probs));
+    if (fitsEstimate) AI.fitLocked[i] = true; // estimate says it fits — lock for the run
+    AI.visible[i] = AI.fitLocked[i] || !clearMiss; // kept unless we're confident a pick misses
   }
   // Champion fail-streak for maybePromoteChampion()'s debounce. A locked champion is
   // always visible, so its streak stays 0; only a never-locked, still-invalid
@@ -1632,14 +1679,23 @@ function performAiSwaps() {
       continue;
     }
     if (!AI.visible[i]) {
-      const repaired = repairFailingLineup(AI.shortlist[i], AI.chances[i]);
-      if (repaired) {
-        seedAiSlot(i, repaired);
+      // EXPLORE the pool first: fitting lineups often sit untried in the reserve
+      // (they're not always the highest-projection picks that start in the shortlist).
+      // Pulling the next reserve candidate in gets it evaluated — and locked next
+      // pass if it fits — so the search actually finds the lineups that clear the
+      // bar instead of endlessly re-repairing the same non-fitting shortlist. A
+      // freshly pulled candidate is safe: the next chances pass gives it a reliable
+      // fit check (and a lock if it fits) before performAiSwaps could touch it again.
+      // Only once the whole reserve has been explored do we fall back to repairing
+      // this lineup's worst pick in place.
+      if (AI.reserve.length) {
+        seedAiSlot(i, AI.reserve.shift());
         changedSlots.push(i);
         continue;
       }
-      if (AI.reserve.length) {
-        seedAiSlot(i, AI.reserve.shift());
+      const repaired = repairFailingLineup(AI.shortlist[i], AI.chances[i]);
+      if (repaired) {
+        seedAiSlot(i, repaired);
         changedSlots.push(i);
       }
       continue;
@@ -1692,6 +1748,7 @@ function startAiSimulation() {
     AI.chances = AI.shortlist.map(() => null);
     AI.visible = AI.shortlist.map(() => true); // reassessed by the first chances pass
     AI.fitLocked = AI.shortlist.map(() => false); // nothing is confirmed-fitting yet
+    AI.bestWeakestSeen = 0;
     AI.order = AI.shortlist.map((_, i) => i); // pool is already projection-sorted
     AI.totalSims = 0;
     AI.filteredOutCount = 0;

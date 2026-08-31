@@ -10,8 +10,23 @@ behaviour changes.
 
 A lineup **fits the description** when it is a *valid* lineup: every driver **and**
 the constructor has a solo chance **greater than** the current **Min pick chance**
-bar (`MIN_PICK_CHANCE`) of hitting its best-case break. The bar is set by the
-dropdown next to the "AI Simulation" title (see below).
+bar (`MIN_PICK_CHANCE`) of doing its part in a **strong target outcome**. The bar is
+set by the dropdown next to the "AI Simulation" title (see below).
+
+**What the target outcome is — and why it's a percentile, not the single best race.**
+The target is a *strong-but-stable* race for the lineup: the one at a fixed top
+percentile (`BEST_CASE_PERCENTILE`, currently the **top 10%**), whose score is met or
+beaten ~that often. A pick's solo chance is how often it does at least as well as it
+did in that target race. This replaced an earlier definition anchored to the SINGLE
+luckiest simulated race, which was broken: the luckiest race keeps getting luckier the
+more you simulate, so every reported chance drifted toward zero as sims piled up —
+whether a lineup "fit 5%" depended entirely on how many sims had run (it fit on a fast
+early pass, then read below the bar once more sims accumulated, so the AI ended up
+presenting lineups with a sub-bar pick). The percentile target converges as sims grow,
+so "fit 5%" now means one fixed thing and a fitting lineup stays fitting. Because the
+numbers are now meaningful and stable, the 5% default is fairly easy to clear — raise
+the dropdown for tighter filtering. *(Code: `analyzeTopLineupChances()` in
+`chances.js`; the percentile is `BEST_CASE_PERCENTILE`.)*
 
 ## The three jobs, in priority order
 
@@ -20,6 +35,19 @@ dropdown next to the "AI Simulation" title (see below).
    below the bar) are marked not-valid and actively repaired/swapped until they
    fit. *(Code: `updateAiChances()` sets `AI.visible[i]`; `performAiSwaps()` +
    `repairFailingLineup()` fix the ones that fall short.)*
+   - **Don't run score sims on a lineup that doesn't fit — change it instead.**
+     When a lineup doesn't follow the requirements (some pick sits below the Min
+     pick chance bar), the continuous sim loop does NOT waste sims measuring its
+     score. The slot's MAIN JOB is to CHANGE that lineup so it fits: usually by
+     switching the offending driver (or the constructor) for one whose own chance
+     of hitting its needed result clears the bar — a pick with an over-the-bar
+     chance. Only the lightweight chances pass still touches a non-fitting slot,
+     because that's what identifies the weakest pick to swap and confirms whether
+     the replacement now fits. Once a changed lineup fits, sims resume on it.
+     *(Code: `aiTick()` skips any slot where `AI.visible[i]` is false; the change
+     itself is `performAiSwaps()` — explore the reserve pool first, then
+     `repairFailingLineup()` swaps the lowest-chance pick — re-checked and locked
+     by the next `updateAiChances()` pass.)*
 
 2. **Second job — find the best lineup that fits the description.** Among the
    valid lineups, the one with the highest simulated average score becomes first
@@ -47,19 +75,28 @@ dropdown next to the "AI Simulation" title (see below).
 - *(Code: `performAiSwaps()` gates its upgrade path on
   `canOptimize = fitCount >= AI_OPTIMIZE_MIN_FIT`, where `AI_OPTIMIZE_MIN_FIT = 10`.)*
 - **A confirmed-fitting lineup is LOCKED for the run and can never be thrown away
-  by noise.** This is the core guarantee. Whether a lineup fits is read from a
-  light 300-sim chances pass, which is noisy — a lineup whose weakest pick sits
-  near the bar keeps reading sub-bar by chance on later passes, and a one-time
-  re-check isn't enough (a borderline lineup keeps failing the re-check too, so it
-  still gets discarded). Since the Min-pick-chance bar can't change mid-run (its
-  dropdown is disabled while running), a lineup's *true* fit status is fixed — only
-  the estimate wobbles. So the moment a lineup is CONFIRMED fitting (a light-pass
-  fit re-verified by a big reliable pass), it is locked: kept, simulated, and never
-  re-evaluated out of existence for the rest of the run. A lock is only released if
-  the optimize phase (10+ fit) deliberately swaps that slot for an upgrade, at which
-  point the new lineup must re-earn its own lock. *(Code: `AI.fitLocked[]`, set in
-  `updateAiChances()` on a confirmed fit, reset in `seedAiSlot()`; a locked slot
-  stays `AI.visible = true` and skips re-evaluation.)*
+  by noise.** This is the core guarantee. Whether a lineup fits is read from a noisy
+  chances sample, and the best real lineups sit right at the bar, so the fit/no-fit
+  decision must be handled as statistics, not a bare comparison. Two asymmetric
+  rules do it, both from a big reliable re-check:
+    - **Lock readily.** The moment the re-check's estimate puts every pick at/above
+      the bar, the lineup is locked in for the run — kept, simulated, never
+      re-evaluated out. We do NOT demand extra headroom above the bar to lock (that
+      would lock nothing, since the good lineups sit *at* the bar). Locking on the
+      estimate is safe because a lock is permanent-for-the-run and the bar can't
+      change mid-run (the dropdown is disabled while running), so a lineup's *true*
+      fit status is fixed — only the estimate wobbles.
+    - **Discard conservatively.** A lineup is only reworked when we're CONFIDENT a
+      pick is below the bar (its upper confidence bound misses it). A borderline
+      lineup — estimate a hair under the bar but not confidently below — is neither
+      locked nor discarded: it stays and gets more passes to lock. This is the fix
+      for "hit 3 fitting lineups and discarded them all" — borderline fitters used
+      to be vetoed away by a single sub-bar re-check.
+  A lock is only released if the optimize phase (10+ fit) deliberately swaps that
+  slot for an upgrade, at which point the new lineup must re-earn its own lock.
+  *(Code: `AI.fitLocked[]` set in `updateAiChances()` when the re-check estimate
+  fits; discard gated by `fitClearlyMisses()` (AI_FIT_Z std-error margin); reset in
+  `seedAiSlot()`; a locked slot stays `AI.visible = true` and skips re-evaluation.)*
 - **A kept fitting lineup is ranked number one — above every lineup that does NOT
   fit — even if its average is lower than those non-fitting lineups.** A lineup
   that fits always outranks every lineup that doesn't, regardless of average, so

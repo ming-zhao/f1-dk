@@ -66,6 +66,10 @@ const AI = {
   // locked for the rest of the run — kept and simulated, never re-evaluated out on
   // measurement noise (the Min-pick-chance bar can't change mid-run). See ai.js.
   fitLocked: [],
+  // Highest "weakest pick chance" any evaluated lineup has reached this run — i.e.
+  // the highest Min-pick-chance bar the data can actually satisfy. Used to tell the
+  // user when their bar is set higher than any lineup this race can meet.
+  bestWeakestSeen: 0,
   totalSims: 0, filteredOutCount: 0, champFailStreak: 0,
 };
 
